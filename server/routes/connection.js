@@ -1,0 +1,14 @@
+const mysql = require("mysql");
+
+const pool = mysql.createPool({
+  connectionLimit: 10,
+  host: process.env.DBHOST,
+  user: process.env.DBUSER,
+  database: process.env.DATABASE,
+  password: process.env.DBPASSWORD,
+  port: 3306,
+  multipleStatements: true, //for more than one query in a get route
+  debug: false
+});
+ 
+module.exports = pool; 

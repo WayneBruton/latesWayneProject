@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Eccentric Toad",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.611.0",
+    "base64topdf": "^1.1.8",
+    "bcryptjs": "^2.4.3",
+    "blueimp-md5": "^2.12.0",
+    "body-parser": "^1.19.0",
+    "cookie-parser": "^1.4.4",
+    "cors": "^2.8.5",
+    "country-reverse-geocoding": "^0.2.2",
+    "cryptr": "^6.0.1",
+    "currencies-exchange-rates": "^1.0.2",
+    "dotenv": "^8.2.0",
+    "exchange-rates": "^0.1.2",
+    "express": "^4.17.1",
+    "fluentreports": "^1.2.8",
+    "jsonwebtoken": "^8.5.1",
+    "md5-hash": "^1.0.1",
+    "moment": "^2.24.0",
+    "multer": "^1.4.2",
+    "mysql": "^2.17.1",
+    "node-fetch": "^2.6.0",
+    "nodemailer": "^6.3.1",
+    "salted-md5": "^4.0.2"
+  }
+}
