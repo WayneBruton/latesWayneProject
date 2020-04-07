@@ -95,7 +95,7 @@
             <v-list-item-content>
               <v-list-item-title
                 prepend-icon="mdi-book-open-page-variant"
-                v-text="subItem.PolicyName"
+                v-text="subItem.policyName"
               ></v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
@@ -278,11 +278,11 @@ export default {
           return this.$router.push({ name: "home" });
         }, 900);
       } else {
-        this.policyDocuments = response.data.Policies;
+        this.policyDocuments = response.data.policies;
         // console.log("Staff Documents:", response.data.Policies)
         this.personnelDocuments = response.data.staffDocuments;
-        response.data.Policies.forEach(el => {
-          el.AppliesTo = JSON.parse(el.AppliesTo);
+        response.data.policies.forEach(el => {
+          el.appliesTo = JSON.parse(el.appliesTo);
         });
         let newDocumentItems = [];
         let documentItems = response.data.staffTypes;
@@ -290,16 +290,16 @@ export default {
           let id = el.id;
           let dataToInsert = {
             id: el.id,
-            staffType: el.Staff_description,
+            staffType: el.staff_description,
             items: []
           };
-          let filtered = response.data.Policies.filter(el => {
-            return el.AppliesTo.includes(id);
+          let filtered = response.data.policies.filter(el => {
+            return el.appliesTo.includes(id);
           });
           filtered.forEach(el => {
             let id = el.id;
             let filtered2 = response.data.policiesRead.filter(el2 => {
-              return el2.PolicyRead === id;
+              return el2.policyRead === id;
             });
             if (filtered2.length) {
               el.policyRead = true;
@@ -365,9 +365,9 @@ export default {
       });
       let criteria = {
         documentID: parseInt(targetID),
-        documentName: filtered[0].PolicyName,
-        documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].PolicyLink}.pdf`,
-        URL: `${filtered[0].PolicyLink}`
+        documentName: filtered[0].policyName,
+        documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].policyLink}.pdf`,
+        URL: `${filtered[0].policyLink}`
       };
 
       let response = await DirectoryService.viewDoc(criteria);
@@ -376,7 +376,7 @@ export default {
           id: parseInt(targetID),
           policyRead: filtered[0].policyRead,
           documentType: "Policy",
-          documentName: filtered[0].PolicyName,
+          documentName: filtered[0].policyName,
           documentURL: response.data.url,
           URL: `response.data.url`
         };

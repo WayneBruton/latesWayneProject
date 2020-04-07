@@ -22,6 +22,7 @@ export default new Vuex.Store({
     documentType: "",
     usersAvailable: 0,
     usageAvailable: 0,
+    hasExpired: false,
     isProducedReport: false
   },
   mutations: {
@@ -67,6 +68,7 @@ export default new Vuex.Store({
     availableAdditions(state, criteria) {
       state.usersAvailable = criteria.usersAvailable;
       state.usageAvailable = criteria.usageAvailable;
+      state.hasExpired = criteria.hasExpired;
     },
     updateOrganisationName(state, criteria) {
       state.organisationName = criteria.organisationName;

@@ -44,7 +44,7 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
         let documentTypes = result[3];
         let policiesRead = result[4];
 
-        let lastSQL = `Select * from Policies where JSON_CONTAINS(AppliesTo, '[${allStaff}]') or JSON_CONTAINS(AppliesTo, '[${thisStaffType}]') and organisation = ${req.body.organisation}`;
+        let lastSQL = `Select * from policies where JSON_CONTAINS(appliesTo, '[${allStaff}]') or JSON_CONTAINS(appliesTo, '[${thisStaffType}]') and organisation = ${req.body.organisation}`;
 
         connection.query(lastSQL, function(error, result) {
           if (error) {
@@ -53,7 +53,7 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
           } else {
             //   res.json(results.failure);
             let finalSend = {
-              Policies: result,
+              policies: result,
               policiesRead: policiesRead,
               staffTypes: staffTypes,
               staffDocuments: staffDocuments,
@@ -69,10 +69,10 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
   });
 });
 
-router.put("/postPolicyRead", (req, res) => {
+router.put("/postpolicyRead", (req, res) => {
   let sql;
   if (req.body.documentType === "Policy") {
-    sql = `Insert INTO policiesRead (PolicyRead, user, organisation) values (${req.body.documentID}, ${req.body.userID}, ${req.body.organisationID})`;
+    sql = `Insert INTO policiesRead (policyRead, user, organisation) values (${req.body.documentID}, ${req.body.userID}, ${req.body.organisationID})`;
   } else if (req.body.documentType === "StaffDocument") {
     sql = `Update staffDocuments set readDocument = true where id = ${req.body.documentID}`;
   }

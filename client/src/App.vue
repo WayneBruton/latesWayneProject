@@ -1,4 +1,4 @@
-<template class="temp">
+<template class="temp landscape">
   <v-app>
     <Header />
     <v-container fluid style="margin: 0px; padding: 0px; width: 100%">

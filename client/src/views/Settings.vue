@@ -48,6 +48,15 @@
 <script>
 export default {
   name: "settings",
+  metaInfo: {
+    title: `PerfectStaff - Settings`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       color: "",

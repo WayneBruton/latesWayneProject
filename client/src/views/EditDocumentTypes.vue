@@ -66,7 +66,7 @@
                   v-if="item.canDelete === true"
                   @click="deleteItem($event)"
                   style="color: red; font-weight: bold;"
-                  >X</v-btn
+                  ><v-icon>mdi-delete</v-icon></v-btn
                 >
                 <v-btn
                   text
@@ -74,11 +74,21 @@
                   v-if="item.canDelete === false"
                   @click="dialog1 = true"
                   style="color: green; font-weight: bold;"
-                  >?</v-btn
+                  ><v-icon>mdi-help-box</v-icon></v-btn
                 >
-                <v-btn text color="#010a43" :id="item.id" @click="edit($event)"
-                  >Edit</v-btn
-                >
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      text
+                      color="#010a43"
+                      :id="item.id"
+                      @click="edit($event)"
+                      ><v-icon>mdi-folder-edit</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
               </v-flex>
             </v-list-item-action>
           </v-list-item>
@@ -186,6 +196,15 @@
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "editStaffTypes",
+  metaInfo: {
+    title: `PerfectStaff - Edit`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       dialog: false,

@@ -73,10 +73,10 @@ export default {
     accept() {
       // window.localStorage.removeItem('cookie:accepted')
       window.localStorage.setItem("cookie:accepted", "true");
-      console.log(
-        "This is local Storage",
-        window.localStorage.getItem("cookie:accepted")
-      );
+      // console.log(
+      //   "This is local Storage",
+      //   window.localStorage.getItem("cookie:accepted")
+      // );
       // this.dialogChange = true
       this.$emit("CookiesAccepted");
       // this.dialog = false

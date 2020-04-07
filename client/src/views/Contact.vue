@@ -75,13 +75,22 @@
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "contact",
+  metaInfo: {
+    title: `PerfectStaff - Contact`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       subject: "",
       content: "",
-      email: "bobDillon@icloud.com",
-      firstName: "Bob",
-      lastName: "Dillon",
+      email: "",
+      firstName: "",
+      lastName: "",
       userID: null,
       isLoggedIn: false,
       snackbar: false,
@@ -128,7 +137,7 @@ export default {
             message: this.content
           };
           let response = await DirectoryService.contactform(credentials);
-          console.log(response.data);
+          // console.log(response.data);
           if (response.data.error) {
             this.snackBarMessage =
               "There was a problem, please try again later.";

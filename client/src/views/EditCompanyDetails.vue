@@ -142,6 +142,15 @@
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "editcompanydetails",
+  metaInfo: {
+    title: `PerfectStaff - Edit`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       dialog: false,
@@ -211,7 +220,7 @@ export default {
       }
     },
     resetForm() {
-      console.log(this.resetFields[0]);
+      // console.log(this.resetFields[0]);
       this.organisationName = this.resetFields[0].organisationName;
       this.registrationNumber = this.resetFields[0].registrationNumber;
       this.VATNumber = this.resetFields[0].VATNumber;

@@ -180,15 +180,108 @@
         Close
       </v-btn>
     </v-snackbar>
+    <v-dialog v-model="dialog" max-width="800px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Edit and change accordingly </span>
+        </v-card-title>
+        <v-card-text>
+          <vue-editor
+            v-model="content"
+            :editorToolbar="customToolbar"
+          ></vue-editor>
+        </v-card-text>
+        <v-card-actions>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="red"
+                text
+                v-on="on"
+                @click="changeMail($event)"
+                id="1"
+                ><v-icon>mdi-email</v-icon>
+              </v-btn>
+            </template>
+            <span>non-compliant</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="green"
+                text
+                v-on="on"
+                @click="changeMail($event)"
+                id="2"
+                ><v-icon>mdi-email</v-icon></v-btn
+              >
+            </template>
+            <span>compliant</span>
+          </v-tooltip>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="#010a43"
+                text
+                v-on="on"
+                @click="changeMail($event)"
+                id="3"
+                ><v-icon>mdi-email-outline</v-icon></v-btn
+              >
+            </template>
+            <span>Blank email</span>
+          </v-tooltip>
+          <v-spacer></v-spacer>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="#010a43"
+                text
+                v-on="on"
+                @click="sendTheEmail($event)"
+                :id="individualEmailID"
+                ><v-icon>mdi-email-send</v-icon></v-btn
+              >
+            </template>
+            <span>Send</span>
+          </v-tooltip>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
+import { VueEditor } from "vue2-editor";
 export default {
   name: "NotLoggedIn",
 
   data: () => ({
+    dialog: false,
+    content: "<h1>Some initial content</h1>",
+    positiveContent: "",
+    negativeContent: "",
+    blankContent: "",
+    customToolbar: [
+      [
+        {
+          header: [false, 1, 2, 3, 4, 5, 6]
+        }
+      ],
+      ["bold", "italic", "underline"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      [
+        {
+          color: []
+        },
+        {
+          background: []
+        }
+      ]
+    ],
+    individualEmailID: 999,
+
     totalUsers: 0,
     totalPolicies: 0,
     totalStaffDocs: 0,
@@ -204,14 +297,14 @@ export default {
     search: "",
     processing: false
   }),
-  async mounted() {
+  components: {
+    VueEditor
+  },
+  async beforeMount() {
     let credentials = {
       id: this.$store.state.organisationID
     };
     try {
-      //%%%%%%%%%%%%
-      // console.log(this.$store.state.isProducedReport);
-
       if (this.$store.state.isProducedReport) {
         let rep = this.$store.state.documentURL.split("/");
         rep = `${rep[rep.length - 2]}/${rep[rep.length - 1]}`;
@@ -226,13 +319,12 @@ export default {
         };
         this.$store.dispatch("viewReport", criteria);
         await DirectoryService.removeReport(reportCredentials);
-        // console.log(response.data)
       }
-      // console.log(this.$store.state.isProducedReport);
-      //%%%%%%
       let response = await DirectoryService.getOrganisationStatistics(
         credentials
       );
+      // console.log(response.data);
+
       if (response.data.success === false) {
         this.snackBarMessage = "Session has expired, please log on again";
         this.snackbar = true;
@@ -258,17 +350,17 @@ export default {
         this.totalStaffDocs = response.data[2].length;
         this.staffDocs = response.data[2];
         response.data[5].forEach(el => {
-          el.AppliesTo = JSON.parse(el.AppliesTo);
+          el.appliesTo = JSON.parse(el.appliesTo);
         });
         let allStaff = response.data[3][0].id;
         let filtered = response.data[5].filter(el => {
-          return el.AppliesTo.includes(allStaff);
+          return el.appliesTo.includes(allStaff);
         });
         let allStaffCount = filtered.length;
         response.data[4].forEach(el => {
           let includes = el.staffType;
           let filtered = response.data[5].filter(el => {
-            return el.AppliesTo.includes(includes);
+            return el.appliesTo.includes(includes);
           });
           el.totalPolicies = filtered.length + allStaffCount;
           if (isNaN(Math.round((el.policiesRead / el.totalPolicies) * 100))) {
@@ -373,8 +465,8 @@ export default {
         let filtered = this.policies.filter(el => {
           return el.id === targetID;
         });
-        console.log("TESTING", filtered[0]);
-        console.log(targetID);
+        // console.log("TESTING", filtered[0]);
+        // console.log(targetID);
         let credentials = {
           id: targetID,
           organisation: this.$store.state.organisationID,
@@ -401,29 +493,67 @@ export default {
         this.snackbar = true;
       }
     },
-    async individualEmail(event) {
+    individualEmail(event) {
       try {
         let targetID = parseInt(event.currentTarget.id);
-        // console.log("THIS IS THE USER", targetID);
+        this.individualEmailID = targetID;
         let filtered = this.policies.filter(el => {
           return el.id === targetID;
         });
         let credentials = filtered[0];
         credentials.organisation = this.$store.state.organisationID;
-        let response = await DirectoryService.emailIndividual(credentials);
-        console.log(response.data);
-        if (!response.data.error) {
-          this.snackBarMessage = "Email sent successfully";
-          this.snackbar = true;
-        } else {
-          this.snackBarMessage = "Email not sent, please try again later";
-          this.snackbar = true;
-        }
+        // console.log(credentials);
+        // console.log(credentials.totalPolicies);
+        let negativeContent = `<br /><h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><br /><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><br /><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><br /><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><br /><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><br /><p><strong>Failure to comply/correct the situation can result in disciplinary action.</strong></p><br /><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let positiveContent = `<br /><h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><br /><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><br /><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><br /><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><br /><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><br /><p><strong>You have done exceptionaly well, keep up the great work.</strong></p><br /><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let blankContent = `<br />Dear ${credentials.fname},`;
+        this.positiveContent = positiveContent;
+        this.blankContent = blankContent;
+        this.negativeContent = negativeContent.trim();
+        this.content = this.negativeContent;
+        this.dialog = true;
       } catch (e) {
-        console.log(e);
+        // console.log(e);
         this.snackBarMessage =
           "There is a network problem(11), please try later!";
         this.snackbar = true;
+      }
+    },
+    async sendTheEmail(event) {
+      try {
+        let targetID = parseInt(event.currentTarget.id);
+        // console.log(targetID);
+        let credentials = {
+          id: targetID,
+          organisation: this.$store.state.organisationID,
+          content: this.content
+        };
+        let response = await DirectoryService.emailIndividual(credentials);
+        // console.log(response.data);
+        if (!response.data.error) {
+          this.snackBarMessage = "Email sent successfully";
+          this.snackbar = true;
+          this.dialog = false;
+        } else {
+          this.snackBarMessage = "Email not sent, please try again later";
+          this.snackbar = true;
+          this.dialog = false;
+        }
+      } catch (e) {
+        // console.log(e);
+        this.snackBarMessage =
+          "There is a network problem(11), please try later!";
+        this.snackbar = true;
+      }
+    },
+    changeMail(event) {
+      let targetID = parseInt(event.currentTarget.id);
+      if (targetID === 1) {
+        this.content = this.negativeContent;
+      } else if (targetID === 2) {
+        this.content = this.positiveContent;
+      } else if (targetID === 3) {
+        this.content = this.blankContent;
       }
     }
   }

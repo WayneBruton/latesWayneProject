@@ -2,7 +2,7 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" persistent max-width="800px">
       <template v-slot:activator="{ on }">
-        <v-btn :color="color" dark v-on="on" @click="checkOnline"
+        <v-btn outlined :color="color" dark v-on="on" @click="checkOnline"
           >Register for Free</v-btn
         >
       </template>
@@ -207,33 +207,35 @@ export default {
       snackbar: false,
       snackBarMessage: "",
       showStrengthMeter: false,
-      organisationName: "The Eccentric Toad",
+      organisationName: "",
       registrationNumber: "",
       VATNumber: "",
-      email: "wayne@eccentrictoad.com",
-      address1: "6 Parkside",
-      address2: "5 The Close",
-      address3: "Tokai",
-      countryReside: "ZA",
+      email: "",
+      address1: "",
+      address2: "",
+      address3: "",
+      countryReside: "",
       // country: null,
-      region: "WC",
-      city: "Cape Town",
-      zipCode: "7945",
+      region: "",
+      city: "",
+      zipCode: "",
       contactNumber: "",
       phone: {
-        number: "0740628742",
+        number: "",
         isValid: false,
         country: undefined
       },
-      fname: "Wayne",
-      lname: "Bruton",
-      userEmail: "waynebruton@icloud.com",
-      password: "12345",
+      fname: "",
+      lname: "",
+      userEmail: "",
+      password: "",
       repeatPassword: "",
       reg: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       suggestions: [],
       warning: "",
-      readyToPost: false
+      readyToPost: false,
+      score: "",
+      suggestion: ""
     };
   },
   components: {
@@ -344,13 +346,15 @@ export default {
       }
     },
     showFeedback({ suggestions, warning }) {
-      console.log("🙏", suggestions);
-      console.log("⚠", warning);
+      // console.log("🙏", suggestions);
+      // console.log("⚠", warning);
+      this.suggestion = suggestions;
       this.warning = "";
       this.warning = warning;
     },
     showScore(score) {
-      console.log("💯", score);
+      // console.log("💯", score);
+      this.score = score;
     },
     async register() {
       this.okayToPost();
@@ -379,6 +383,7 @@ export default {
           this.dialog = false;
           let response = await DirectoryService.register(credentials);
           let details = response.data;
+          // console.log(response.data);
           let user = { token: response.data.token };
           this.$cookies.set(
             "token",
@@ -400,7 +405,7 @@ export default {
     checkCookie() {
       if (window.localStorage.getItem("cookie:accepted") !== "true") {
         this.$emit("CookieNotAcceptedLogin");
-        console.log("No Cookie Accepted Login");
+        // console.log("No Cookie Accepted Login");
         setTimeout(() => {
           this.dialog = false;
         });

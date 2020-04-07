@@ -58,7 +58,7 @@
                     :items="typesOfStaff"
                     label="Staff Type"
                     v-model="staffAffected"
-                    item-text="Staff_description"
+                    item-text="staff_description"
                   ></v-autocomplete>
                 </v-col>
               </v-row>
@@ -77,7 +77,7 @@
     <div v-else>
       <v-dialog v-model="dialog2" persistent max-width="800px">
         <template v-slot:activator="{ on }">
-          <v-btn rounded color="red" dark v-on="on">Maximum</v-btn>
+          <v-btn rounded color="red" dark v-on="on">Subscribe</v-btn>
         </template>
         <v-card>
           <v-card-title>
@@ -121,11 +121,11 @@ export default {
       value: String,
       snackbar: false,
       snackBarMessage: "Hello, I'm a snackbar",
-      fname: "Hazel",
-      lname: "Cox",
-      userEmail: "hazelcox@icloud.com",
+      fname: "",
+      lname: "",
+      userEmail: "",
       isAdministrator: false,
-      jobTitle: "Admin Clerk",
+      jobTitle: "",
       organisationName: "",
       organisationID: 0,
       typesOfStaff: [],
@@ -180,7 +180,7 @@ export default {
             userType = 2;
           }
           let staffTypeID = this.typesOfStaff.filter(el => {
-            return this.staffAffected === el.Staff_description;
+            return this.staffAffected === el.staff_description;
           });
           let staffType = parseInt(staffTypeID[0].id);
           let credentials = {
@@ -232,7 +232,7 @@ export default {
         let response = await DirectoryService.staffTypes(details);
         // console.log("staff types", response.data);
         let typesOfStaff = response.data.filter(el => {
-          return el.Staff_description !== "All Staff";
+          return el.staff_description !== "All Staff";
         });
         this.typesOfStaff = typesOfStaff;
       } catch (error) {

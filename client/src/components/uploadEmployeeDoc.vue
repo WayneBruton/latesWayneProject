@@ -1,6 +1,10 @@
 <template>
   <v-row justify="center">
-    <div v-if="this.$store.state.usageAvailable > 0">
+    <div
+      v-if="
+        this.$store.state.usageAvailable > 0 && !this.$store.state.hasExpired
+      "
+    >
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
           <v-btn :color="color" dark v-on="on" rounded pr-10 @click="uploadData"
@@ -62,7 +66,9 @@
                   :width="7"
                   color="#010a43"
                   indeterminate
-                ></v-progress-circular>
+                >
+                  <small>Loadng</small>
+                </v-progress-circular>
                 <!-- </v-col> -->
               </div>
             </v-container>
@@ -80,14 +86,17 @@
     <div v-else>
       <v-dialog v-model="dialog2" persistent max-width="800px">
         <template v-slot:activator="{ on }">
-          <v-btn rounded color="#010a43" dark v-on="on">Maximum</v-btn>
+          <v-btn rounded color="red" dark v-on="on">subscribe</v-btn>
         </template>
         <v-card>
           <v-card-title>
             <span class="headline">Maximum Filesize Used</span>
           </v-card-title>
           <v-card-text>
-            <span>You have reached the maximum filesize for your package.</span>
+            <span
+              >You have reached the maximum filesize for your package or your
+              subscription has expired.</span
+            >
           </v-card-text>
           <v-card-actions>
             <!-- <v-spacer></v-spacer> -->

@@ -104,7 +104,16 @@ import pdf from "vue-pdf";
 import VueNumericInput from "vue-numeric-input";
 import DirectoryService from "../services/DirectoryServices";
 export default {
-  name: "faq",
+  name: "viewDoc",
+  metaInfo: {
+    title: `PerfectStaff - View`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   components: {
     pdf,
     VueNumericInput
@@ -180,14 +189,15 @@ export default {
             userID: this.$store.state.userID,
             organisationID: this.$store.state.organisationID
           };
-          let response = await DirectoryService.postPolicyRead(credentials);
+          let response = await DirectoryService.postpolicyRead(credentials);
           if (response.data === true) {
             // console.log("DONE!!!!");
             this.readyToUpdate = false;
           }
           // this.$router.back();
         } else {
-          console.log("TEst Failed");
+          // console.log("TEst Failed");
+          this.back();
         }
       } catch (error) {
         this.snackBarMessage = "Network Error(58), please try later!";
@@ -195,10 +205,12 @@ export default {
         // this.dialog = false;
       }
     }
-  },
-  error: function(err) {
-    console.log(err);
   }
+  // error: function(err) {
+  //   // console.log(err);
+  //   this.back()
+
+  // }
 };
 </script>
 

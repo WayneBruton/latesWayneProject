@@ -2,21 +2,35 @@
   <v-container>
     <v-layout text-center wrap>
       <v-flex mb-5 xs12>
-        <h2 class="headline font-weight-bold mb-3">Home Page</h2>
+        <h2 class="headline font-weight-bold mb-3">Perfect Staff</h2>
+        <br />
+
+        <div class="homeScreenBtns">
+          <Login
+            class="componentBtn"
+            @CookieNotAcceptedLogin="cookieForm"
+            @offline="offline"
+          />
+
+          <Register
+            class="componentBtn"
+            @CookieNotAcceptedLogin="cookieForm"
+            @offline="offline"
+          />
+        </div>
         <div
           style="display: flex; flex-direction: column; align-items: center;"
         >
-          <Login @CookieNotAcceptedLogin="cookieForm" @offline="offline" />
           <br /><br />
           <!-- <img src="../assets/stopwatch-3933686_640.jpg" alt="" srcset=""> -->
           <v-img
-            src="../assets/new-starter.png"
-            aspect-ratio="1.7"
-            width="650"
+            src="../assets/PerfectStaff.png"
+            aspect-ratio="1.4"
+            width="600"
             margin="auto"
           ></v-img>
-          <br /><br />
-          <Register @CookieNotAcceptedLogin="cookieForm" @offline="offline" />
+          <!-- <br /><br /> -->
+          <!-- <Register @CookieNotAcceptedLogin="cookieForm" @offline="offline" /> -->
         </div>
         <br /><br />
         <v-layout justify-center class="blurb">
@@ -102,7 +116,7 @@ export default {
   },
   methods: {
     cookieForm() {
-      console.log("No Cookies Accepted");
+      // console.log("No Cookies Accepted");
       // this.cookiesAccepted = true
       // setTimeout(() => {
       this.cookiesAcceptedForm = false;
@@ -131,5 +145,19 @@ export default {
   background-color: #010a43;
   padding: 35px;
   color: white;
+}
+.homeScreenBtns {
+  display: flex;
+  flex-direction: row;
+}
+@media only screen and (max-width: 600px) {
+  .homeScreenBtns {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 7px;
+  }
+  .componentBtn {
+    margin-bottom: 25px;
+  }
 }
 </style>

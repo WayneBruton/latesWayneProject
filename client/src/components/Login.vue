@@ -2,7 +2,15 @@
   <v-row justify="center">
     <v-dialog v-model="dialog" max-width="800px">
       <template v-slot:activator="{ on }">
-        <v-btn :color="color" dark v-on="on" @click="checkOnline">Login</v-btn>
+        <v-btn
+          width="165"
+          :color="color"
+          outlined
+          dark
+          v-on="on"
+          @click="checkOnline"
+          >Login</v-btn
+        >
       </template>
       <v-card>
         <v-card-title>
@@ -124,9 +132,9 @@ export default {
       showStrengthMeter: false,
       canLoginIn: false,
       moreThanOneOrganisation: [],
-      userEmail: "waynebruton@icloud.com",
+      userEmail: "",
       // userEmail: "hazelcox@icloud.com",
-      password: "12345",
+      password: "",
       organisationID: null,
       reg: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,24}))$/,
       suggestions: [],
@@ -169,7 +177,7 @@ export default {
           });
           // console.log("Response", responseOTP.data);
           this.systemOTP = responseOTP.data.OTP;
-          console.log(this.systemOTP);
+          // console.log(this.systemOTP);
         } catch (e) {
           this.snackBarMessage = "Connection error (1), Please try later";
           this.snackbar = true;
@@ -201,7 +209,7 @@ export default {
               email: this.userEmail
             });
             this.systemOTP = responseOTP.data.OTP;
-            console.log(this.systemOTP);
+            // console.log(this.systemOTP);
             this.snackBarMessage = "A One Time Pin (OTP) has been sent to you";
             this.snackbar = true;
           } catch (e) {
@@ -255,7 +263,7 @@ export default {
                 email: this.userEmail
               });
               this.systemOTP = responseOTP.data.OTP;
-              console.log(this.systemOTP);
+              // console.log(this.systemOTP);
               this.snackBarMessage =
                 "A One Time Pin (OTP) has been sent to you";
               this.snackbar = true;
@@ -317,7 +325,7 @@ export default {
             userType: this.userType,
             userID: response.data.user.id
           };
-          console.log(response.data.country)
+          // console.log(response.data.country);
           this.$cookies.remove("token");
           let user = { token: response.data.token };
           this.$cookies.set(

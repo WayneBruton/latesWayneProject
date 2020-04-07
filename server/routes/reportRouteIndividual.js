@@ -38,7 +38,7 @@ router.put("/printIndividualReport", (req, res) => {
         result.forEach((el, index) => {
           let insertPrimary = {
             id: el.id,
-            name: el.Staff_description
+            name: el.staff_description
           };
           if (index === 0) {
             primary_data.push(insertPrimary);
@@ -50,11 +50,11 @@ router.put("/printIndividualReport", (req, res) => {
         primary_data.push({ id: 99, name: "Personal Documents" });
         console.log("PRIMARYDATA", primary_data);
         //ALL STAFF
-        let sql1 = `select p.id, p.PolicyName, p.createdAt, p.AppliesTo from  Policies p
-        where  JSON_CONTAINS(p.AppliesTo, '${stafftypes[0]}') and p.organisation = ${req.body.organisation}`;
+        let sql1 = `select p.id, p.policyName, p.createdAt, p.appliesTo from  policies p
+        where  JSON_CONTAINS(p.appliesTo, '${stafftypes[0]}') and p.organisation = ${req.body.organisation}`;
         // STAFF TYPE
-        let sql2 = `select p.id, p.PolicyName, p.createdAt, p.AppliesTo from  Policies p
-        where  JSON_CONTAINS(p.AppliesTo, '${stafftypes[1]}') and p.organisation = ${req.body.organisation}`;
+        let sql2 = `select p.id, p.policyName, p.createdAt, p.appliesTo from  policies p
+        where  JSON_CONTAINS(p.appliesTo, '${stafftypes[1]}') and p.organisation = ${req.body.organisation}`;
         //POLICIES READ
         let sql3 = `select policyRead, readAt from policiesRead where user = ${req.body.id}`;
         //Staff Documents
@@ -71,9 +71,9 @@ router.put("/printIndividualReport", (req, res) => {
             let arr2 = []
             let arr3 = result[1]
             result[0].forEach((el) => {
-              el.AppliesTo = JSON.parse(el.AppliesTo)
-              if (el.AppliesTo.includes(stafftypes[0])) {
-                el.AppliesTo = stafftypes[0]
+              el.appliesTo = JSON.parse(el.appliesTo)
+              if (el.appliesTo.includes(stafftypes[0])) {
+                el.appliesTo = stafftypes[0]
               }
               let id = el.id
               // console.log(id)
@@ -88,7 +88,7 @@ router.put("/printIndividualReport", (req, res) => {
                 el.readAt = null
               }
               let insertData = {
-                policyName: el.PolicyName,
+                policyName: el.policyName,
                 policyRead: el.policyRead,
                 readAt: el.readAt
               }
@@ -96,9 +96,9 @@ router.put("/printIndividualReport", (req, res) => {
 
             })
             result[1].forEach((el) => {
-              el.AppliesTo = JSON.parse(el.AppliesTo)
-              if (el.AppliesTo.includes(stafftypes[1])) {
-                el.AppliesTo = stafftypes[1]
+              el.appliesTo = JSON.parse(el.appliesTo)
+              if (el.appliesTo.includes(stafftypes[1])) {
+                el.appliesTo = stafftypes[1]
               }
               let id = el.id
               // console.log(id)
@@ -113,7 +113,7 @@ router.put("/printIndividualReport", (req, res) => {
                 el.readAt = null
               }
               let insertData = {
-                policyName: el.PolicyName,
+                policyName: el.policyName,
                 policyRead: el.policyRead,
                 readAt: el.readAt
               }
@@ -289,7 +289,7 @@ async function printreport() {
       // fill: "black",
       fill: "#6f6f6f",
       textColor: "#ffffff",
-      link: "http://www.fluentReports.com/"
+      link: "http://www.eccentrictoad.com/"
     });
     report.newLine();
   };

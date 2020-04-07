@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="temp">
     <br /><br /><br /><br /><br />
     <div style="display: flex; justify-content: center;">
       <h2>{{ this.$store.state.organisationName }}</h2>
@@ -91,7 +91,7 @@
             <v-list-item-content>
               <v-list-item-title
                 prepend-icon="mdi-book-open-page-variant"
-                v-text="subItem.PolicyName"
+                v-text="subItem.policyName"
               ></v-list-item-title>
             </v-list-item-content>
             <v-list-item-action>
@@ -181,6 +181,15 @@ import DirectoryService from "../services/DirectoryServices";
 import UploadDocument from "../components/uploadPolicyDoc";
 export default {
   name: "policies",
+  metaInfo: {
+    title: `PerfectStaff - Policies`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       item: 1,
@@ -230,7 +239,7 @@ export default {
       };
       try {
         let response = await DirectoryService.emailPolicies(credentials);
-        console.log(response.data);
+        // console.log(response.data);
         if (!response.data.error) {
           this.snackBarMessage = "emails successfully sent";
           this.snackbar = true;
@@ -253,7 +262,7 @@ export default {
         let response = await DirectoryService.policiesAndStaffTypes(
           credentials
         );
-        // console.log(response.data);
+        // console.log("Response Policies", response.data);
         if (response.data.success === false) {
           this.snackBarMessage = "Session has expired, please log on again";
           this.snackbar = true;
@@ -268,7 +277,7 @@ export default {
           });
           this.allDocuments = response.data[0];
           this.allDocuments.forEach(el => {
-            el.AppliesTo = JSON.parse(el.AppliesTo);
+            el.appliesTo = JSON.parse(el.appliesTo);
           });
           this.allStaff = response.data[1][0].id;
         }
@@ -287,9 +296,9 @@ export default {
       });
       let criteria = {
         documentID: parseInt(targetID),
-        documentName: filtered[0].PolicyName,
-        documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].PolicyLink}.pdf`,
-        URL: `${filtered[0].PolicyLink}`
+        documentName: filtered[0].policyName,
+        documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].policyLink}.pdf`,
+        URL: `${filtered[0].policyLink}`
       };
       try {
         let response = await DirectoryService.viewDoc(criteria);
@@ -298,7 +307,7 @@ export default {
         if (response.data.download === "Successfull") {
           criteria = {
             documentID: parseInt(targetID),
-            documentName: filtered[0].PolicyName,
+            documentName: filtered[0].policyName,
             documentURL: response.data.url,
             URL: `response.data.url`
           };
@@ -325,16 +334,16 @@ export default {
       });
       let deletePolicy = {
         id: filtered[0].id,
-        PolicyLink: filtered[0].PolicyLink
+        policyLink: filtered[0].policyLink
       };
       this.deletePolicyDetails = deletePolicy;
-      if (filtered[0].AppliesTo.length > 1) {
-        let updateCategories = filtered[0].AppliesTo.filter(el => {
+      if (filtered[0].appliesTo.length > 1) {
+        let updateCategories = filtered[0].appliesTo.filter(el => {
           return el !== categoryID;
         });
         this.updateCategories = {
           id: targetID,
-          AppliesTo: updateCategories
+          appliesTo: updateCategories
         };
         this.dialog1 = true;
       } else {
@@ -387,40 +396,10 @@ export default {
       event.forEach(el => {
         this.staffToEmail.push(el);
       });
+
       // console.log(event);
       // console.log("The Test", this.staffToEmail);
       this.refreshData();
-    },
-    async getCurrentUsage() {
-      try {
-        let credentials = {
-          id: this.$store.state.organisationID
-        };
-        let response = await DirectoryService.usageThusFar(credentials);
-        let documentSize = response.data[0][0].documentSize;
-        let policySize = response.data[1][0].policySize;
-        let userNumber = response.data[2][0].users;
-        let packageOn = response.data[3][0].package;
-        let packageUsed = response.data[4].filter(el => {
-          return el.id === packageOn;
-        });
-        let usersAllowed = packageUsed[0].users;
-        let usageAllowed = packageUsed[0].usageAllowed;
-        let usersAvailable = usersAllowed - userNumber;
-        let usageAvailable = (
-          (usageAllowed * 1000000000 - documentSize - policySize) /
-          1000000000
-        ).toFixed(2);
-        let criteria = {
-          usersAvailable: usersAvailable,
-          usageAvailable: usageAvailable
-        };
-        this.$store.dispatch("availableAdditions", criteria);
-      } catch (error) {
-        this.snackBarMessage = "Network Error(20), please try later!";
-        this.snackbar = true;
-        // this.dialog = false;
-      }
     }
   }
 };

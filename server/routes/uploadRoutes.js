@@ -93,6 +93,9 @@ router.post("/uploadfile", upload.single("file"), (req, res) => {
   let organisationID = req.body.organisationID;
   let fileName4Policies = `${now}-${req.file.filename}`;
   const fileContent = fs.readFileSync(req.file.path);
+  console.log(req.body)
+  console.log(req.file)
+  console.log("HELLOOO")
   const params = {
     Bucket: process.env.AWS_BUCKET,
     Key: `${now}-${req.file.filename}`,
@@ -106,9 +109,9 @@ router.post("/uploadfile", upload.single("file"), (req, res) => {
       console.log(err);
     });
 
-    let sql = `insert into policies (PolicyName, PolicyLink, Description, appliesTo, organisation, policySize) values
+    let sql = `insert into policies (policyName, policyLink, description, appliesTo, organisation, policySize) values
               ("${nameOfFile}","${fileName4Policies}","${description}","[${staffAffected}]", ${organisationID}, ${size})`;
-
+    console.log(sql)
     pool.getConnection(function(err, connection) {
       if (err) {
         connection.release();
@@ -127,11 +130,13 @@ router.post("/uploadfile", upload.single("file"), (req, res) => {
 });
 
 router.put("/viewDoc", (req, res) => {
+  // console.log("THE URL",req.body.URL)
   let filePath = `public/${req.body.URL}.pdf`;
   let key = req.body.URL;
 
   getSignedUrlForDownload(filePath, key)
     .then(url => {
+      console.log(url)
       res.json({ download: "Successfull", url: url });
     })
     .catch(e => {
@@ -150,11 +155,11 @@ router.put("/removeDoc", (req, res) => {
 });
 
 router.put("/deletePolicy", (req, res) => {
-  let sql1 = `delete from policiesRead where PolicyRead = ${req.body.id}`;
+  let sql1 = `delete from policiesRead where policyRead = ${req.body.id}`;
   let sql2 = `delete from policies where id = ${req.body.id}`;
   let sql = `${sql1};${sql2}`;
   let results = { success: true, failure: false };
-  deleteFile(req.body.PolicyLink);
+  deleteFile(req.body.policyLink);
   pool.getConnection(function(err, connection) {
     if (err) {
       connection.release();
@@ -173,7 +178,7 @@ router.put("/deletePolicy", (req, res) => {
 });
 
 router.put("/deletePolicyFromCategory", (req, res) => {
-  let sql = `update policies set AppliesTo = "[${req.body.AppliesTo}]" where id = ${req.body.id}`;
+  let sql = `update policies set appliesTo = "[${req.body.appliesTo}]" where id = ${req.body.id}`;
 
   let results = { success: true, failure: false };
   pool.getConnection(function(err, connection) {
@@ -261,9 +266,9 @@ router.put("/deleteDocument", (req, res) => {
 });
 
 router.post("/createUser", (req, res) => {
-  let sql1 = `INSERT INTO USERS (email, password, fname, lname, userType, jobTitle, organisation, staffType) values
+  let sql1 = `INSERT INTO users (email, password, fname, lname, userType, jobTitle, organisation, staffType) values
               ('${req.body.emailUser}', '#', '${req.body.fname}', '${req.body.lname}', ${req.body.userType}, '${req.body.jobTitle}', ${req.body.organisationID}, ${req.body.staffType})`;
-  let sql2 = `SELECT u.ID, u.userType , u.organisation, u.email, u.fname, u.lname, o.organisationName  FROM USERS u, organisation o  where u.organisation = ${req.body.organisationID} and u.email = '${req.body.emailUser}' and u.organisation = o.id`;
+  let sql2 = `SELECT u.id, u.userType , u.organisation, u.email, u.fname, u.lname, o.organisationName  FROM users u, organisation o  where u.organisation = ${req.body.organisationID} and u.email = '${req.body.emailUser}' and u.organisation = o.id`;
   let sql = `${sql1};${sql2}`;
 
   let results = { success: true, failure: false, duplicate: null };

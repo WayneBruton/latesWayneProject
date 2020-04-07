@@ -103,8 +103,8 @@ router.put("/deleteEmployee", (req, res) => {
 
 router.put("/getStaffTypes", checktoken, (req, res) => {
   let sql1 = `select id, staff_description from staffTypes where organisation  = ${req.body.id}`;
-  let sql2 = `select s.id, s.staff_description, p.AppliesTo from staffTypes s right join
-  policies p on JSON_CONTAINS(p.AppliesTo, CAST(s.id as JSON), '$') where s.organisation = ${req.body.id} and s.organisation = p.organisation`;
+  let sql2 = `select s.id, s.staff_description, p.appliesTo from staffTypes s right join
+  policies p on JSON_CONTAINS(p.appliesTo, CAST(s.id as JSON), '$') where s.organisation = ${req.body.id} and s.organisation = p.organisation`;
   let sql3 = `select u.staffType from users u, staffTypes s where s.id = u.staffType and u.organisation = ${req.body.id} and s.organisation = u.organisation`;
   let sql = `${sql1};${sql2};${sql3}`;
   let results = { success: true, failure: false };
@@ -190,8 +190,8 @@ router.put("/getDocumentTypes", checktoken, (req, res) => {
   let sql = `select d.id, d.documentType, count(s.documentType) as count from documentTypes as d left join staffDocuments  as s on s.documentType = d.id and d.organisation = ${req.body.id} and d.organisation = s.organisation
             where d.organisation = ${req.body.id}
               group by d.id`;
-  // let sql2 = `select s.id, s.staff_description, p.AppliesTo from staffTypes s right join
-  // policies p on JSON_CONTAINS(p.AppliesTo, CAST(s.id as JSON), '$') where s.organisation = ${req.body.id} and s.organisation = p.organisation`;
+  // let sql2 = `select s.id, s.staff_description, p.appliesTo from staffTypes s right join
+  // policies p on JSON_CONTAINS(p.appliesTo, CAST(s.id as JSON), '$') where s.organisation = ${req.body.id} and s.organisation = p.organisation`;
   // let sql3 = `select u.staffType from users u, staffTypes s where s.id = u.staffType and u.organisation = ${req.body.id} and s.organisation = u.organisation`
   // let sql = `${sql1};${sql2};${sql3}`
   let results = { success: true, failure: false };
@@ -301,7 +301,7 @@ router.put("/getOrganisationStatistics", checktoken, (req, res) => {
 });
 
 router.put("/getOrganisationDetails", checktoken, (req, res) => {
-  let sql = `select * from ORGANISATION where id  = ${req.body.id}`;
+  let sql = `select * from organisation where id  = ${req.body.id}`;
   let results = { success: true, failure: false };
   pool.getConnection(function(err, connection) {
     if (err) {

@@ -29,6 +29,7 @@ export default {
     return Api().put(`/staffTypes`, credentials);
   },
   uploadfile(credentials) {
+    // console.log("credentials");
     return Api().post(`/uploadfile`, credentials);
   },
   deletePolicyFromCategory(credentials) {
@@ -100,8 +101,8 @@ export default {
   getEmployeeDocuments(credentials) {
     return Api().put(`/getEmployeeDocuments`, credentials);
   },
-  postPolicyRead(credentials) {
-    return Api().put(`/postPolicyRead`, credentials);
+  postpolicyRead(credentials) {
+    return Api().put(`/postpolicyRead`, credentials);
   },
   getOrganisationStatistics(credentials) {
     return Api().put(`/getOrganisationStatistics`, credentials);
@@ -160,4 +161,9 @@ export default {
     // console.log(credentials);
     return Api().put(`/createSignature`, credentials);
   }
+  // ,
+  // itnresponse(credentials) {
+  //   // console.log(credentials);
+  //   return Api().put(`/itnresponse`, credentials);
+  // }
 };

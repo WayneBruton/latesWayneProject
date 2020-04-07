@@ -41,7 +41,7 @@
                   v-if="item.canDelete === true"
                   @click="deleteItem($event)"
                   style="color: red; font-weight: bold;"
-                  >X</v-btn
+                  ><v-icon>mdi-delete</v-icon></v-btn
                 >
                 <v-btn
                   text
@@ -49,11 +49,21 @@
                   v-if="item.canDelete === false"
                   @click="dialog1 = true"
                   style="color: green; font-weight: bold;"
-                  >?</v-btn
+                  ><v-icon>mdi-help-box</v-icon></v-btn
                 >
-                <v-btn text color="#010a43" :id="item.id" @click="edit($event)"
-                  >Edit</v-btn
-                >
+                <v-tooltip top>
+                  <template v-slot:activator="{ on }">
+                    <v-btn
+                      v-on="on"
+                      text
+                      color="#010a43"
+                      :id="item.id"
+                      @click="edit($event)"
+                      ><v-icon>mdi-account-edit</v-icon></v-btn
+                    >
+                  </template>
+                  <span>Edit</span>
+                </v-tooltip>
               </v-flex>
             </v-list-item-action>
           </v-list-item>
@@ -102,9 +112,9 @@
               <v-col cols="12" xs="12" sm="6" md="6">
                 <v-autocomplete
                   :items="staffTypes"
-                  label="Staff Member"
+                  label="Staff Type"
                   v-model="staffTypeChosen"
-                  item-text="Staff_description"
+                  item-text="staff_description"
                 ></v-autocomplete>
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6" v-if="!hideCheckbox">
@@ -178,6 +188,15 @@
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "editEmployees",
+  metaInfo: {
+    title: `PerfectStaff - Edit`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       dialog: false,
@@ -231,7 +250,7 @@ export default {
         });
         this.items = response.data[0];
         this.staffTypes = response.data[1].filter(el => {
-          return el.Staff_description != "All Staff";
+          return el.staff_description != "All Staff";
         });
         let adminCount = this.items.reduce((total, amount) => {
           if (amount.userType === 1) {
@@ -287,7 +306,7 @@ export default {
           this.checkbox = false;
         }
         // console.log(staffTypeChosen);
-        this.staffTypeChosen = staffTypeChosen[0].Staff_description;
+        this.staffTypeChosen = staffTypeChosen[0].staff_description;
         this.dialog = true;
       } catch (error) {
         this.snackBarMessage = "Network Error(37), please try later!";
@@ -319,7 +338,7 @@ export default {
     },
     getStaffType() {
       let filtered = this.staffTypes.filter(el => {
-        return el.Staff_description === this.staffTypeChosen;
+        return el.staff_description === this.staffTypeChosen;
       });
       this.staffType = filtered[0].id;
     },
@@ -380,39 +399,6 @@ export default {
         this.snackBarMessage = "Network Error(39), please try later!";
         this.snackbar = true;
         this.dialog = false;
-      }
-    },
-    async getCurrentUsage() {
-      try {
-        let credentials = {
-          id: this.$store.state.organisationID
-        };
-        let response = await DirectoryService.usageThusFar(credentials);
-        let documentSize = response.data[0][0].documentSize;
-        let policySize = response.data[1][0].policySize;
-        let userNumber = response.data[2][0].users;
-        let packageOn = response.data[3][0].package;
-        let packageUsed = response.data[4].filter(el => {
-          return el.id === packageOn;
-        });
-        let usersAllowed = packageUsed[0].users;
-        let usageAllowed = packageUsed[0].usageAllowed;
-        let usersAvailable = usersAllowed - userNumber;
-        let usageAvailable = (
-          (usageAllowed * 1000000000 - documentSize - policySize) /
-          1000000000
-        ).toFixed(2);
-        let criteria = {
-          usersAvailable: usersAvailable,
-          usageAvailable: usageAvailable
-        };
-        this.$store.dispatch("availableAdditions", criteria);
-        // console.log("users available", this.$store.state.usersAvailable)
-        // console.log("usage available", this.$store.state.usageAvailable)
-      } catch (error) {
-        this.snackBarMessage = "Network Error(40), please try later!";
-        this.snackbar = true;
-        // this.dialog = false;
       }
     }
   }

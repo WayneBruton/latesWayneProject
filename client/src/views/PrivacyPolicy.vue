@@ -1,6 +1,6 @@
 <template>
   <div class="about">
-    <br /><br />br
+    <br /><br /><br /><br />
     <v-container>
       <v-layout wrap>
         <v-flex mb-5 xs12>
@@ -167,8 +167,8 @@
           <p>
             If you have questions or comments about PerfectStaff's privacy
             policy, send an
-            <a href="mailto:support@perfectstaff.com">email</a> to
-            support@perfectstaff.com, or contact us via any of the ways
+            <a href="mailto:support@perfect-staff.com">email</a> to
+            support@perfect-staff.com, or contact us via any of the ways
             described in the About Us page at URL of PerfectStaff's website.
           </p>
           <p>Thank you for choosing <strong>PerfectStaff!</strong></p>
@@ -181,6 +181,15 @@
 <script>
 export default {
   name: "privacy",
+  metaInfo: {
+    title: `PerfectStaff - Privacy`,
+    meta: [
+      {
+        name: `description`,
+        content: `Privacy policy and concerns`
+      }
+    ]
+  },
   methods: {
     back() {
       this.$router.back();

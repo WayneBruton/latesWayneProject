@@ -21,6 +21,15 @@ import AdministratorDashboard from "../components/AdministratorDashboard";
 import EmployeeDashboard from "../components/EmployeeDashboard";
 export default {
   name: "home",
+  metaInfo: {
+    title: `PerfectStaff - Home`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       cookiesAccepted: false

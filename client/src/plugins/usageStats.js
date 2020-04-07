@@ -8,6 +8,7 @@ const MyPlugin = {
             id: this.$store.state.organisationID
           };
           let response = await DirectoryService.usageThusFar(credentials);
+          // console.log(response.data)
           let documentSize = response.data[0][0].documentSize;
           let policySize = response.data[1][0].policySize;
           let userNumber = response.data[2][0].users;
@@ -22,9 +23,20 @@ const MyPlugin = {
             (usageAllowed * 1000000000 - documentSize - policySize) /
             1000000000
           ).toFixed(2);
+          let expiry = Date.parse(response.data[3][0].expiry);
+          // console.log("expiry", expiry);
+          let today = Date.parse(new Date());
+          let hasExpired = false;
+          if (expiry <= today) {
+            hasExpired = true;
+          } else {
+            hasExpired = false;
+          }
+          // console.log(today);
           let criteria = {
             usersAvailable: usersAvailable,
-            usageAvailable: usageAvailable
+            usageAvailable: usageAvailable,
+            hasExpired: hasExpired
           };
           this.$store.dispatch("availableAdditions", criteria);
         }

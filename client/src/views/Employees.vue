@@ -176,7 +176,16 @@ import DirectoryService from "../services/DirectoryServices";
 import UploadDocument from "../components/uploadEmployeeDoc";
 import CreateEmployee from "../components//CreateEmployee";
 export default {
-  name: "policies",
+  name: "employees",
+  metaInfo: {
+    title: `PerfectStaff - Employees`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       item: 1,
@@ -376,37 +385,6 @@ export default {
         this.dialog = false;
       } catch (error) {
         this.snackBarMessage = "Network Error(27), please try later!";
-        this.snackbar = true;
-        // this.dialog = false;
-      }
-    },
-    async getCurrentUsage() {
-      try {
-        let credentials = {
-          id: this.$store.state.organisationID
-        };
-        let response = await DirectoryService.usageThusFar(credentials);
-        let documentSize = response.data[0][0].documentSize;
-        let policySize = response.data[1][0].policySize;
-        let userNumber = response.data[2][0].users;
-        let packageOn = response.data[3][0].package;
-        let packageUsed = response.data[4].filter(el => {
-          return el.id === packageOn;
-        });
-        let usersAllowed = packageUsed[0].users;
-        let usageAllowed = packageUsed[0].usageAllowed;
-        let usersAvailable = usersAllowed - userNumber;
-        let usageAvailable = (
-          (usageAllowed * 1000000000 - documentSize - policySize) /
-          1000000000
-        ).toFixed(2);
-        let criteria = {
-          usersAvailable: usersAvailable,
-          usageAvailable: usageAvailable
-        };
-        this.$store.dispatch("availableAdditions", criteria);
-      } catch (error) {
-        this.snackBarMessage = "Network Error(28), please try later!";
         this.snackbar = true;
         // this.dialog = false;
       }

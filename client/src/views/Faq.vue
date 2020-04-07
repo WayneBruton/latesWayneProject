@@ -14,9 +14,11 @@
       offset-lg2
       justify="center"
     >
-      <v-row justify="center">
-        <h1>Frequently asked questions</h1>
-      </v-row>
+      <v-col cols="12" xs="12" sm="12" md="12">
+        <v-row justify="center" wrap>
+          <h2>Frequently asked questions</h2>
+        </v-row>
+      </v-col>
     </v-flex>
     <br /><br /><br />
     <v-flex xs12 md8 sm8 lg8 xl8 offset-md2 offset-xl2 offset-sm2 offset-lg2>
@@ -74,6 +76,15 @@
 <script>
 export default {
   name: "faq",
+  metaInfo: {
+    title: `PerfectStaff - FAQ`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   data() {
     return {
       color: "",

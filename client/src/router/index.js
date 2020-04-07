@@ -15,6 +15,8 @@ import EditStaffTypes from "../views/EditStaffTypes";
 import PrivacyPolicy from "../views/PrivacyPolicy";
 import Editcompanydetails from "../views/EditCompanyDetails";
 import EditColorTheme from "../views/EditColorTheme";
+import PmtSuccess from "../views/PmtSuccess";
+import PmtCancel from "../views/PmtCancel";
 
 Vue.use(VueRouter);
 
@@ -93,6 +95,16 @@ const routes = [
     path: "/editColorTheme",
     name: "editColorTheme",
     component: EditColorTheme
+  },
+  {
+    path: "/pmtsuccess",
+    name: "pmtsuccess",
+    component: PmtSuccess
+  },
+  {
+    path: "/pmtcancel",
+    name: "pmtcancel",
+    component: PmtCancel
   }
 ];
 

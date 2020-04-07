@@ -144,8 +144,8 @@
           <p>
             If you have questions or comments about PerfectStaff's privacy
             policy, send an
-            <a href="mailto:support@perfectstaff.com">email</a> to
-            support@perfectstaff.com, or contact us via any of the ways
+            <a href="mailto:support@perfect-staff.com">email</a> to
+            support@perfect-staff.com, or contact us via any of the ways
             described in the About Us page at URL of PerfectStaff's website.
           </p>
           <br />
@@ -159,6 +159,15 @@
 <script>
 export default {
   name: "about",
+  metaInfo: {
+    title: `PerfectStaff - About`,
+    meta: [
+      {
+        name: `description`,
+        content: `Staff Policies, remote work, telecommute`
+      }
+    ]
+  },
   methods: {
     back() {
       this.$router.back();

@@ -3,12 +3,12 @@
     <v-app-bar app color="#010a43" dark>
       <div class="d-flex align-center home" @click="goHome">
         <v-img
-          src="../assets/logo.svg"
+          src="../assets/PerfectStaff.png"
           contain
           alt="Vuetify Logo"
-          width="30"
+          width="40"
           height="30"
-          style="margin-right: 5px; border: 1px solid white; border-radius: 7%;"
+          style="margin-right: 5px; border: 1px solid transparent; border-radius: 70%;"
         />
         <span class="mr-2 headerHome home">PerfectStaff</span>
         <v-spacer></v-spacer>
@@ -124,6 +124,25 @@
         </v-menu>
       </v-flex>
     </v-app-bar>
+    <v-alert
+      v-if="this.$store.state.hasExpired && this.$store.state.isLoggedIn"
+      class="test"
+      border="bottom"
+      color="pink darken-1"
+      dark
+      dismissible
+      elevation="12"
+    >
+      <div style="display: flex; justify-content: center; font-weight: bold;">
+        Your subscription has expired! To resubscribe go to
+        <v-btn
+          text
+          :to="{ name: 'pricing' }"
+          style="padding-bottom: 10px; text-decoration: underline;"
+          >Pricing</v-btn
+        >
+      </div>
+    </v-alert>
   </div>
 </template>
 
@@ -194,7 +213,7 @@ export default {
     this.windowWidth = window.innerWidth;
     this.$nextTick(() => {
       window.addEventListener("resize", this.onResize);
-      // console.log("country", this.$store.state.country);
+      // console.log("country", this.$store.state.hasExpired);
     });
     // console.log("country", this.$store.state.country);
     // this.getCountry()
@@ -258,9 +277,8 @@ export default {
       }
     },
     logFlag() {
-      this.showPosition()
-        .then(this.getCountry())
-        .catch(e => console.log(e));
+      this.showPosition().then(this.getCountry());
+      // .catch(e => console.log(e));
     }
   }
 };
@@ -273,5 +291,9 @@ export default {
 }
 .home:hover {
   cursor: pointer;
+}
+.test {
+  top: 65px;
+  /* text-decoration: underline; */
 }
 </style>

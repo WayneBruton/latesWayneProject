@@ -1,6 +1,10 @@
 <template>
   <v-row justify="center">
-    <div v-if="this.$store.state.usageAvailable > 0">
+    <div
+      v-if="
+        this.$store.state.usageAvailable > 0 && !this.$store.state.hasExpired
+      "
+    >
       <v-dialog v-model="dialog" persistent max-width="600px">
         <template v-slot:activator="{ on }">
           <v-btn :color="color" dark v-on="on" rounded pr-10 @click="loadData"
@@ -43,7 +47,7 @@
                       :items="typesOfStaff"
                       label="Staff Affected"
                       v-model="staffAffected"
-                      item-text="Staff_description"
+                      item-text="staff_description"
                       multiple
                     ></v-autocomplete>
                   </v-col>
@@ -55,7 +59,9 @@
                   :width="7"
                   color="#010a43"
                   indeterminate
-                ></v-progress-circular>
+                >
+                  <small>Uploading</small>
+                </v-progress-circular>
               </div>
             </v-container>
             <small>*indicates required field</small>
@@ -71,14 +77,17 @@
     <div v-else>
       <v-dialog v-model="dialog2" persistent max-width="800px">
         <template v-slot:activator="{ on }">
-          <v-btn rounded color="#010a43" dark v-on="on">Maximum</v-btn>
+          <v-btn rounded color="red" dark v-on="on">upgrade</v-btn>
         </template>
         <v-card>
           <v-card-title>
             <span class="headline">Maximum Filesize Used</span>
           </v-card-title>
           <v-card-text>
-            <span>You have reached the maximum filesize for your package.</span>
+            <span
+              >You have reached the maximum filesize for your package or your
+              package has expired.</span
+            >
           </v-card-text>
           <v-card-actions>
             <v-btn color="#010a43" text @click="dialog2 = false">Later</v-btn>
@@ -137,17 +146,34 @@ export default {
           this.snackBarMessage = "All fields must be filled in";
           return (this.snackbar = true);
         } else {
+          // console.log("Hello");
           this.staffAffectedByID = [];
           this.processing = true;
+          // console.log("Staff", this.staffAffected);
+          // this.staffAffected.forEach((el) => {
+          //   console.log(el);
+          //   console.log(this.typesOfStaff)
+          //   let filtered = this.typesOfStaff.filter((el2) => {
+          //     if (el === el2.Staff_description) {
+          //       return el2.id;
+          //     }
+          //   });
+          //   console.log("This is filtered", filtered);
+          // });
+
           this.staffAffected.forEach(el => {
-            let description = el;
+            // let description = el;
+            // console.log("Test", el);
             let filtered = this.typesOfStaff.filter(el2 => {
-              if (description === el2.Staff_description) {
+              if (el === el2.staff_description) {
                 return el2.id;
               }
             });
+
+            // console.log(filtered);
             this.staffAffectedByID.push(filtered[0].id);
           });
+          // console.log("staff", this.staffAffectedByID);
           if (this.staffAffectedByID.includes(this.typesOfStaff[0].id)) {
             this.staffAffectedByID = [this.typesOfStaff[0].id];
           }
@@ -158,7 +184,9 @@ export default {
           formData.append("organisationID", this.organisationID);
           formData.append("staffAffected", this.staffAffectedByID);
           formData.append("description", this.description);
+          // console.log(formData);
           let response = await DirectoryService.uploadfile(formData);
+          // console.log(response.data);
           if (response.data.error) {
             this.snackBarMessage = "Error uploading file";
             this.processing = false;
@@ -166,7 +194,7 @@ export default {
           }
 
           this.$emit("success", this.staffAffectedByID);
-          console.log("data I want to emit", this.staffAffected);
+          // console.log("data I want to emit", this.staffAffected);
 
           this.file = [];
           this.fileName = "";
@@ -181,6 +209,7 @@ export default {
         this.snackBarMessage = "Network Error(21), please try later!";
         this.snackbar = true;
         this.dialog = false;
+        this.processing = false;
       }
     },
     async loadData() {
@@ -191,6 +220,7 @@ export default {
           id: this.organisationID
         };
         let response = await DirectoryService.staffTypes(credentials);
+        // console.log(response);
         this.typesOfStaff = response.data;
       } catch (error) {
         this.snackBarMessage = "Network Error(22), please try later!";

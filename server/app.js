@@ -30,38 +30,43 @@ app.use(
 //ASYNC AWAIT EXAMPLE
 
 // const test = async function() {
-//   await a()
-//     .then(await b())
-//     .then(await c())
-//     .then(await d())
-//     .then(await e());
+//   let one = "one"
+//   let two = "two"
+//   let three = "three"
+//   let four = "four"
+//   let five = "five"
+//   await a(one)
+//     .then(await b(two))
+//     .then(await c(three))
+//     .then(await d(four))
+//     .then(await e(five));
 // };
 
-// const a = () => {
+// const a = (one) => {
 //   return new Promise(resolve => {
-//     resolve(console.log("one"));
+//     resolve(console.log(one));
 //   });
 // };
-// const b = () => {
+// const b = (two) => {
 //   return new Promise(resolve => {
 //     setTimeout(() => {
-//       resolve(console.log("two"));
+//       resolve(console.log(two));
 //     }, 600);
 //   });
 // };
-// const c = () => {
+// const c = (three) => {
 //   return new Promise(resolve => {
-//     resolve(console.log("three"));
+//     resolve(console.log(three));
 //   });
 // };
-// const d = () => {
+// const d = (four) => {
 //   return new Promise(resolve => {
-//     resolve(console.log("four"));
+//     resolve(console.log(four));
 //   });
 // };
-// const e = () => {
+// const e = (five) => {
 //   return new Promise(resolve => {
-//     resolve(console.log("five"));
+//     resolve(console.log(five));
 //   });
 // };
 
