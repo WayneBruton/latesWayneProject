@@ -407,7 +407,11 @@ export default {
     },
     checkOnline() {
       this.checkCookie();
+      this.scrollToTop();
     }
+    // scrollToTop() {
+    //   window.scrollTo(0, 0);
+    // },
   }
 };
 </script>

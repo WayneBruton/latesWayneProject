@@ -17,6 +17,7 @@ import Editcompanydetails from "../views/EditCompanyDetails";
 import EditColorTheme from "../views/EditColorTheme";
 import PmtSuccess from "../views/PmtSuccess";
 import PmtCancel from "../views/PmtCancel";
+import Terms from "../views/Terms";
 
 Vue.use(VueRouter);
 
@@ -105,6 +106,11 @@ const routes = [
     path: "/pmtcancel",
     name: "pmtcancel",
     component: PmtCancel
+  },
+  {
+    path: "/terms",
+    name: "terms",
+    component: Terms
   }
 ];
 

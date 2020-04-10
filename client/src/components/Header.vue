@@ -189,6 +189,11 @@ export default {
           name: "Contact",
           redirect: { name: "contact" },
           icon: "mdi-mail"
+        },
+        {
+          name: "Terms",
+          redirect: { name: "terms" },
+          icon: "mdi-file-document-edit"
         }
       ],
       offset: true,

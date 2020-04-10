@@ -10,6 +10,13 @@
         <v-card-title>
           <span class="headline">Organisation Details</span>
         </v-card-title>
+        <v-card-title>
+          <h6>
+            <a @click="terms"
+              >By registering you agree to the terms and conditions</a
+            >
+          </h6>
+        </v-card-title>
         <v-card-text>
           <v-container>
             <v-row>
@@ -245,6 +252,9 @@ export default {
     this.color = "#010a43";
   },
   methods: {
+    terms() {
+      this.$router.push({ name: "terms" });
+    },
     onInput({ number, isValid, country }) {
       this.phone.number = number.input;
       this.phone.isValid = isValid;
@@ -414,6 +424,7 @@ export default {
       }
     },
     checkOnline() {
+      this.scrollToTop();
       this.checkCookie();
     }
   }

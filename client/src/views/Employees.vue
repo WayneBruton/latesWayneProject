@@ -347,6 +347,7 @@ export default {
       }
     },
     remove(event) {
+      this.scrollToTop();
       let targetArray = event.currentTarget.id.split("-");
       let targetID = parseInt(targetArray[1]);
       let filtered = this.allDocuments.filter(el => {

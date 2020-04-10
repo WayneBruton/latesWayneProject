@@ -9,6 +9,7 @@ const bcrypt = require("bcryptjs");
 let cookieparser = require("cookie-parser");
 const checktoken = require("./tokenCheckRoutes");
 router.use(cookieparser());
+const moment = require("moment")
 // var geocoding = new require("reverse-geocoding");
 // var geocoder = require('local-reverse-geocoder');
 var crg = require("country-reverse-geocoding").country_reverse_geocoding();
@@ -74,7 +75,8 @@ router.put("/postpolicyRead", (req, res) => {
   if (req.body.documentType === "Policy") {
     sql = `Insert INTO policiesRead (policyRead, user, organisation) values (${req.body.documentID}, ${req.body.userID}, ${req.body.organisationID})`;
   } else if (req.body.documentType === "StaffDocument") {
-    sql = `Update staffDocuments set readDocument = true where id = ${req.body.documentID}`;
+    let today = moment(new Date()).format("YYYY-MM-DD HH:mm").toString()
+    sql = `Update staffDocuments set readDocument = true, dateRead = '${today}' where id = ${req.body.documentID}`;
   }
 
   let results = { success: true, failure: false };

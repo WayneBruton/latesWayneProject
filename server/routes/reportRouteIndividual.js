@@ -48,7 +48,7 @@ router.put("/printIndividualReport", (req, res) => {
         });
         let stafftypes = primary_data.slice(0, 2).map(el => el.id);
         primary_data.push({ id: 99, name: "Personal Documents" });
-        console.log("PRIMARYDATA", primary_data);
+        // console.log("PRIMARYDATA", primary_data);
         //ALL STAFF
         let sql1 = `select p.id, p.policyName, p.createdAt, p.appliesTo from  policies p
         where  JSON_CONTAINS(p.appliesTo, '${stafftypes[0]}') and p.organisation = ${req.body.organisation}`;
@@ -82,7 +82,7 @@ router.put("/printIndividualReport", (req, res) => {
               })
               if (filter.length) {
                 el.policyRead = "Yes"
-                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY")
+                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY HH:mm")
               } else {
                 el.policyRead = "No"
                 el.readAt = null
@@ -107,7 +107,7 @@ router.put("/printIndividualReport", (req, res) => {
               })
               if (filter.length) {
                 el.policyRead = "Yes"
-                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY")
+                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY HH:mm")
               } else {
                 el.policyRead = "No"
                 el.readAt = null
@@ -119,16 +119,20 @@ router.put("/printIndividualReport", (req, res) => {
               }
               arr2.push(insertData)
             })
+            console.log("Result 3",result[3])
             arr3 = []
             result[3].forEach((el) =>{
               if (el.readDocument === 1) {
                 el.readDocument = "Yes"
+                el.dateRead = moment(el.dateRead).format("Do MMM YYYY HH:mm")
               } else {
-                el.readDocument = "No"
+                el.readDocument = "No",
+                el.dateRead = null
               }
               let insertData = {
                 policyName: el.documentNameName,
-                policyRead: el.readDocument
+                policyRead: el.readDocument, 
+                readAt:el.dateRead
                 // readAt: moment(el.dateRead).format("Do MMM YYYY")
               }
               arr3.push(insertData)
@@ -250,13 +254,13 @@ async function printreport() {
         { data: "", width: 15 },
         { data: data.policyName, width: 100 },
         {
-          data: data.policyRead,
+          data: `Read: ${data.policyRead}`,
           width: 100,
           align: 3,
           textColor: data.policyRead === "No" ? "#FF0000" : "#000000"
         },
         {
-          data: data.readAt,
+          data: data.readAt !== null ? `${data.readAt}` : "",
           width: 100,
           align: 3,
           textColor: data.totalPercent < 75 ? "#FF0000" : "#000000"
@@ -291,6 +295,14 @@ async function printreport() {
       textColor: "#ffffff",
       link: "http://www.eccentrictoad.com/"
     });
+    // report.print("Read", {
+    //   fontBold: true,
+    //   width: 100,
+    //   align: 3,
+    //   fill: "#6f6f6f",
+    //   textColor: "#ffffff",
+    //   link: "http://www.eccentrictoad.com/"
+    // });
     report.newLine();
   };
 

@@ -284,6 +284,7 @@ export default {
     },
     async edit(event) {
       try {
+        this.scrollToTop();
         let targetID = event.currentTarget.id;
         // console.log("Staff ID", targetID);
         let credentials = {

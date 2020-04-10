@@ -39,6 +39,9 @@ const MyPlugin = {
             hasExpired: hasExpired
           };
           this.$store.dispatch("availableAdditions", criteria);
+        },
+        scrollToTop() {
+          window.scrollTo(0, 0);
         }
       }
     });

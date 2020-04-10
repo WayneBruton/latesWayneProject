@@ -12,6 +12,12 @@
             @offline="offline"
           />
 
+          <PromoVideo
+            class="componentBtn"
+            @CookieNotAcceptedLogin="cookieForm"
+            @offline="offline"
+          />
+
           <Register
             class="componentBtn"
             @CookieNotAcceptedLogin="cookieForm"
@@ -86,6 +92,7 @@
 import Cookie from "../components/Cookie";
 import Register from "../components/Register";
 import Login from "../components/Login";
+import PromoVideo from "../components/PromoVideo";
 export default {
   name: "NotLoggedIn",
   data: () => ({
@@ -99,7 +106,8 @@ export default {
   components: {
     Register,
     Login,
-    Cookie
+    Cookie,
+    PromoVideo
   },
   mounted() {
     // this.checkOnline();

@@ -5,7 +5,7 @@
         this.$store.state.usageAvailable > 0 && !this.$store.state.hasExpired
       "
     >
-      <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-dialog v-model="dialog" persistent max-width="750px">
         <template v-slot:activator="{ on }">
           <v-btn :color="color" dark v-on="on" rounded pr-10 @click="loadData"
             >Upload</v-btn
@@ -19,16 +19,16 @@
             <v-container>
               <div v-if="!processing">
                 <v-row>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-file-input
                       show-size
                       accept="application/pdf"
-                      label="File input"
+                      label="File input*"
                       v-model="file"
                       @change="size"
                     ></v-file-input>
                   </v-col>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-text-field
                       label="Name*"
                       v-model="fileName"
@@ -45,7 +45,7 @@
                   <v-col cols="12" xs="12" sm="9" md="9">
                     <v-autocomplete
                       :items="typesOfStaff"
-                      label="Staff Affected"
+                      label="Staff Affected*"
                       v-model="staffAffected"
                       item-text="staff_description"
                       multiple
@@ -213,6 +213,7 @@ export default {
       }
     },
     async loadData() {
+      this.scrollToTop();
       try {
         this.organisationName = this.$store.state.organisationName;
         this.organisationID = this.$store.state.organisationID;

@@ -325,6 +325,7 @@ export default {
       }
     },
     remove(event) {
+      this.scrollToTop();
       this.updateCategories = {};
       let targetArray = event.currentTarget.id.split("-");
       let targetID = parseInt(targetArray[1]);

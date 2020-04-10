@@ -1,7 +1,7 @@
 <template>
   <v-row justify="center">
     <div v-if="this.$store.state.usersAvailable > 0">
-      <v-dialog v-model="dialog" persistent max-width="800px">
+      <v-dialog v-model="dialog" persistent scrollable max-width="800px">
         <template v-slot:activator="{ on }">
           <v-btn rounded color="#010a43" dark v-on="on" @click="uploadData"
             >Create</v-btn
@@ -28,7 +28,7 @@
                     required
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" xs="12" sm="9" md="9">
+                <v-col cols="12" xs="12" sm="6" md="6">
                   <v-text-field
                     type="email"
                     label="Email*"
@@ -37,7 +37,7 @@
                     @blur="checkUserEmail"
                   ></v-text-field>
                 </v-col>
-                <v-col cols="12" xs="12" sm="9" md="9">
+                <v-col cols="12" xs="12" sm="6" md="6">
                   <v-text-field
                     label="Job Title*"
                     v-model="jobTitle"
@@ -220,6 +220,7 @@ export default {
     },
     async uploadData() {
       try {
+        this.scrollToTop();
         // console.log(this.$store.state.usersAvailable)
         this.organisationName = this.$store.state.organisationName;
         this.organisationID = this.$store.state.organisationID;

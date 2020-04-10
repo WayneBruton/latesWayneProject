@@ -8,6 +8,47 @@
 
         <h2>{{ this.$store.state.organisationName }}</h2>
         <br />
+        <p style="font-weight: bold;">Desktop app coming soon!</p>
+        <div style="display: flex; justify-content: center;">
+          <div
+            style="background-color: lightgrey; 
+                  border: 1px solid, lightgrey; 
+                  padding: 10px 15px; 
+                  max-width: 250px; 
+                  border-radius: 5%; "
+          >
+            <v-btn
+              v-if="osName === 'Windows OS'"
+              class="mx-2"
+              fab
+              dark
+              disabled
+              color="#010a43"
+              ><v-icon style="color: blue;"
+                >mdi-microsoft-windows</v-icon
+              ></v-btn
+            >
+
+            <v-btn
+              v-if="osName === 'Linux OS'"
+              class="mx-2"
+              fab
+              dark
+              color="#010a43"
+              ><v-icon style="color: yellow;">mdi-linux</v-icon></v-btn
+            >
+            <v-btn
+              class="mx-2"
+              fab
+              dark
+              color="#010a43"
+              v-if="osName === 'MacOS'"
+              ><v-icon large dark style="color: silver;"
+                >mdi-apple</v-icon
+              ></v-btn
+            >
+          </div>
+        </div>
         <v-container>
           <v-row>
             <v-col cols="12" xs="12" sm="12" md="12" max-width="800">
@@ -32,17 +73,6 @@
                 Print Report</v-btn
               >
             </v-col>
-            <!-- <v-col cols="12" xs="12" sm="6" md="6">
-              <v-btn
-                :color="#010a43"
-                dark
-                @click="globalEmail"
-              >
-                <v-icon left dark>mdi-email</v-icon>
-                Email Users
-              </v-btn>
-            </v-col> -->
-            <!-- <br /><br /><br /><br /> -->
             <v-col cols="12" xs="12" sm="12" md="12">
               <div class="popup-visible" v-if="processing">
                 <v-progress-circular
@@ -180,8 +210,8 @@
         Close
       </v-btn>
     </v-snackbar>
-    <v-dialog v-model="dialog" max-width="800px">
-      <v-card>
+    <v-dialog v-model="dialog" scrollable max-width="650px">
+      <v-card style="height: 600px;">
         <v-card-title>
           <span class="headline">Edit and change accordingly </span>
         </v-card-title>
@@ -259,6 +289,7 @@ export default {
 
   data: () => ({
     dialog: false,
+    osName: "",
     content: "<h1>Some initial content</h1>",
     positiveContent: "",
     negativeContent: "",
@@ -299,6 +330,11 @@ export default {
   }),
   components: {
     VueEditor
+  },
+  mounted() {
+    if (navigator.appVersion.indexOf("Win") != -1) this.osName = "Windows OS";
+    if (navigator.appVersion.indexOf("Mac") != -1) this.osName = "MacOS";
+    if (navigator.appVersion.indexOf("Linux") != -1) this.osName = "Linux OS";
   },
   async beforeMount() {
     let credentials = {
@@ -495,6 +531,7 @@ export default {
     },
     individualEmail(event) {
       try {
+        this.scrollToTop();
         let targetID = parseInt(event.currentTarget.id);
         this.individualEmailID = targetID;
         let filtered = this.policies.filter(el => {
@@ -504,9 +541,9 @@ export default {
         credentials.organisation = this.$store.state.organisationID;
         // console.log(credentials);
         // console.log(credentials.totalPolicies);
-        let negativeContent = `<br /><h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><br /><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><br /><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><br /><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><br /><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><br /><p><strong>Failure to comply/correct the situation can result in disciplinary action.</strong></p><br /><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
-        let positiveContent = `<br /><h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><br /><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><br /><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><br /><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><br /><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><br /><p><strong>You have done exceptionaly well, keep up the great work.</strong></p><br /><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
-        let blankContent = `<br />Dear ${credentials.fname},`;
+        let negativeContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p><strong>Failure to comply/correct the situation can result in disciplinary action.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let positiveContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p><strong>You have done exceptionaly well, keep up the great work.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let blankContent = `Dear ${credentials.fname},`;
         this.positiveContent = positiveContent;
         this.blankContent = blankContent;
         this.negativeContent = negativeContent.trim();

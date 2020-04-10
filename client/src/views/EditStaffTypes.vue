@@ -282,6 +282,7 @@ export default {
       }
     },
     async edit(event) {
+      this.scrollToTop();
       let targetID = parseInt(event.currentTarget.id);
       let staffType = this.items.filter(el => {
         return el.id === targetID;
@@ -349,6 +350,7 @@ export default {
       // this.dialog = false;
     },
     deleteItem(event) {
+      this.scrollToTop();
       let targetID = event.currentTarget.id;
       this.staffTypeID = targetID;
       this.dialog2 = true;

@@ -9,21 +9,17 @@ import VueCookies from "vue-cookies";
 import FlagIcon from "vue-flag-icon";
 import UsageStats from "./plugins/usageStats";
 import VueMeta from "vue-meta";
-
-// import moment from "vue-moment"
-// Vue.use(moment);
-Vue.use(VueMeta);
-Vue.use(UsageStats);
-Vue.use(FlagIcon);
-Vue.use(MyPlugin);
+import VueYoutube from "vue-youtube";
 import CountryFlag from "vue-country-flag";
 import MyPlugin from "./plugins/usageStats";
 
-Vue.component("country-flag", CountryFlag);
-// import 'vue-loaders/dist/vue-loaders.css';
-// import VueLoaders from 'vue-loaders';
+Vue.use(VueYoutube, VueMeta);
+// Vue.use(VueMeta);
+Vue.use(UsageStats);
+Vue.use(FlagIcon);
+Vue.use(MyPlugin);
 
-// Vue.component('vue-loader', VueLoaders.component);
+Vue.component("country-flag", CountryFlag);
 Vue.use(require("vue-moment"));
 Vue.use(VueCookies);
 

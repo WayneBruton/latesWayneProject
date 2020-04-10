@@ -261,6 +261,7 @@ export default {
       }
     },
     edit(event) {
+      this.scrollToTop();
       let targetID = parseInt(event.currentTarget.id);
       let documentType = this.items.filter(el => {
         return el.id === targetID;
@@ -322,6 +323,7 @@ export default {
       }
     },
     deleteItem(event) {
+      this.scrollToTop();
       let targetID = event.currentTarget.id;
       this.documentTypeID = targetID;
       this.dialog2 = true;

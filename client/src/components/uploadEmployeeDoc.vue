@@ -5,7 +5,7 @@
         this.$store.state.usageAvailable > 0 && !this.$store.state.hasExpired
       "
     >
-      <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-dialog v-model="dialog" persistent scrollable max-width="750px">
         <template v-slot:activator="{ on }">
           <v-btn :color="color" dark v-on="on" rounded pr-10 @click="uploadData"
             >Upload</v-btn
@@ -19,7 +19,7 @@
             <v-container>
               <div class="popup-visible" v-if="!processing">
                 <v-row>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-file-input
                       show-size
                       accept="application/pdf"
@@ -28,21 +28,21 @@
                       @change="size"
                     ></v-file-input>
                   </v-col>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-text-field
                       label="Name*"
                       v-model="fileName"
                       required
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="12" md="12">
                     <v-textarea
                       label="Description*"
                       v-model="description"
                       required
                     ></v-textarea>
                   </v-col>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-autocomplete
                       :items="typesOfDocument"
                       label="Document type"
@@ -50,7 +50,7 @@
                       item-text="documentType"
                     ></v-autocomplete>
                   </v-col>
-                  <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-col cols="12" xs="12" sm="6" md="6">
                     <v-autocomplete
                       :items="typesOfStaff"
                       label="Staff Member"
@@ -200,6 +200,7 @@ export default {
       }
     },
     async uploadData() {
+      this.scrollToTop();
       this.organisationName = this.$store.state.organisationName;
       this.organisationID = this.$store.state.organisationID;
       let credentials = {
