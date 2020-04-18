@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       dialog: false,
-      videoId: "21ZBJMfKtaY"
+      videoId: "1M2rgr5AZW8"
     };
   },
   components: {},

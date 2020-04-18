@@ -179,7 +179,7 @@ router.put("/emailPolicies", (req, res) => {
                           <br />
                           <p>Dear ${firstName},</p>
                           <p>A new policy has been uploaded.</p>
-                          <p>Logon to   <a href="https:www//perfect-staff.com">Perfect Staff</a> to view it.</p>
+                          <p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view it.</p>
                           <br />
                           <span>Perfect Staff Admin</span>`;
 

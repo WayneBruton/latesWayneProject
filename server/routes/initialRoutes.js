@@ -215,7 +215,8 @@ router.put("/getOrgData", (req, res) => {
 router.put("/getEmployeesDocumentTypesAndDocuments", checktoken, (req, res) => {
   let id = req.body.id;
   let sql1 = `select id, fname, lname from users where organisation = ${id} order by lname, fname, id`;
-  let sql2 = `select * from staffDocuments where organisation = ${id} order by id desc`;
+  // let sql2 = `select * from staffDocuments where organisation = ${id} order by id desc`;
+  let sql2 = `select s.id, s.documentNameName, s.documentLinkLink, s.documentDescription, s.documentType, s.users, s.createdAt, s.organisation, s.readDocument, s.documentSize, s.dateRead, d.documentType as documentTypeDesc from staffDocuments s, documentTypes d where s.organisation = ${id} and s.documentType = d.id order by s.id desc`;
   let sql = `${sql1};${sql2}`;
 
   pool.getConnection(function (err, connection) {
@@ -228,6 +229,7 @@ router.put("/getEmployeesDocumentTypesAndDocuments", checktoken, (req, res) => {
         console.log(error);
         res.json({ error: "error connecting to the database" });
       } else {
+        console.log(result[1])
         res.json(result);
       }
     });
@@ -259,5 +261,48 @@ router.put("/getEmployees", (req, res) => {
     connection.release();
   });
 });
+
+router.put("/editPolicy", (req, res) => {
+  let sql1 = `select * from policies where id = ${req.body.id}`;
+  let sql2 = `select * from staffTypes where organisation = ${req.body.organisation}`;
+  let sql = `${sql1};${sql2}`;
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      resizeBy.send("Error with connection");
+    }
+    connection.query(sql, function (error, result) {
+      if (error) {
+        console.log(error);
+        res.json({ error: "error connecting to the database" });
+      } else {
+        res.json(result);
+      }
+    });
+    connection.release();
+  });
+});
+
+router.put("/updatePolicy", (req, res) => {
+  
+  let sql = `update policies set policyName = '${req.body.policyName}', description = '${req.body.description}', appliesTo = '${req.body.appliesTo}' where id = ${req.body.id}`;
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      resizeBy.send("Error with connection");
+    }
+    connection.query(sql, function (error, result) {
+      if (error) {
+        console.log(error);
+        res.json({ error: "error connecting to the database" });
+      } else {
+        res.json(result);
+      }
+    });
+    connection.release();
+  });
+});
+
+
 
 module.exports = router;

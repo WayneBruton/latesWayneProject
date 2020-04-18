@@ -1,11 +1,13 @@
-<template class="temp">
-  <div class="temp">
-    <br /><br /><br /><br /><br />
-
-    <v-flex xs12 md8 sm8 lg8 xl8 offset-md2 offset-xl2 offset-sm2 offset-lg2>
+<template>
+  <div class="about temp">
+    <br /><br /><br /><br /><br /><br />
+    <div style="display: flex; justify-content: center;">
       <h2>{{ this.$store.state.organisationName }}</h2>
-      <br /><br />
-      <v-card elevation="15">
+      <br />
+    </div>
+    <br /><br />
+    <v-row justify="center">
+      <v-card elevation="15" width="800" max-width="90%">
         <v-card-title>
           <span class="headline">Contact PerfectStaff</span>
         </v-card-title>
@@ -60,14 +62,14 @@
           <v-btn color="#010a43" text @click="send">Send</v-btn>
         </v-card-actions>
       </v-card>
-    </v-flex>
-    <br /><br />
-    <v-snackbar v-model="snackbar" bottom top>
-      {{ snackBarMessage }}
-      <v-btn color="pink" text @click="snackbar = false">
-        Close
-      </v-btn>
-    </v-snackbar>
+      <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
+        {{ snackBarMessage }}
+        <v-btn color="pink" text @click="snackbar = false">
+          Close
+        </v-btn>
+      </v-snackbar>
+    </v-row>
+    <br /><br /><br /><br />
   </div>
 </template>
 
@@ -86,6 +88,7 @@ export default {
   },
   data() {
     return {
+      timeOut: 2000,
       subject: "",
       content: "",
       email: "",

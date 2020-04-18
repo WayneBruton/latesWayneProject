@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app color="#010a43" dark>
+    <v-app-bar app color="#010a43" dark fixed>
       <div class="d-flex align-center home" @click="goHome">
         <v-img
           src="../assets/PerfectStaff.png"
@@ -300,5 +300,8 @@ export default {
 .test {
   top: 65px;
   /* text-decoration: underline; */
+}
+.headerBar {
+  z-index: 2;
 }
 </style>

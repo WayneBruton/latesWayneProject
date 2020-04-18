@@ -77,7 +77,7 @@ create table documentTypes (
 
 
 CREATE TABLE staffDocuments (
-    id INT primary Key AUTO_INCREMENT,
+    id INT primary Key AUTO_INCREMENT, 
     documentNameName varchar(250) NOT NULL,
     documentLinkLink varchar(250) NOT NULL,
     documentDescription text NOT NULL,
@@ -184,6 +184,9 @@ INSERT INTO colorScheme (organisation, colorChosen ) values (
 );
 
 -- #####################################
+
+
+    s.id,s.documentNameName,s.documentLinkLink,s.documentDescription,s.documentType,s.users,s.createdAt,s.organisation,s.readDocument,s.documentSize, s.dateRead
 
 -- INSERT INTO organisation (organisationName, email, address1, address2, address3, city, province, country, zipCode, contactNumber ) values
 --                         ('Eccentric Toad', 'wayne@eccentricToad.com', '6 Parkside', '5 the Close', 'Tokai','Cape Town', 'WC', 'South Africa', '7945', '0740628742' );

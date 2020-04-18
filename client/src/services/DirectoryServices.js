@@ -160,6 +160,14 @@ export default {
   createSignature(credentials) {
     // console.log(credentials);
     return Api().put(`/createSignature`, credentials);
+  },
+  editPolicy(credentials) {
+    // console.log(credentials);
+    return Api().put(`/editPolicy`, credentials);
+  },
+  updatePolicy(credentials) {
+    // console.log(credentials);
+    return Api().put(`/updatePolicy`, credentials);
   }
   // ,
   // itnresponse(credentials) {

@@ -7,7 +7,7 @@
             >Create</v-btn
           >
         </template>
-        <v-card>
+        <v-card max-width="90%" max-height="525">
           <v-card-title>
             <span class="headline">Employee Details</span>
           </v-card-title>
@@ -100,7 +100,7 @@
       </v-dialog>
     </div>
 
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -118,6 +118,7 @@ export default {
     return {
       dialog: false,
       dialog2: false,
+      timeOut: 2000,
       value: String,
       snackbar: false,
       snackBarMessage: "Hello, I'm a snackbar",

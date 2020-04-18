@@ -44,7 +44,7 @@
       </v-list>
     </v-card>
     <br /><br /><br />
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" timeout="2000" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close

@@ -27,7 +27,7 @@
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-list rounded>
-        <v-subheader>REPORTS</v-subheader>
+        <v-subheader>ADD / UPLOAD</v-subheader>
         <v-list-item-group v-model="item" color="#010a43">
           <v-list-item v-for="(item, i) in items" :key="i">
             <v-list-item-icon>
@@ -56,96 +56,118 @@
       </v-list>
     </v-card>
     <br /><br /><br />
+    <v-expand-x-transition>
+      <v-card
+        max-width="800"
+        class="mx-auto"
+        v-if="documentItemsFiltered.length"
+      >
+        <v-toolbar color="#010a43" dark height="90px">
+          <!-- <v-spacer></v-spacer> -->
+          <v-toolbar-title
+            >Employee Documents ({{ allDocuments.length }})</v-toolbar-title
+          >
+          <v-spacer></v-spacer>
 
-    <v-card max-width="800" class="mx-auto">
-      <v-toolbar color="#010a43" dark height="90px">
-        <!-- <v-spacer></v-spacer> -->
-        <v-toolbar-title
-          >Employee Documents ({{ allDocuments.length }})</v-toolbar-title
-        >
-        <v-spacer></v-spacer>
+          <v-text-field
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            v-model="search"
+          ></v-text-field>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
+            </template>
+            <span>Clear Search</span>
+          </v-tooltip>
+          <v-spacer></v-spacer>
+        </v-toolbar>
 
-        <v-text-field
-          label="Search"
-          prepend-inner-icon="mdi-magnify"
-          v-model="search"
-        ></v-text-field>
-        <v-tooltip top>
-          <template v-slot:activator="{ on }">
-            <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
-          </template>
-          <span>Clear Search</span>
-        </v-tooltip>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-
-      <v-list rounded>
-        <v-list-group
-          v-for="item in documentItemsFiltered"
-          :key="item.id"
-          prepend-icon="mdi-book-open-page-variant"
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title
-                v-text="
-                  item.lname + ' - ' + item.fname + ' (' + item.count + ')'
-                "
-                :id="item.id"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            rounded
-            v-for="subItem in item.items"
-            :key="subItem.id"
-            class="subItems"
-            no-action
+        <v-list rounded>
+          <v-list-group
+            v-for="item in documentItemsFiltered"
+            :key="item.id"
             prepend-icon="mdi-book-open-page-variant"
           >
-            <v-list-item-content>
-              <v-list-item-title
-                v-text="subItem.documentNameName"
-              ></v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-flex>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      :id="subItem.id"
-                      text
-                      color="green"
-                      @click="view($event)"
-                      ><v-icon>mdi-file</v-icon></v-btn
-                    >
-                  </template>
-                  <span>View</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      :id="item.id + '-' + subItem.id"
-                      :category="item.id"
-                      text
-                      color="red"
-                      @click="remove($event)"
-                      ><v-icon>mdi-delete</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Delete</span>
-                </v-tooltip>
-              </v-flex>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-card>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="
+                    item.lname + ' - ' + item.fname + ' (' + item.count + ')'
+                  "
+                  :id="item.id"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item
+              rounded
+              v-for="subItem in item.items"
+              :key="subItem.id"
+              class="subItems"
+              no-action
+              prepend-icon="mdi-book-open-page-variant"
+              two-line
+            >
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="subItem.documentNameName"
+                ></v-list-item-title>
+                <v-list-item-subtitle
+                  v-text="'Type: ' + subItem.documentTypeDesc"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-flex>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="subItem.id"
+                        text
+                        color="green"
+                        @click="view($event)"
+                        ><v-icon>mdi-file-find</v-icon></v-btn
+                      >
+                    </template>
+                    <span>View</span>
+                  </v-tooltip>
+                  <!-- <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="subItem.id"
+                        text
+                        color="indigo"
+                        @click="view($event)"
+                        ><v-icon>mdi-file-edit</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Edit</span>
+                  </v-tooltip> -->
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="item.id + '-' + subItem.id"
+                        :category="item.id"
+                        text
+                        color="red"
+                        @click="remove($event)"
+                        ><v-icon>mdi-delete</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Delete</span>
+                  </v-tooltip>
+                </v-flex>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </v-card>
+    </v-expand-x-transition>
     <br /><br /><br />
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -189,6 +211,7 @@ export default {
   data() {
     return {
       item: 1,
+      timeOut: 2000,
       items: [
         {
           text: "Upload Documents",

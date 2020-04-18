@@ -11,7 +11,6 @@
             @CookieNotAcceptedLogin="cookieForm"
             @offline="offline"
           />
-
           <PromoVideo
             class="componentBtn"
             @CookieNotAcceptedLogin="cookieForm"
@@ -34,6 +33,7 @@
             aspect-ratio="1.4"
             width="600"
             margin="auto"
+            rel="preload"
           ></v-img>
           <!-- <br /><br /> -->
           <!-- <Register @CookieNotAcceptedLogin="cookieForm" @offline="offline" /> -->
@@ -72,7 +72,7 @@
           </div>
         </v-layout>
       </v-flex>
-      <v-snackbar v-model="snackbar" bottom top>
+      <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
         {{ snackBarMessage }}
         <v-btn color="pink" text @click="snackbar = false">
           Close
@@ -97,6 +97,7 @@ export default {
   name: "NotLoggedIn",
   data: () => ({
     cookiesAcceptedForm: false,
+    timeOut: 2000,
     snackbar: false,
     snackBarMessage: ""
   }),

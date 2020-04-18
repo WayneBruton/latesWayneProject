@@ -48,93 +48,173 @@
     </v-card>
 
     <br /><br /><br />
-
-    <v-card max-width="800" class="mx-auto">
-      <v-toolbar color="#010a43" dark>
-        <v-spacer></v-spacer>
-        <v-toolbar-title>Documents ({{ allDocuments.length }})</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-
-      <v-list rounded>
-        <div class="popup-visible" v-if="processing">
-          <v-progress-circular
-            :size="70"
-            :width="7"
-            color="#010a43"
-            indeterminate
-          ></v-progress-circular>
-          <!-- </v-col> -->
-        </div>
-        <v-list-group
-          v-for="item in documentItems"
-          :key="item.title"
-          prepend-icon="mdi-book-open-page-variant"
-        >
-          <template v-slot:activator>
-            <v-list-item-content>
-              <v-list-item-title
-                v-text="item.title + ' (' + item.count + ')'"
-                :id="item.id"
-              ></v-list-item-title>
-            </v-list-item-content>
-          </template>
-
-          <v-list-item
-            rounded
-            v-for="subItem in item.items"
-            :key="subItem.title"
-            class="subItems"
-            no-action
+    <!-- <transition name="fade"> -->
+    <v-expand-x-transition>
+      <v-card max-width="800" class="mx-auto" v-if="documentItems.length">
+        <v-toolbar color="#010a43" dark>
+          <v-spacer></v-spacer>
+          <v-toolbar-title
+            >Documents ({{ allDocuments.length }})</v-toolbar-title
+          >
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list rounded>
+          <div class="popup-visible" v-if="processing">
+            <v-progress-circular
+              :size="70"
+              :width="7"
+              color="#010a43"
+              indeterminate
+            ></v-progress-circular>
+            <!-- </v-col> -->
+          </div>
+          <v-list-group
+            v-for="item in documentItems"
+            :key="item.title"
             prepend-icon="mdi-book-open-page-variant"
           >
-            <v-list-item-content>
-              <v-list-item-title
-                prepend-icon="mdi-book-open-page-variant"
-                v-text="subItem.policyName"
-              ></v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-flex>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      :id="subItem.id"
-                      text
-                      color="green"
-                      @click="view($event)"
-                      ><v-icon>mdi-file</v-icon></v-btn
-                    >
-                  </template>
-                  <span>View</span>
-                </v-tooltip>
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      :id="item.id + '-' + subItem.id"
-                      :category="item.id"
-                      text
-                      color="red"
-                      @click="remove($event)"
-                      ><v-icon>mdi-delete</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Delete</span>
-                </v-tooltip>
-              </v-flex>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list-group>
-      </v-list>
-    </v-card>
-    <v-snackbar v-model="snackbar" bottom top>
+            <template v-slot:activator>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="item.title + ' (' + item.count + ')'"
+                  :id="item.id"
+                ></v-list-item-title>
+              </v-list-item-content>
+            </template>
+
+            <v-list-item
+              rounded
+              v-for="subItem in item.items"
+              :key="subItem.title"
+              class="subItems"
+              no-action
+              prepend-icon="mdi-book-open-page-variant"
+              two-line
+            >
+              <v-list-item-content>
+                <v-list-item-title
+                  prepend-icon="mdi-book-open-page-variant"
+                  v-text="subItem.policyName"
+                ></v-list-item-title>
+                <v-list-item-subtitle
+                  prepend-icon="mdi-book-open-page-variant"
+                  v-text="subItem.description.substring(0, 250) + '...'"
+                ></v-list-item-subtitle>
+              </v-list-item-content>
+              <v-list-item-action>
+                <v-flex>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="subItem.id"
+                        text
+                        color="green"
+                        @click="view($event)"
+                        ><v-icon>mdi-file-find</v-icon></v-btn
+                      >
+                    </template>
+                    <span>View</span>
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="subItem.id"
+                        text
+                        color="indigo"
+                        @click="edit($event)"
+                        ><v-icon>mdi-file-edit</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Edit</span>
+                  </v-tooltip>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        :id="item.id + '-' + subItem.id"
+                        :category="item.id"
+                        text
+                        color="red"
+                        @click="remove($event)"
+                        ><v-icon>mdi-delete</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Delete</span>
+                  </v-tooltip>
+                </v-flex>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-group>
+        </v-list>
+      </v-card>
+      <!-- </transition> -->
+    </v-expand-x-transition>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
       </v-btn>
     </v-snackbar>
+    <v-row justify="center">
+      <v-dialog v-model="editDialog" persistent max-width="525">
+        <v-card>
+          <v-card-title>
+            <span class="headline">Document Details</span>
+          </v-card-title>
+          <v-card-text>
+            <v-container>
+              <v-row>
+                <v-col cols="12" xs="12" sm="6" md="6">
+                  <v-text-field
+                    label="Name*"
+                    v-model="policyName"
+                    required
+                  ></v-text-field>
+                </v-col>
+                <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-textarea
+                    label="Description*"
+                    v-model="description"
+                    required
+                  ></v-textarea>
+                </v-col>
+                <v-col cols="12" xs="12" sm="9" md="9">
+                  <v-autocomplete
+                    :items="typesOfStaff"
+                    label="Staff Affected*"
+                    v-model="staffAffected"
+                    item-text="staff_description"
+                    multiple
+                  ></v-autocomplete>
+                </v-col>
+              </v-row>
+              <div class="popup-visible" v-if="processing">
+                <v-progress-circular
+                  :size="70"
+                  :width="7"
+                  color="#010a43"
+                  indeterminate
+                >
+                  <small>Uploading</small>
+                </v-progress-circular>
+              </div>
+            </v-container>
+            <small>*indicates required field</small>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn color="green darken-1" text @click="editDialog = false"
+              >Cancel</v-btn
+            >
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="editPolicy"
+              >Update</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
     <v-row justify="center">
       <v-dialog v-model="dialog" persistent max-width="450">
         <v-card>
@@ -193,18 +273,27 @@ export default {
   data() {
     return {
       item: 1,
+      timeOut: 2000,
       items: [{ text: "Upload Documents", icon: "mdi-file" }],
       allStaff: 0,
       allDocuments: [],
       documentItems: [],
       snackbar: false,
       snackBarMessage: "",
+      editDialog: false,
       dialog: false,
       dialog1: false,
       updateCategories: {}, //USE THIS TO AMEND A POLICY CATEGORY
       deletePolicyDetails: {}, //USE THIS TO DELETE A POLICY COMPLETELY,
       processing: false,
-      staffToEmail: []
+      staffToEmail: [],
+      // policyToEdit: [],
+      typesOfStaff: [],
+      staffAffected: [],
+      staffAffectedByID: [],
+      id: null,
+      policyName: null,
+      description: null
     };
   },
   components: {
@@ -281,12 +370,69 @@ export default {
           });
           this.allStaff = response.data[1][0].id;
         }
+        // console.log(this.documentItems);
         this.getCurrentUsage();
       } catch (error) {
         this.snackBarMessage = "Network Error(16), please try later!";
         this.snackbar = true;
         // this.dialog = false;
       }
+    },
+    async edit(event) {
+      let targetID = parseInt(event.currentTarget.id);
+      let credentials = {
+        id: targetID,
+        organisation: this.$store.state.organisationID
+      };
+      let response = await DirectoryService.editPolicy(credentials);
+      this.typesOfStaff = response.data[1];
+      // this.policyToEdit.push(response.data[0][0]);
+      response.data[0].forEach(el => {
+        this.staffAffectedByID = JSON.parse(el.appliesTo);
+        this.id = el.id;
+        this.policyName = el.policyName;
+        this.description = el.description;
+      });
+      this.staffAffected = [];
+      this.staffAffectedByID.forEach(el => {
+        let id = el;
+        let staffType = this.typesOfStaff.filter(el2 => {
+          return el2.id === id;
+        });
+        this.staffAffected.push(staffType[0].staff_description);
+      });
+      this.editDialog = true;
+    },
+    async editPolicy() {
+      this.staffAffectedByID = [];
+      this.staffAffected.forEach(el => {
+        let staffType = el;
+        let affectedStaffTypes = this.typesOfStaff.filter(el => {
+          return el.staff_description === staffType;
+        });
+        this.staffAffectedByID.push(affectedStaffTypes[0].id);
+      });
+      if (this.staffAffectedByID.includes(this.typesOfStaff[0].id)) {
+        this.staffAffectedByID = [];
+        this.staffAffectedByID.push(this.typesOfStaff[0].id);
+      }
+      let credentials = {
+        id: this.id,
+        policyName: this.policyName,
+        description: this.description,
+        appliesTo: JSON.stringify(this.staffAffectedByID)
+      };
+      let response = await DirectoryService.updatePolicy(credentials);
+      if (response.status === 200) {
+        this.refreshData();
+        this.editDialog = false;
+      } else {
+        this.snackBarMessage =
+          "There was an eror updating this policy, plesse try again later.";
+        this.snackbar = true;
+      }
+
+      // console.log(credentials);
     },
     async view(event) {
       this.processing = true;

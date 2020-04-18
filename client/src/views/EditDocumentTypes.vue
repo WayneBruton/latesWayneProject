@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about temp">
     <br /><br /><br /><br /><br />
     <div style="display: flex; justify-content: center;">
       <h2>{{ this.$store.state.organisationName }}</h2>
@@ -9,7 +9,7 @@
       <h1>Settings</h1>
     </div>
     <br />
-    <v-card class="mx-auto" max-width="800" tile>
+    <v-card class="mx-auto" width="800" max-width="90%" tile>
       <v-toolbar color="#010a43" dark>
         <v-spacer></v-spacer>
         <v-toolbar-title>Add Document Types</v-toolbar-title>
@@ -36,68 +36,78 @@
       </v-list>
     </v-card>
     <br /><br /><br />
-    <v-card class="mx-auto" max-width="800" tile>
-      <v-toolbar color="#010a43" dark>
-        <v-spacer></v-spacer>
-        <v-toolbar-title>Document Types</v-toolbar-title>
-        <v-spacer></v-spacer>
-      </v-toolbar>
-      <v-list rounded>
-        <v-subheader>EDIT</v-subheader>
-        <v-list-item-group v-model="item" color="#010a43">
-          <v-list-item v-for="(item, i) in items" :key="i">
-            <v-list-item-icon>
-              <v-icon
-                v-text="item.icon"
-                v-if="i === 0"
-                style="color: red;"
-              ></v-icon>
-              <v-icon v-text="item.icon" v-else></v-icon>
-            </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.documentType"></v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-flex>
-                <v-btn
-                  text
-                  :id="item.id"
-                  v-if="item.canDelete === true"
-                  @click="deleteItem($event)"
-                  style="color: red; font-weight: bold;"
-                  ><v-icon>mdi-delete</v-icon></v-btn
-                >
-                <v-btn
-                  text
-                  :id="item.id"
-                  v-if="item.canDelete === false"
-                  @click="dialog1 = true"
-                  style="color: green; font-weight: bold;"
-                  ><v-icon>mdi-help-box</v-icon></v-btn
-                >
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      text
-                      color="#010a43"
-                      :id="item.id"
-                      @click="edit($event)"
-                      ><v-icon>mdi-folder-edit</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Edit</span>
-                </v-tooltip>
-              </v-flex>
-            </v-list-item-action>
-          </v-list-item>
-        </v-list-item-group>
-      </v-list>
-    </v-card>
+    <v-expand-x-transition>
+      <v-card
+        class="mx-auto"
+        width="800"
+        max-width="90%"
+        tile
+        v-if="items.length"
+      >
+        <v-toolbar color="#010a43" dark>
+          <v-spacer></v-spacer>
+          <v-toolbar-title>Document Types</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list rounded>
+          <v-subheader>EDIT</v-subheader>
+          <v-list-item-group v-model="item" color="#010a43">
+            <v-list-item v-for="(item, i) in items" :key="i">
+              <v-list-item-icon>
+                <v-icon
+                  v-text="item.icon"
+                  v-if="i === 0"
+                  style="color: red;"
+                ></v-icon>
+                <v-icon v-text="item.icon" v-else></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="item.documentType"
+                ></v-list-item-title>
+              </v-list-item-content>
+              <v-spacer></v-spacer>
+              <v-list-item-action>
+                <v-flex>
+                  <v-btn
+                    text
+                    :id="item.id"
+                    v-if="item.canDelete === true"
+                    @click="deleteItem($event)"
+                    style="color: red; font-weight: bold;"
+                    ><v-icon>mdi-delete</v-icon></v-btn
+                  >
+                  <v-btn
+                    text
+                    :id="item.id"
+                    v-if="item.canDelete === false"
+                    @click="dialog1 = true"
+                    style="color: green; font-weight: bold;"
+                    ><v-icon>mdi-help-box</v-icon></v-btn
+                  >
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        text
+                        color="#010a43"
+                        :id="item.id"
+                        @click="edit($event)"
+                        ><v-icon>mdi-folder-edit</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Edit</span>
+                  </v-tooltip>
+                </v-flex>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+    </v-expand-x-transition>
     <br /><br /><br />
     <v-dialog v-model="dialog" persistent max-width="800px">
-      <v-card>
+      <v-card max-width="90%">
         <v-card-title>
           <span class="headline">Document Type Details</span>
         </v-card-title>
@@ -124,7 +134,7 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialog3" persistent max-width="800px">
-      <v-card>
+      <v-card max-width="90%">
         <v-card-title>
           <span class="headline">Document Type Details</span>
         </v-card-title>
@@ -151,7 +161,7 @@
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialog1" persistent max-width="450">
-      <v-card>
+      <v-card max-width="90%">
         <v-card-title class="headline"
           >Why can't I delete this Document Type?</v-card-title
         >
@@ -169,7 +179,7 @@
     </v-dialog>
     <v-row justify="center">
       <v-dialog v-model="dialog2" persistent max-width="450">
-        <v-card>
+        <v-card max-width="90%">
           <v-card-title class="headline">Delete Document Type?</v-card-title>
           <v-card-text
             >Are you sure? This will permanently delete this Document
@@ -183,7 +193,7 @@
         </v-card>
       </v-dialog>
     </v-row>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -211,7 +221,7 @@ export default {
       dialog1: false,
       dialog2: false,
       dialog3: false,
-
+      timeOut: 2000,
       item: 0,
       items: [],
       documentType: "",

@@ -5,6 +5,50 @@ const path = require("path");
 const cookieparser = require("cookie-parser");
 
 app = express();
+// const config = {
+//   title: "Express Status",
+//   path: "/status",
+//   spans: [
+//     {
+//       interval: 1,
+//       retention: 60,
+//     },
+//     {
+//       interval: 5,
+//       retention: 60,
+//     },
+//     {
+//       interval: 15,
+//       retention: 60,
+//     },
+//   ],
+//   chartVisibility: {
+//     cpu: true,
+//     mem:true,
+//     load: true,
+//     responseTime: true,
+//     rps: true,
+//     statusCodes: true
+//   },
+//   healthChecks: [
+//     {
+//       protocol: 'http',
+//       host: 'localhost',
+//       // path: '/admin',
+//       path: '/admin/health/policiesAndStaffTypes',
+//       port: '3000'
+//     },
+//     {
+//       protocol: 'http',
+//       host: 'localhost',
+//       path: '/admin/health/ex2',
+//       port: '3000'
+//     }
+//   ],
+//   ignoreStartsWith: '/admin'
+// };
+
+// app.use(require("express-status-monitor")(config));
 
 app.use(cors());
 
@@ -22,9 +66,21 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.static(path.join(__dirname, "files/uploads/")));
 app.use(
   bodyParser.urlencoded({
-    extended: true
+    extended: true,
   })
 );
+
+// let seq = [0,1,1]
+// let len = 1
+// while (len <= 1000) {
+//   x = seq[seq.length - 1] + seq[seq.length - 2]
+//   seq.push(x)
+//   str = x.toString()
+//   len = str.length
+//   console.log(len)
+//   console.log(seq)
+//   console.log("len", len)
+// }
 
 //#################################
 //ASYNC AWAIT EXAMPLE
@@ -101,7 +157,7 @@ const initialRoutes = require("./routes/initialRoutes"),
   reportRoutesGlobal = require("./routes/reportRoutesGlobal"),
   reportRoutesIndividual = require("./routes/reportRouteIndividual");
 
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   if (err.code === "LIMIT_FILE_TYPES") {
     res.status(422).json({ error: "Only PDF Files allowed" });
     console.log("Only PDF Files allowed");

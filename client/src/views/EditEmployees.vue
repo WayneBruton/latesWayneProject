@@ -12,58 +12,32 @@
     <v-card class="mx-auto" max-width="800" tile>
       <v-toolbar color="#010a43" dark>
         <v-spacer></v-spacer>
-        <v-toolbar-title>Employees</v-toolbar-title>
+        <v-toolbar-title>Employee</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-toolbar>
       <v-list rounded>
-        <v-subheader>EDIT</v-subheader>
+        <v-subheader>Add</v-subheader>
         <v-list-item-group v-model="item" color="#010a43">
-          <v-list-item v-for="(item, i) in items" :key="i">
+          <v-list-item v-for="(item, i) in items2" :key="i">
             <v-list-item-icon>
-              <v-icon
-                v-text="item.icon"
-                v-if="item.userType === 1"
-                style="color: red;"
-              ></v-icon>
-              <v-icon v-text="item.icon" v-else></v-icon>
+              <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title
-                v-text="item.lname + ' ' + item.fname"
-              ></v-list-item-title>
+              <v-list-item-title v-text="item.text"></v-list-item-title>
             </v-list-item-content>
             <v-spacer></v-spacer>
             <v-list-item-action>
               <v-flex>
-                <v-btn
-                  text
-                  :id="item.id"
-                  v-if="item.canDelete === true"
-                  @click="deleteItem($event)"
-                  style="color: red; font-weight: bold;"
-                  ><v-icon>mdi-delete</v-icon></v-btn
-                >
-                <v-btn
-                  text
-                  :id="item.id"
-                  v-if="item.canDelete === false"
-                  @click="dialog1 = true"
-                  style="color: green; font-weight: bold;"
-                  ><v-icon>mdi-help-box</v-icon></v-btn
-                >
-                <v-tooltip top>
-                  <template v-slot:activator="{ on }">
-                    <v-btn
-                      v-on="on"
-                      text
-                      color="#010a43"
-                      :id="item.id"
-                      @click="edit($event)"
-                      ><v-icon>mdi-account-edit</v-icon></v-btn
-                    >
-                  </template>
-                  <span>Edit</span>
-                </v-tooltip>
+                <!-- <UploadDocument
+                  v-if="item.text === 'Upload Documents'"
+                  @EEDocsuccess="handleSuccess($event)"
+                /> -->
+                <!-- <div v-if="this.$store.state.usersAvailable"> -->
+                <CreateEmployee
+                  v-if="item.text === 'Add Employee'"
+                  @employeeSuccess="handleSuccessEE"
+                />
+                <!-- </div> -->
               </v-flex>
             </v-list-item-action>
           </v-list-item>
@@ -71,9 +45,73 @@
       </v-list>
     </v-card>
     <br /><br /><br />
+    <v-expand-x-transition>
+      <v-card class="mx-auto" max-width="800" tile v-if="items.length">
+        <v-toolbar color="#010a43" dark>
+          <v-spacer></v-spacer>
+          <v-toolbar-title>Employees</v-toolbar-title>
+          <v-spacer></v-spacer>
+        </v-toolbar>
+        <v-list rounded>
+          <v-subheader>EDIT</v-subheader>
+          <v-list-item-group v-model="item" color="#010a43">
+            <v-list-item v-for="(item, i) in items" :key="i">
+              <v-list-item-icon>
+                <v-icon
+                  v-text="item.icon"
+                  v-if="item.userType === 1"
+                  style="color: red;"
+                ></v-icon>
+                <v-icon v-text="item.icon" v-else></v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title
+                  v-text="item.lname + ' ' + item.fname"
+                ></v-list-item-title>
+              </v-list-item-content>
+              <v-spacer></v-spacer>
+              <v-list-item-action>
+                <v-flex>
+                  <v-btn
+                    text
+                    :id="item.id"
+                    v-if="item.canDelete === true"
+                    @click="deleteItem($event)"
+                    style="color: red; font-weight: bold;"
+                    ><v-icon>mdi-delete</v-icon></v-btn
+                  >
+                  <v-btn
+                    text
+                    :id="item.id"
+                    v-if="item.canDelete === false"
+                    @click="dialog1 = true"
+                    style="color: green; font-weight: bold;"
+                    ><v-icon>mdi-help-box</v-icon></v-btn
+                  >
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        text
+                        color="#010a43"
+                        :id="item.id"
+                        @click="edit($event)"
+                        ><v-icon>mdi-account-edit</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Edit</span>
+                  </v-tooltip>
+                </v-flex>
+              </v-list-item-action>
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+      </v-card>
+    </v-expand-x-transition>
+    <br /><br /><br />
 
-    <v-dialog v-model="dialog" persistent max-width="800px">
-      <v-card>
+    <v-dialog v-model="dialog" scrollable persistent max-width="800px">
+      <v-card max-width="90%" max-height="525px">
         <v-card-title>
           <span class="headline">Employee Details</span>
         </v-card-title>
@@ -126,7 +164,7 @@
               </v-col>
             </v-row>
           </v-container>
-          <small>*indicates required field</small>
+          <!-- <small>*indicates required field</small> -->
         </v-card-text>
         <v-card-actions>
           <!-- <v-spacer></v-spacer> -->
@@ -175,7 +213,7 @@
       </v-dialog>
     </v-row>
 
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -186,6 +224,7 @@
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
+import CreateEmployee from "../components//CreateEmployee";
 export default {
   name: "editEmployees",
   metaInfo: {
@@ -202,8 +241,17 @@ export default {
       dialog: false,
       dialog1: false,
       dialog2: false,
+      timeOut: 2000,
       item: 0,
+
       items: [],
+      items2: [
+        {
+          text: "Add Employee",
+          icon: "mdi-account-plus",
+          component: '<UploadDocument @success="handleSuccess" />'
+        }
+      ],
       staffTypeChosen: "",
       staffTypes: null,
       snackbar: false,
@@ -220,6 +268,9 @@ export default {
       staffType: null,
       jobTitle: ""
     };
+  },
+  components: {
+    CreateEmployee
   },
   async mounted() {
     this.organisationID = this.$store.state.organisationID;
@@ -281,6 +332,11 @@ export default {
         this.snackbar = true;
         // this.dialog = false;
       }
+    },
+    handleSuccessEE() {
+      this.refreshData();
+      this.snackBarMessage = "Succesfully created!!";
+      this.snackbar = true;
     },
     async edit(event) {
       try {

@@ -5,13 +5,13 @@
         this.$store.state.usageAvailable > 0 && !this.$store.state.hasExpired
       "
     >
-      <v-dialog v-model="dialog" persistent max-width="750px">
+      <v-dialog v-model="dialog" scrollable persistent max-width="750px">
         <template v-slot:activator="{ on }">
           <v-btn :color="color" dark v-on="on" rounded pr-10 @click="loadData"
             >Upload</v-btn
           >
         </template>
-        <v-card>
+        <v-card max-width="90%" max-height="525">
           <v-card-title>
             <span class="headline">Document Details</span>
           </v-card-title>
@@ -97,7 +97,7 @@
         </v-card>
       </v-dialog>
     </div>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -114,6 +114,7 @@ export default {
     return {
       dialog: false,
       dialog2: false,
+      timeOut: 2000,
       file: null,
       color: "",
       staffAffected: [],

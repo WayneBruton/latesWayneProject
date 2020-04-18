@@ -6,7 +6,7 @@
           >Register for Free</v-btn
         >
       </template>
-      <v-card>
+      <v-card max-width="90%" mb20>
         <v-card-title>
           <span class="headline">Organisation Details</span>
         </v-card-title>
@@ -192,7 +192,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -209,6 +209,7 @@ export default {
   data() {
     return {
       dialog: false,
+      timeOut: 2000,
       color: "",
       value: String,
       snackbar: false,

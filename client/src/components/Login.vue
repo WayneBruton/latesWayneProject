@@ -1,6 +1,12 @@
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" max-width="800px">
+    <v-dialog
+      v-model="dialog"
+      scrollable
+      max-width="800px"
+      max-height="90%"
+      style="margin-bottom: 25px;"
+    >
       <template v-slot:activator="{ on }">
         <v-btn
           width="165"
@@ -12,7 +18,7 @@
           >Login</v-btn
         >
       </template>
-      <v-card>
+      <v-card max-width="90%" max-height="90%">
         <v-card-title>
           <span class="headline">Login</span>
         </v-card-title>
@@ -48,10 +54,10 @@
             </v-col>
 
             <v-col cols="12" xs="12" sm="9" md="9" v-if="showCheckbox">
-              <small
+              <!-- <small
                 >Do NOT log in as Administrator if you want to view your own
                 documents.</small
-              >
+              > -->
               <v-checkbox
                 v-model="checkbox"
                 :label="`Log in as Administrator: ${checkbox.toString()}`"
@@ -91,7 +97,7 @@
               </div>
             </v-col>
           </v-container>
-          <small>*indicates required field</small>
+          <!-- <small>*indicates required field</small> -->
         </v-card-text>
         <v-card-actions>
           <v-btn color="#010a43" text @click="resetPassword" v-if="showResetBtn"
@@ -102,7 +108,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -120,6 +126,7 @@ export default {
   data() {
     return {
       dialog: false,
+      timeOut: 2000,
       value: String,
       color: "",
       snackbar: false,

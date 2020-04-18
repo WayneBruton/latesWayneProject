@@ -140,7 +140,7 @@
         </div>
       </v-col>
     </v-row>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -148,7 +148,7 @@
     </v-snackbar>
 
     <v-dialog v-model="dialog" scrollable persistent max-width="650px">
-      <v-card style="height: 600px;">
+      <v-card style="height: 600px;" max-width="90%">
         <v-card-title class="headline">Subscribe</v-card-title>
         <v-card-text>
           <v-container>
@@ -355,6 +355,7 @@ export default {
   data() {
     return {
       isFetching: false,
+      timeOut: 2000,
       checked: false,
       dialog: false,
       hasExpired: false,

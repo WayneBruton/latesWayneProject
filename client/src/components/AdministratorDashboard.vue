@@ -49,169 +49,182 @@
             >
           </div>
         </div>
-        <v-container>
-          <v-row>
-            <v-col cols="12" xs="12" sm="12" md="12" max-width="800">
-              <h4>
-                Total Employees: {{ totalUsers }} out of max {{ usersAllowed }}
-              </h4>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12">
-              <h4>Total Policy documents: {{ totalPolicies }}</h4>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12">
-              <h4>Total Staff Documents: {{ totalStaffDocs }}</h4>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12">
-              <h4>
-                Total usage: {{ usageUsed }} Gb out of max {{ usageAllowed }} Gb
-              </h4>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12" v-if="!processing">
-              <v-btn color="#010a43" dark @click="printGlobalReport">
-                <v-icon left dark>mdi-printer</v-icon>
-                Print Report</v-btn
-              >
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12">
-              <div class="popup-visible" v-if="processing">
-                <v-progress-circular
-                  :size="70"
-                  :width="7"
-                  color="#010a43"
-                  indeterminate
-                ></v-progress-circular>
-              </div>
-            </v-col>
-            <v-col cols="12" xs="12" sm="12" md="12">
-              <v-card class="mx-auto" max-width="800" tile>
-                <v-toolbar color="#010a43" dark height="90px">
-                  <v-spacer></v-spacer>
-                  <v-toolbar-title>How it stands</v-toolbar-title>
-                  <v-spacer></v-spacer>
-                  <v-text-field
-                    label="Search"
-                    prepend-inner-icon="mdi-magnify"
-                    v-model="search"
-                  ></v-text-field>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-icon v-on="on" @click="clearSearch"
-                        >mdi-autorenew</v-icon
+        <v-expand-transition>
+          <v-container v-if="totalUsers > 0">
+            <v-row>
+              <v-col cols="12" xs="12" sm="12" md="12" max-width="800">
+                <h4>
+                  Total Employees: {{ totalUsers }} out of max
+                  {{ usersAllowed }}
+                </h4>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12">
+                <h4>Total Policy documents: {{ totalPolicies }}</h4>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12">
+                <h4>Total Staff Documents: {{ totalStaffDocs }}</h4>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12">
+                <h4>
+                  Total usage: {{ usageUsed }} Gb out of max
+                  {{ usageAllowed }} Gb
+                </h4>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12" v-if="!processing">
+                <v-btn color="#010a43" dark @click="printGlobalReport">
+                  <v-icon left dark>mdi-printer</v-icon>
+                  Print Report</v-btn
+                >
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12">
+                <div class="popup-visible" v-if="processing">
+                  <v-progress-circular
+                    :size="70"
+                    :width="7"
+                    color="#010a43"
+                    indeterminate
+                  ></v-progress-circular>
+                </div>
+              </v-col>
+              <v-col cols="12" xs="12" sm="12" md="12">
+                <v-card class="mx-auto" max-width="800" tile>
+                  <v-toolbar color="#010a43" dark height="90px">
+                    <v-spacer></v-spacer>
+                    <v-toolbar-title>How it stands</v-toolbar-title>
+                    <v-spacer></v-spacer>
+                    <v-text-field
+                      label="Search"
+                      prepend-inner-icon="mdi-magnify"
+                      v-model="search"
+                    ></v-text-field>
+                    <v-tooltip top>
+                      <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" @click="clearSearch"
+                          >mdi-autorenew</v-icon
+                        >
+                      </template>
+                      <span>Clear Search</span>
+                    </v-tooltip>
+                    <v-spacer></v-spacer>
+                    <v-btn text color="white" dark @click="sortPolicies">
+                      <v-icon v-if="sorted">mdi-arrow-down</v-icon>
+                      <v-icon v-else>mdi-arrow-up</v-icon>
+                    </v-btn>
+                  </v-toolbar>
+                  <v-list rounded>
+                    <v-subheader>STAFF</v-subheader>
+                    <v-list-item-group v-model="item" color="#010a43">
+                      <v-list-item
+                        v-for="(item, i) in policiesFiltered"
+                        :key="i"
                       >
-                    </template>
-                    <span>Clear Search</span>
-                  </v-tooltip>
-                  <v-spacer></v-spacer>
-                  <v-btn text color="white" dark @click="sortPolicies">
-                    <v-icon v-if="sorted">mdi-arrow-down</v-icon>
-                    <v-icon v-else>mdi-arrow-up</v-icon>
-                  </v-btn>
-                </v-toolbar>
-                <v-list rounded>
-                  <v-subheader>STAFF</v-subheader>
-                  <v-list-item-group v-model="item" color="#010a43">
-                    <v-list-item v-for="(item, i) in policiesFiltered" :key="i">
-                      <v-list-item-icon>
-                        <v-icon>mdi-settings</v-icon>
-                      </v-list-item-icon>
-                      <v-list-item-content>
-                        <v-list-item-title
-                          v-text="item.lname + ' ' + item.fname"
-                        ></v-list-item-title>
-                        <v-list-item-subtitle
-                          v-text="
-                            'policies Read: ' +
-                              item.policiesRead +
-                              ' / ' +
-                              item.totalPolicies +
-                              ' - ' +
-                              item.policiesReadPercent +
-                              '%'
-                          "
-                        ></v-list-item-subtitle>
-                        <v-list-item-subtitle
-                          v-text="
-                            'Staff Docs Read: ' +
-                              item.staffDocsRead +
-                              ' / ' +
-                              item.staffDocsTotal +
-                              ' - ' +
-                              item.staffDocsReadPercentage +
-                              '%'
-                          "
-                        ></v-list-item-subtitle>
-                      </v-list-item-content>
-                      <v-spacer></v-spacer>
-                      <v-list-item-action>
-                        <v-flex>
-                          <v-btn
-                            icon
-                            dark
-                            large
-                            color="grey"
-                            :id="item.id"
-                            @click="individualEmail($event)"
-                            ><v-icon>mdi-email</v-icon></v-btn
-                          >
-                          <v-btn
-                            v-show="item.totalAllDocsPercent >= 80"
-                            class="printBtn"
-                            dark
-                            icon
-                            large
-                            color="green"
-                            :id="item.id"
-                            @click="individualReport($event)"
-                            ><v-icon>mdi-printer</v-icon
-                            >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                          >
-                          <v-btn
-                            v-show="
-                              item.totalAllDocsPercent > 60 &&
-                                item.totalAllDocsPercent < 80
+                        <v-list-item-icon>
+                          <v-icon>mdi-settings</v-icon>
+                        </v-list-item-icon>
+                        <v-list-item-content>
+                          <v-list-item-title
+                            v-text="item.lname + ' ' + item.fname"
+                          ></v-list-item-title>
+                          <v-list-item-subtitle
+                            v-text="
+                              'policies Read: ' +
+                                item.policiesRead +
+                                ' / ' +
+                                item.totalPolicies +
+                                ' - ' +
+                                item.policiesReadPercent +
+                                '%'
                             "
-                            class="printBtn"
-                            dark
-                            icon
-                            large
-                            color="orange"
-                            :id="item.id"
-                            @click="individualReport($event)"
-                            ><v-icon>mdi-printer</v-icon
-                            >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                          >
-                          <v-btn
-                            v-show="item.totalAllDocsPercent <= 60"
-                            class="printBtn"
-                            dark
-                            icon
-                            large
-                            color="red"
-                            :id="item.id"
-                            @click="individualReport($event)"
-                            ><v-icon>mdi-printer</v-icon
-                            >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                          >
-                        </v-flex>
-                      </v-list-item-action>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </v-card>
-            </v-col>
-          </v-row>
-        </v-container>
+                          ></v-list-item-subtitle>
+                          <v-list-item-subtitle
+                            v-text="
+                              'Staff Docs Read: ' +
+                                item.staffDocsRead +
+                                ' / ' +
+                                item.staffDocsTotal +
+                                ' - ' +
+                                item.staffDocsReadPercentage +
+                                '%'
+                            "
+                          ></v-list-item-subtitle>
+                        </v-list-item-content>
+                        <v-spacer></v-spacer>
+                        <v-list-item-action>
+                          <v-flex>
+                            <v-btn
+                              icon
+                              dark
+                              large
+                              color="grey"
+                              :id="item.id"
+                              @click="individualEmail($event)"
+                              ><v-icon>mdi-email</v-icon></v-btn
+                            >
+                            <v-btn
+                              v-show="item.totalAllDocsPercent >= 80"
+                              class="printBtn"
+                              dark
+                              icon
+                              large
+                              color="green"
+                              :id="item.id"
+                              @click="individualReport($event)"
+                              ><v-icon>mdi-printer</v-icon
+                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
+                            >
+                            <v-btn
+                              v-show="
+                                item.totalAllDocsPercent > 60 &&
+                                  item.totalAllDocsPercent < 80
+                              "
+                              class="printBtn"
+                              dark
+                              icon
+                              large
+                              color="orange"
+                              :id="item.id"
+                              @click="individualReport($event)"
+                              ><v-icon>mdi-printer</v-icon
+                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
+                            >
+                            <v-btn
+                              v-show="item.totalAllDocsPercent <= 60"
+                              class="printBtn"
+                              dark
+                              icon
+                              large
+                              color="red"
+                              :id="item.id"
+                              @click="individualReport($event)"
+                              ><v-icon>mdi-printer</v-icon
+                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
+                            >
+                          </v-flex>
+                        </v-list-item-action>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </v-list>
+                </v-card>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-expand-transition>
       </v-flex>
     </v-layout>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
       </v-btn>
     </v-snackbar>
-    <v-dialog v-model="dialog" scrollable max-width="650px">
-      <v-card style="height: 600px;">
+    <v-dialog
+      v-model="dialog"
+      scrollable
+      width="600"
+      max-width="90%"
+      style="margin-right: 10%; margin-bottom: 25px;"
+    >
+      <v-card style="max-height: 550px; margin-right: 25px;">
         <v-card-title>
           <span class="headline">Edit and change accordingly </span>
         </v-card-title>
@@ -277,7 +290,9 @@
           </v-tooltip>
         </v-card-actions>
       </v-card>
+      <br /><br />
     </v-dialog>
+    <br /><br /><br /><br /><br /><br /><b></b>
   </v-container>
 </template>
 
@@ -285,10 +300,10 @@
 import DirectoryService from "../services/DirectoryServices";
 import { VueEditor } from "vue2-editor";
 export default {
-  name: "NotLoggedIn",
-
+  name: "AdministratorDashboard",
   data: () => ({
     dialog: false,
+    timOut: 2000,
     osName: "",
     content: "<h1>Some initial content</h1>",
     positiveContent: "",

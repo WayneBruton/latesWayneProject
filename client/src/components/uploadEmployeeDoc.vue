@@ -11,7 +11,7 @@
             >Upload</v-btn
           >
         </template>
-        <v-card>
+        <v-card max-width="90%" max-height="525">
           <v-card-title>
             <span class="headline">Document Details</span>
           </v-card-title>
@@ -108,7 +108,7 @@
         </v-card>
       </v-dialog>
     </div>
-    <v-snackbar v-model="snackbar" bottom top>
+    <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
       {{ snackBarMessage }}
       <v-btn color="pink" text @click="snackbar = false">
         Close
@@ -125,6 +125,7 @@ export default {
     return {
       dialog: false,
       dialog2: false,
+      timeOut: 2000,
       file: null,
       documentAffected: [],
       typesOfDocument: [],

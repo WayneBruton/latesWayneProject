@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about temp">
     <br /><br /><br /><br /><br /><br />
     <div style="display: flex; justify-content: center;">
       <h2>{{ this.$store.state.organisationName }}</h2>
@@ -7,7 +7,7 @@
     </div>
     <br /><br />
     <v-row justify="center">
-      <v-card>
+      <v-card elevation="15" max-width="90%">
         <v-card-title>
           <span class="headline">Organisation Details</span>
         </v-card-title>
@@ -127,7 +127,7 @@
           <v-btn color="#010a43" text @click="upDate">Update</v-btn>
         </v-card-actions>
       </v-card>
-      <v-snackbar v-model="snackbar" bottom top>
+      <v-snackbar v-model="snackbar" :timeout="timeOut" bottom top>
         {{ snackBarMessage }}
         <v-btn color="pink" text @click="snackbar = false">
           Close
@@ -154,6 +154,7 @@ export default {
   data() {
     return {
       dialog: false,
+      timeOut: 2000,
       organisationID: null,
       value: String,
       snackbar: false,
