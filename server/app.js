@@ -5,55 +5,9 @@ const path = require("path");
 const cookieparser = require("cookie-parser");
 
 app = express();
-// const config = {
-//   title: "Express Status",
-//   path: "/status",
-//   spans: [
-//     {
-//       interval: 1,
-//       retention: 60,
-//     },
-//     {
-//       interval: 5,
-//       retention: 60,
-//     },
-//     {
-//       interval: 15,
-//       retention: 60,
-//     },
-//   ],
-//   chartVisibility: {
-//     cpu: true,
-//     mem:true,
-//     load: true,
-//     responseTime: true,
-//     rps: true,
-//     statusCodes: true
-//   },
-//   healthChecks: [
-//     {
-//       protocol: 'http',
-//       host: 'localhost',
-//       // path: '/admin',
-//       path: '/admin/health/policiesAndStaffTypes',
-//       port: '3000'
-//     },
-//     {
-//       protocol: 'http',
-//       host: 'localhost',
-//       path: '/admin/health/ex2',
-//       port: '3000'
-//     }
-//   ],
-//   ignoreStartsWith: '/admin'
-// };
-
-// app.use(require("express-status-monitor")(config));
 
 app.use(cors());
-
 app.use(cookieparser());
-
 app.use(bodyParser.json());
 
 const port = process.env.PORT || 3000;
@@ -69,18 +23,6 @@ app.use(
     extended: true,
   })
 );
-
-// let seq = [0,1,1]
-// let len = 1
-// while (len <= 1000) {
-//   x = seq[seq.length - 1] + seq[seq.length - 2]
-//   seq.push(x)
-//   str = x.toString()
-//   len = str.length
-//   console.log(len)
-//   console.log(seq)
-//   console.log("len", len)
-// }
 
 //#################################
 //ASYNC AWAIT EXAMPLE

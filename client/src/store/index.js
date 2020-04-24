@@ -23,7 +23,8 @@ export default new Vuex.Store({
     usersAvailable: 0,
     usageAvailable: 0,
     hasExpired: false,
-    isProducedReport: false
+    isProducedReport: false,
+    userIsEmployee: null
   },
   mutations: {
     logout(state) {
@@ -34,6 +35,7 @@ export default new Vuex.Store({
       state.organisationID = null;
       state.country = "";
       state.userID = null;
+      state.userIsEmployee = null;
     },
     login(state, criteria) {
       state.isLoggedIn = true;
@@ -47,6 +49,7 @@ export default new Vuex.Store({
       state.userName = `${criteria.fname} ${criteria.lname}`;
       state.userID = criteria.userID;
       state.country = criteria.country;
+      state.userIsEmployee = criteria.userIsEmployee;
     },
     viewdoc(state, criteria) {
       state.documentID = criteria.id;

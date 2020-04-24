@@ -47,15 +47,27 @@
     <br /><br /><br />
     <v-expand-x-transition>
       <v-card class="mx-auto" max-width="800" tile v-if="items.length">
-        <v-toolbar color="#010a43" dark>
+        <v-toolbar color="#010a43" dark height="90px">
           <v-spacer></v-spacer>
-          <v-toolbar-title>Employees</v-toolbar-title>
+          <v-toolbar-title>Employees ({{ items.length }})</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-text-field
+            label="Search"
+            prepend-inner-icon="mdi-magnify"
+            v-model="search"
+          ></v-text-field>
+          <v-tooltip top>
+            <template v-slot:activator="{ on }">
+              <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
+            </template>
+            <span>Clear Search</span>
+          </v-tooltip>
           <v-spacer></v-spacer>
         </v-toolbar>
         <v-list rounded>
           <v-subheader>EDIT</v-subheader>
           <v-list-item-group v-model="item" color="#010a43">
-            <v-list-item v-for="(item, i) in items" :key="i">
+            <v-list-item v-for="(item, i) in itemsFiltered" :key="i">
               <v-list-item-icon>
                 <v-icon
                   v-text="item.icon"
@@ -72,6 +84,19 @@
               <v-spacer></v-spacer>
               <v-list-item-action>
                 <v-flex>
+                  <v-tooltip top>
+                    <template v-slot:activator="{ on }">
+                      <v-btn
+                        v-on="on"
+                        text
+                        color="#010a43"
+                        :id="item.id"
+                        @click="edit($event)"
+                        ><v-icon>mdi-account-edit</v-icon></v-btn
+                      >
+                    </template>
+                    <span>Edit</span>
+                  </v-tooltip>
                   <v-btn
                     text
                     :id="item.id"
@@ -88,19 +113,6 @@
                     style="color: green; font-weight: bold;"
                     ><v-icon>mdi-help-box</v-icon></v-btn
                   >
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        text
-                        color="#010a43"
-                        :id="item.id"
-                        @click="edit($event)"
-                        ><v-icon>mdi-account-edit</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Edit</span>
-                  </v-tooltip>
                 </v-flex>
               </v-list-item-action>
             </v-list-item>
@@ -139,6 +151,24 @@
                   v-model="email"
                   required
                 ></v-text-field>
+              </v-col>
+              <v-col cols="12" xs="12" sm="6" md="6">
+                <v-flex row>
+                  <!-- @onSelect="onSelect" -->
+                  <vue-country-code
+                    :preferredCountries="['za', 'us', 'gb']"
+                    style="border-style: none; margin-right: 5px;"
+                    v-model="dialingCode"
+                  >
+                  </vue-country-code>
+                  <v-text-field
+                    v-mask="'(###) ###-####'"
+                    label="mobile*"
+                    v-model="mobile"
+                    required
+                    @change="finaliseMobile"
+                  ></v-text-field>
+                </v-flex>
               </v-col>
               <v-col cols="12" xs="12" sm="6" md="6">
                 <v-text-field
@@ -266,17 +296,47 @@ export default {
       userType: null,
       checkbox: false,
       staffType: null,
-      jobTitle: ""
+      jobTitle: "",
+      search: "",
+      mobile: null,
+      dialingCode: 27,
+      mobileNumber: null
     };
   },
   components: {
     CreateEmployee
+  },
+  computed: {
+    itemsFiltered() {
+      if (this.search === "") {
+        return this.items;
+      } else {
+        return this.items.filter(employee => {
+          return (
+            !this.search ||
+            employee.lname.toLowerCase().indexOf(this.search.toLowerCase()) >
+              -1 ||
+            employee.fname.toLowerCase().indexOf(this.search.toLowerCase()) > -1
+          );
+        });
+      }
+    }
   },
   async mounted() {
     this.organisationID = this.$store.state.organisationID;
     this.refreshData();
   },
   methods: {
+    finaliseMobile() {
+      let str = parseInt(
+        this.mobile
+          .replace("(", "")
+          .replace(")", "")
+          .replace(" ", "")
+          .replace("-", "")
+      );
+      this.mobileNumber = "+" + this.dialingCode + str;
+    },
     async refreshData() {
       try {
         let credentials = {
@@ -297,7 +357,7 @@ export default {
           return (this.snackbar = true);
         }
         response.data[0].forEach(el => {
-          el.icon = "mdi-account-plus";
+          el.icon = "mdi-account-edit";
         });
         this.items = response.data[0];
         this.staffTypes = response.data[1].filter(el => {
@@ -333,6 +393,9 @@ export default {
         // this.dialog = false;
       }
     },
+    clearSearch() {
+      this.search = "";
+    },
     handleSuccessEE() {
       this.refreshData();
       this.snackBarMessage = "Succesfully created!!";
@@ -351,9 +414,19 @@ export default {
         this.email = response.data[0].email;
         this.lname = response.data[0].lname;
         this.fname = response.data[0].fname;
+        this.mobileNumber = response.data[0].mobileNumber;
         this.userType = parseInt(response.data[0].userType);
         this.userID = parseInt(response.data[0].id);
         this.jobTitle = response.data[0].jobTitle;
+        if (response.data[0].mobileNumber != null) {
+          let numberStr = response.data[0].mobileNumber.replace("+", "");
+          this.dialingCode = parseInt(numberStr.substring(0, 2));
+          let len = numberStr.length;
+          this.mobile = "0" + numberStr.substring(2, len);
+        } else {
+          this.dialingCode = 27;
+          this.mobile = null;
+        }
         let staffTypeChosen = this.staffTypes.filter(el => {
           return el.id == parseInt(response.data[0].staffType);
         });
@@ -409,7 +482,8 @@ export default {
           email: this.email,
           userType: this.userType,
           staffType: this.staffType,
-          jobTitle: this.jobTitle
+          jobTitle: this.jobTitle,
+          mobileNumber: this.mobileNumber
         };
         let response = await DirectoryService.editEmployee(credentials);
         if (response.data === false) {

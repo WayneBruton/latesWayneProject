@@ -425,6 +425,8 @@ export default {
       let response = await DirectoryService.updatePolicy(credentials);
       if (response.status === 200) {
         this.refreshData();
+        this.snackBarMessage = "Policy successfully edited.";
+        this.snackbar = true;
         this.editDialog = false;
       } else {
         this.snackBarMessage =

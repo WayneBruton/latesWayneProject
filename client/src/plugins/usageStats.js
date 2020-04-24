@@ -42,6 +42,17 @@ const MyPlugin = {
         },
         scrollToTop() {
           window.scrollTo(0, 0);
+        },
+        async checkExpiry() {
+          let credentials = {
+            organisation: this.$store.state.organisationID
+          };
+          let response = await DirectoryService.getExpiry(credentials);
+          let expiry = Date.parse(response.data[0].expiry);
+          this.expiryDate = response.data[0].expiry;
+          let now = new Date();
+          let days = ((expiry - now) / (1000 * 60 * 60 * 24)).toFixed(0);
+          this.expiryDays = days;
         }
       }
     });

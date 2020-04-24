@@ -22,7 +22,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="white" @click="returnHome"
-            ><v-icon>mdi-cash-100</v-icon></v-btn
+            ><v-icon>mdi-account-cash</v-icon></v-btn
           >
           <v-spacer></v-spacer>
         </v-card-actions>

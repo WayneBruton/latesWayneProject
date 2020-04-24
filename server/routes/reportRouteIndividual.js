@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("./connection");
-const nodemailer = require("nodemailer");
-const fs = require("fs");
-const moment = require("moment")
+// const nodemailer = require("nodemailer");
+// const fs = require("fs");
+const moment = require("moment");
 // var Report = require("../lib/fluentReports").Report;
 var Report = require("fluentreports").Report;
 var primary_data = [];
@@ -12,33 +12,29 @@ var header_data = [];
 var fileName;
 
 router.put("/printIndividualReport", (req, res) => {
-  console.log("Body", req.body);
   primary_data = [];
   secondary_data = {};
-  header_data = []
+  header_data = [];
   let header = {
-    name: req.body.name
+    name: req.body.name,
   };
   header_data.push(header);
-  // console.log(header_data[0]);
 
   let sql = `select * from staffTypes where organisation = ${req.body.organisation}`;
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json({ error: "error connecting to the database" });
       } else {
-        // res.json(result);
-        // console.log(result);
         result.forEach((el, index) => {
           let insertPrimary = {
             id: el.id,
-            name: el.staff_description
+            name: el.staff_description,
           };
           if (index === 0) {
             primary_data.push(insertPrimary);
@@ -46,9 +42,8 @@ router.put("/printIndividualReport", (req, res) => {
             primary_data.push(insertPrimary);
           }
         });
-        let stafftypes = primary_data.slice(0, 2).map(el => el.id);
+        let stafftypes = primary_data.slice(0, 2).map((el) => el.id);
         primary_data.push({ id: 99, name: "Personal Documents" });
-        // console.log("PRIMARYDATA", primary_data);
         //ALL STAFF
         let sql1 = `select p.id, p.policyName, p.createdAt, p.appliesTo from  policies p
         where  JSON_CONTAINS(p.appliesTo, '${stafftypes[0]}') and p.organisation = ${req.body.organisation}`;
@@ -60,86 +55,85 @@ router.put("/printIndividualReport", (req, res) => {
         //Staff Documents
         let sql4 = `select * from staffDocuments where users = ${req.body.id}`;
         let finalsql = `${sql1};${sql2};${sql3};${sql4}`;
-        connection.query(finalsql, function(error, result) {
+        connection.query(finalsql, function (error, result) {
           if (error) {
             console.log(error);
             res.json({ error: "error connecting to the database" });
           } else {
-            // res.json(result);
-            // console.log(result[0], result[1]);
-            let arr1 = []
-            let arr2 = []
-            let arr3 = result[1]
+            let arr1 = [];
+            let arr2 = [];
+            let arr3 = result[1];
             result[0].forEach((el) => {
-              el.appliesTo = JSON.parse(el.appliesTo)
+              el.appliesTo = JSON.parse(el.appliesTo);
               if (el.appliesTo.includes(stafftypes[0])) {
-                el.appliesTo = stafftypes[0]
+                el.appliesTo = stafftypes[0];
               }
-              let id = el.id
-              // console.log(id)
+              let id = el.id;
               let filter = result[2].filter((el2) => {
-                return el2.policyRead === id
-              })
+                return el2.policyRead === id;
+              });
               if (filter.length) {
-                el.policyRead = "Yes"
-                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY HH:mm")
+                el.policyRead = "Yes";
+                el.readAt = moment(filter[0].readAt).format(
+                  "Do MMM YYYY HH:mm"
+                );
               } else {
-                el.policyRead = "No"
-                el.readAt = null
+                el.policyRead = "No";
+                el.readAt = null;
               }
               let insertData = {
                 policyName: el.policyName,
                 policyRead: el.policyRead,
-                readAt: el.readAt
-              }
-              arr1.push(insertData)
-
-            })
+                readAt: el.readAt,
+              };
+              arr1.push(insertData);
+            });
             result[1].forEach((el) => {
-              el.appliesTo = JSON.parse(el.appliesTo)
+              el.appliesTo = JSON.parse(el.appliesTo);
               if (el.appliesTo.includes(stafftypes[1])) {
-                el.appliesTo = stafftypes[1]
+                el.appliesTo = stafftypes[1];
               }
-              let id = el.id
-              // console.log(id)
+              let id = el.id;
               let filter = result[2].filter((el2) => {
-                return el2.policyRead === id
-              })
+                return el2.policyRead === id;
+              });
               if (filter.length) {
-                el.policyRead = "Yes"
-                el.readAt = moment(filter[0].readAt).format("Do MMM YYYY HH:mm")
+                el.policyRead = "Yes";
+                el.readAt = moment(filter[0].readAt).format(
+                  "Do MMM YYYY HH:mm"
+                );
               } else {
-                el.policyRead = "No"
-                el.readAt = null
+                el.policyRead = "No";
+                el.readAt = null;
               }
               let insertData = {
                 policyName: el.policyName,
                 policyRead: el.policyRead,
-                readAt: el.readAt
-              }
-              arr2.push(insertData)
-            })
-            console.log("Result 3",result[3])
-            arr3 = []
-            result[3].forEach((el) =>{
+                readAt: el.readAt,
+              };
+              arr2.push(insertData);
+            });
+            arr3 = [];
+            result[3].forEach((el) => {
               if (el.readDocument === 1) {
-                el.readDocument = "Yes"
-                el.dateRead = moment(el.dateRead).format("Do MMM YYYY HH:mm")
+                el.readDocument = "Yes";
+                el.dateRead = moment(el.dateRead).format("Do MMM YYYY HH:mm");
               } else {
-                el.readDocument = "No",
-                el.dateRead = null
+                (el.readDocument = "No"), (el.dateRead = null);
               }
               let insertData = {
                 policyName: el.documentNameName,
-                policyRead: el.readDocument, 
-                readAt:el.dateRead
+                policyRead: el.readDocument,
+                readAt: el.dateRead,
                 // readAt: moment(el.dateRead).format("Do MMM YYYY")
-              }
-              arr3.push(insertData)
-            })
-            secondary_data[`${stafftypes[0]}`] = arr1
-            secondary_data[`${stafftypes[1]}`] = arr2
-            secondary_data[`${primary_data[primary_data.length - 1].id}`] = arr3
+              };
+              arr3.push(insertData);
+            });
+            secondary_data[`${stafftypes[0]}`] = arr1;
+            secondary_data[`${stafftypes[1]}`] = arr2;
+            secondary_data[
+              `${primary_data[primary_data.length - 1].id}`
+            ] = arr3;
             let now = Math.floor(Math.random() * 100000000);
             //   let now = new Date();
             fileName = `Individual Report - ${now}.pdf`;
@@ -147,7 +141,7 @@ router.put("/printIndividualReport", (req, res) => {
             printreport().then(() => {
               setTimeout(() => {
                 return res.json({
-                  url: `${process.env.homeURL}${process.env.CLIENT_REPORTS}${fileName}`
+                  url: `${process.env.homeURL}${process.env.CLIENT_REPORTS}${fileName}`,
                 });
               }, 300);
             });
@@ -157,81 +151,7 @@ router.put("/printIndividualReport", (req, res) => {
     });
     connection.release();
   });
-
-  // req.body.forEach((el, index) => {
-  //   let data1 = {
-  //     id: el.id,
-  //     name: `${el.lname} ${el.fname}`
-  //   };
-  //   console.log(index);
-  //   primary_data.push(data1);
-  //   secondary_data[`${el.id}`] = [
-  //     {
-  //       reportType: "policy",
-  //       total: `Total Policies: ${el.totalPolicies}`,
-  //       read: `Number Read: ${el.policiesRead}`,
-  //       percent: `Read Percent: ${el.policiesReadPercent} %`,
-  //       totalDocs: el.totalPolicies,
-  //       totalRead: el.policiesRead,
-  //       totalPercent: el.policiesReadPercent
-  //     },
-  //     {
-  //       reportType: "staff",
-  //       total: `Total Documents: ${el.staffDocsTotal}`,
-  //       read: `Number Read: ${el.staffDocsRead}`,
-  //       percent: `Read Percent: ${el.staffDocsReadPercentage} %`,
-  //       totalDocs: el.staffDocsTotal,
-  //       totalRead: el.staffDocsRead,
-  //       totalPercent: el.staffDocsReadPercentage
-  //     }
-  //   ];
-  // });
-  // let now = Math.floor(Math.random() * 100000000);
-  // //   let now = new Date();
-  // fileName = `Group Report - ${now}.pdf`;
-  // console.log(fileName);
-
-  // printreport().then(() => {
-  //   setTimeout(() => {
-  //     return res.json({
-  //       url: `${process.env.homeURL}${process.env.CLIENT_REPORTS}${fileName}`
-  //     });
-  //   },300);
-  // });
-
-  // res.json({awesome:"Awesome"})
 });
-
-// router.put("/removeReport", (req, res) => {
-//   console.log(req.body.rep);
-
-//   fs.unlink(`public/${req.body.rep}`, function(err) {
-//     if (err) {
-//       return console.log(err);
-//     }
-//     console.log("File Deleted");
-//   });
-//   res.json({ done: "Alright!!" });
-
-// let sql1 = `select id, fname, lname from users where organisation = ${id} order by lname, fname, id`;
-
-// pool.getConnection(function(err, connection) {
-//   if (err) {
-//     connection.release();
-//     resizeBy.send("Error with connection");
-//   }
-//   connection.query(sql, function(error, result) {
-//     if (error) {
-//       console.log(error);
-//       res.json({ error: "error connecting to the database" });
-//     } else {
-//       res.json(result);
-//     }
-//   });
-//   connection.release();
-// });
-// });
-
 // We are going to pretend that we are running queries to get this data.  ;-)
 function sql_select(query) {
   "use strict";
@@ -247,7 +167,7 @@ function sql_select(query) {
 async function printreport() {
   "use strict";
   var counter = 0;
-  var daydetail = function(report, data) {
+  var daydetail = function (report, data) {
     counter++;
     report.band(
       [
@@ -257,14 +177,14 @@ async function printreport() {
           data: `Read: ${data.policyRead}`,
           width: 100,
           align: 3,
-          textColor: data.policyRead === "No" ? "#FF0000" : "#000000"
+          textColor: data.policyRead === "No" ? "#FF0000" : "#000000",
         },
         {
           data: data.readAt !== null ? `${data.readAt}` : "",
           width: 100,
           align: 3,
-          textColor: data.totalPercent < 75 ? "#FF0000" : "#000000"
-        }
+          textColor: data.totalPercent < 75 ? "#FF0000" : "#000000",
+        },
       ],
       {
         border: 0,
@@ -272,28 +192,28 @@ async function printreport() {
         wrap: 1,
         fill: counter % 2 === 0 ? "#f0f0f0" : "#e0e0e0",
         // textColor: "#0000ff"
-        textColor: "black"
+        textColor: "black",
       }
     );
   };
 
-  var nameFooter = function(report, data) {
+  var nameFooter = function (report, data) {
     report.band([
       ["Totals for " + data.name, 180],
       // [data.totalDocs, 100, 3]
-      [report.totals.totalDocs, 100, 3]
+      [report.totals.totalDocs, 100, 3],
     ]);
     report.newLine();
     //   report.newLine();
   };
 
-  var nameHeader = function(report, data) {
+  var nameHeader = function (report, data) {
     report.print(data.name, {
       fontBold: true,
       // fill: "black",
       fill: "#6f6f6f",
       textColor: "#ffffff",
-      link: "http://www.eccentrictoad.com/"
+      link: "http://www.eccentrictoad.com/",
     });
     // report.print("Read", {
     //   fontBold: true,
@@ -306,13 +226,13 @@ async function printreport() {
     report.newLine();
   };
 
-  var weekDetail = function(report, data) {
+  var weekDetail = function (report, data) {
     // We could do this -->  report.setCurrentY(report.getCurrentY()+2);   Or use the shortcut below of addY: 2
     report.print(["Report Type: " + data.reportType], { x: 100, addY: 2 });
     //   report.newLine()
   };
 
-  var totalFormatter = function(data, callback) {
+  var totalFormatter = function (data, callback) {
     if (data.totalDocs) {
       data.totalDocs = ": " + data.totalDocs;
     }
@@ -322,22 +242,24 @@ async function printreport() {
   var reportName = `public/uploads/${fileName}`;
   var results = sql_select(0);
 
-  var repTitle = function(report, data) {
+  var repTitle = function (report, data) {
     var tit = [`${header_data[0].name}`];
-    var tit2 = [`Printed at: ${moment(new Date()).format("Do MMM YYYY HH:mm")}`];
+    var tit2 = [
+      `Printed at: ${moment(new Date()).format("Do MMM YYYY HH:mm")}`,
+    ];
     report.print(tit2, {
       fontBold: false,
       fontSize: 7,
       align: "left",
       textColor: "black",
-      underline: false
+      underline: false,
     });
     report.print(tit, {
       fontBold: true,
       fontSize: 16,
       align: "center",
       textColor: "red",
-      underline: true
+      underline: true,
     });
     report.newLine();
     report.newLine();
@@ -348,8 +270,8 @@ async function printreport() {
     .fullScreen(false) // Optional
     .pageHeader(repTitle) // Optional
     .pageFooter(["Printed by PerfectStaff"])
-      // .pageHeader(["Policy Adherance Report"]) // Optional
-      .pageHeader(repTitle) // Optional
+    // .pageHeader(["Policy Adherance Report"]) // Optional
+    .pageHeader(repTitle) // Optional
     //   .finalSummary(["Total Hours:", "totalDocs", 3]) // Optional
     .userdata({ hi: 1 }) // Optional
     .data(results) // REQUIRED
@@ -362,7 +284,6 @@ async function printreport() {
     .keys(["id"])
     .detail(daydetail)
     .sum("hours");
-  //   console.log("Wayne2",sql_select)
 
   rpt.groupBy("name").header(nameHeader);
   // .footer(nameFooter);
@@ -371,7 +292,7 @@ async function printreport() {
   subRpt
     .groupBy("reportType")
     // .header(weekDetail)
-    .footer(function(Rpt) {
+    .footer(function (Rpt) {
       Rpt.print("\n");
     });
 
@@ -380,7 +301,7 @@ async function printreport() {
 
   // This does the MAGIC...  :-)
   console.time("Rendered");
-  rpt.render(function(err, name) {
+  rpt.render(function (err, name) {
     console.timeEnd("Rendered");
     //   displayReport(err, name);
   });

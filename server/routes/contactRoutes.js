@@ -33,7 +33,6 @@ async function sendMail(subject, recipient, output) {
       console.log("Error with connection");
       mailError = true;
     } else {
-      console.log("AWESOME AMAZING");
       mailError = false;
       res.json({ error: false });
     }
@@ -219,7 +218,6 @@ router.put("/emailDocuments", (req, res) => {
   sql = `select fname, lname, email from users where id in (${str})`;
 
   let results = { success: true, failure: false };
-  // res.json(results.success);
   pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
@@ -272,8 +270,6 @@ router.put("/emailDocuments", (req, res) => {
 router.put("/emailIndividual", (req, res) => {
   let id = req.body.id;
   let content = req.body.content;
-  console.log(req.body);
-
   let sql;
   sql = `select email from users where id = ${id} and organisation = ${req.body.organisation}`;
 
@@ -319,36 +315,6 @@ router.put("/emailIndividual", (req, res) => {
 // ################################
 
 router.post("/itnresponse", (req, res) => {
-  // console.log("Body", JSON.stringify(req.body));
-
-  // let info = {"m_payment_id":"1 2 false false 500","pf_payment_id":"28294559","payment_status":"COMPLETE","item_name":"Package Name Small","item_description":"Small - users 20","amount_gross":"5.00","amount_fee":"-2.51","amount_net":"2.49","custom_str1":"","custom_str2":"","custom_str3":"","custom_str4":"","custom_str5":"","custom_int1":"","custom_int2":"","custom_int3":"","custom_int4":"","custom_int5":"","name_first":"Wayne","name_last":"Bruton","email_address":"waynebruton@gmail.com","merchant_id":"10469596","signature":"a068de8b12ebaaaa22167e7a7680821d"}
-
-  // let info = {
-  //   m_payment_id: "1 2 false false 500",
-  //   pf_payment_id: "28296034",
-  //   payment_status: "COMPLETE",
-  //   item_name: "Package Name Small",
-  //   item_description: "Small - users 20",
-  //   amount_gross: "5.00",
-  //   amount_fee: "-2.51",
-  //   amount_net: "2.49",
-  //   custom_str1: "",
-  //   custom_str2: "",
-  //   custom_str3: "",
-  //   custom_str4: "",
-  //   custom_str5: "",
-  //   custom_int1: "",
-  //   custom_int2: "",
-  //   custom_int3: "",
-  //   custom_int4: "",
-  //   custom_int5: "",
-  //   name_first: "Wayne",
-  //   name_last: "Bruton",
-  //   email_address: "waynebruton@gmail.com",
-  //   merchant_id: "10469596",
-  //   signature: "85d86008c923c6b450f01cc599000f15",
-  // };
-  // console.log(info);
   function isEmpty(obj) {
     for(var key in obj) {
         if(obj.hasOwnProperty(key))
@@ -357,16 +323,12 @@ router.post("/itnresponse", (req, res) => {
     return true;
 }
 
-
-
   let info = req.body
   
-  console.log("info",info)
   res.sendStatus(200);
 
   if (!isEmpty(info) ) {
   let receiptDetails = info.m_payment_id.split(" ");
-  console.log(receiptDetails);
 
   // FOR CLIENTELE
   let organisation = parseInt(receiptDetails[0]);
@@ -386,37 +348,8 @@ router.post("/itnresponse", (req, res) => {
   } else {
     expiry = moment(paidDate).add(1, "Y").format('YYYY-MM-DD HH:mm:ss')
   }
-  // console.log("Date Paid",paidDate)
-
-
-//FOR CLIENTELE
-// console.log("FOR CLIENTELE")
-// console.log("-------------")
-//   console.log("Expiry",expiry)
-//   console.log("organisation", organisation);
-//   console.log("package", package);
-//   console.log("monthly", monthly);
-
-  // PAYMENTS RECEIVED
-  // console.log("FOR PAYMENTS RECEIVED")
-  // console.log("---------------------")
-  // console.log("organisation", organisation);
-  // console.log("Pmt ID",info.pf_payment_id)
-  // console.log("Pmt Status",info.payment_status)
-  // console.log("package", package);
-  // console.log("gross",info.amount_gross)
-  // console.log("Fee",info.amount_fee)
-  // console.log("Nett",info.amount_net)
-  // console.log("Paid Date", paidDate)
-
-
 
   let response = `${JSON.stringify(req.body)}`;
-
-  // let subject = "PayFastITN";
-  // let recipient = "waynebruton@icloud.com";
-  // let output = response;
-
   let sql1 = `update clientele set expiry = '${expiry}', package = ${package}, monthly = ${monthly} where organisation = ${organisation}`
   let sql2 = `insert into paymentsReceived (organisation, pf_payment_id, payment_status, package, amount_gross, amount_fee, amount_net, payDate) values
               (${organisation},'${info.pf_payment_id}', '${info.payment_status}', ${package}, ${info.amount_gross},${info.amount_fee},${info.amount_net}, '${paidDate}')`
@@ -429,24 +362,12 @@ router.post("/itnresponse", (req, res) => {
     connection.query(sql, function(error, result) {
       if (error) {
         console.log(error);
-        // res.json(results.failure);
       } else {
-        // res.json(result);
-        // write to JSON
-        console.log(result)
+        // console.log(result)
       }
     });
     connection.release();
   });
-
-  // sendMail(subject, recipient, output).catch(async function(error) {
-  //   console.log(error);
-  //   if (error) {
-  //     await console.log(error);
-  //   } else {
-  //     await console.log("AWESOME IT WORKED");
-  //   }
-  // });
 }
 });
 

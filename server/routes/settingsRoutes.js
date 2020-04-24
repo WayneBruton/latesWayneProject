@@ -1,11 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("./connection");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const Cryptr = require("cryptr");
-const cryptr = new Cryptr(process.env.ENCRYPTION_SECRET);
-const nodemailer = require("nodemailer");
-const bcrypt = require("bcryptjs");
+// const cryptr = new Cryptr(process.env.ENCRYPTION_SECRET);
+// const nodemailer = require("nodemailer");
+// const bcrypt = require("bcryptjs");
 let cookieparser = require("cookie-parser");
 const checktoken = require("./tokenCheckRoutes");
 router.use(cookieparser());
@@ -59,7 +59,8 @@ router.put("/getEmployeeToEdit", (req, res) => {
 });
 
 router.put("/editEmployee", (req, res) => {
-  let sql = `update users set lname = '${req.body.lname}', fname = '${req.body.fname}', email = '${req.body.email}', userType = ${req.body.userType}, staffType = ${req.body.staffType}, jobTitle = '${req.body.jobTitle}' where id = ${req.body.id}`;
+  console.log(req.body)
+  let sql = `update users set lname = '${req.body.lname}', fname = '${req.body.fname}', email = '${req.body.email}', userType = ${req.body.userType}, staffType = ${req.body.staffType}, jobTitle = '${req.body.jobTitle}', mobileNumber = '${req.body.mobileNumber}' where id = ${req.body.id}`;
 
   let results = { success: true, failure: false };
   pool.getConnection(function(err, connection) {
@@ -190,10 +191,6 @@ router.put("/getDocumentTypes", checktoken, (req, res) => {
   let sql = `select d.id, d.documentType, count(s.documentType) as count from documentTypes as d left join staffDocuments  as s on s.documentType = d.id and d.organisation = ${req.body.id} and d.organisation = s.organisation
             where d.organisation = ${req.body.id}
               group by d.id`;
-  // let sql2 = `select s.id, s.staff_description, p.appliesTo from staffTypes s right join
-  // policies p on JSON_CONTAINS(p.appliesTo, CAST(s.id as JSON), '$') where s.organisation = ${req.body.id} and s.organisation = p.organisation`;
-  // let sql3 = `select u.staffType from users u, staffTypes s where s.id = u.staffType and u.organisation = ${req.body.id} and s.organisation = u.organisation`
-  // let sql = `${sql1};${sql2};${sql3}`
   let results = { success: true, failure: false };
   pool.getConnection(function(err, connection) {
     if (err) {

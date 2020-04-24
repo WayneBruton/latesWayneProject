@@ -1,19 +1,19 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("./connection");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const Cryptr = require("cryptr");
-const cryptr = new Cryptr(process.env.ENCRYPTION_SECRET);
-const nodemailer = require("nodemailer");
-const bcrypt = require("bcryptjs");
+// const cryptr = new Cryptr(process.env.ENCRYPTION_SECRET);
+// const nodemailer = require("nodemailer");
+// const bcrypt = require("bcryptjs");
 let cookieparser = require("cookie-parser");
 const checktoken = require("./tokenCheckRoutes");
 router.use(cookieparser());
-const moment = require("moment")
+const moment = require("moment");
 // var geocoding = new require("reverse-geocoding");
 // var geocoder = require('local-reverse-geocoder');
 var crg = require("country-reverse-geocoding").country_reverse_geocoding();
-var exchange = require("exchange-rates");
+// var exchange = require("exchange-rates");
 const fetch = require("node-fetch");
 // import {convertCurrency, getCurrencyRate, getCurrencyRateList} from 'currencies-exchange-rates';
 
@@ -25,12 +25,12 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
   let sql5 = `select id, policyRead  from policiesRead where organisation = ${req.body.organisation} and user = ${req.body.id}`;
   let sql = `${sql1};${sql2};${sql3};${sql4};${sql5}`;
   let results = { success: true, failure: false };
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);
@@ -38,7 +38,7 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
         let allStaff = result[1][0].id;
         let thisStaffType = result[0][0].staffType;
 
-        let staffTypes = result[1].filter(el => {
+        let staffTypes = result[1].filter((el) => {
           return el.id === allStaff || el.id === thisStaffType;
         });
         let staffDocuments = result[2];
@@ -47,18 +47,17 @@ router.put("/getEmployeeDocuments", checktoken, (req, res) => {
 
         let lastSQL = `Select * from policies where JSON_CONTAINS(appliesTo, '[${allStaff}]') or JSON_CONTAINS(appliesTo, '[${thisStaffType}]') and organisation = ${req.body.organisation}`;
 
-        connection.query(lastSQL, function(error, result) {
+        connection.query(lastSQL, function (error, result) {
           if (error) {
             console.log(error);
             res.json(results.failure);
           } else {
-            //   res.json(results.failure);
             let finalSend = {
               policies: result,
               policiesRead: policiesRead,
               staffTypes: staffTypes,
               staffDocuments: staffDocuments,
-              documentTypes: documentTypes
+              documentTypes: documentTypes,
             };
 
             res.json(finalSend);
@@ -75,18 +74,18 @@ router.put("/postpolicyRead", (req, res) => {
   if (req.body.documentType === "Policy") {
     sql = `Insert INTO policiesRead (policyRead, user, organisation) values (${req.body.documentID}, ${req.body.userID}, ${req.body.organisationID})`;
   } else if (req.body.documentType === "StaffDocument") {
-    let today = moment(new Date()).format("YYYY-MM-DD HH:mm").toString()
+    let today = moment(new Date()).format("YYYY-MM-DD HH:mm").toString();
     sql = `Update staffDocuments set readDocument = true, dateRead = '${today}' where id = ${req.body.documentID}`;
   }
 
   let results = { success: true, failure: false };
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);
@@ -100,12 +99,11 @@ router.put("/postpolicyRead", (req, res) => {
 
 router.get("/exchangeRate", (req, res) => {
   fetch("https://api.exchangerate-api.com/v4/latest/USD")
-    .then(response => response.json())
-    .then(data => {
-      console.log(data)
-      res.json({ ZAR: data.rates.ZAR , ALL:data.rates });
+    .then((response) => response.json())
+    .then((data) => {
+      res.json({ ZAR: data.rates.ZAR, ALL: data.rates });
     })
-    .catch(e => {
+    .catch((e) => {
       console.log(e);
     });
 });
@@ -119,14 +117,14 @@ router.put("/getPackages", (req, res) => {
   let sql3 = `select country from organisation where id = ${req.body.id}`;
   let sql = `${sql1};${sql2};${sql3}`;
 
-  let results = { success: true, failure: false }; 
+  let results = { success: true, failure: false };
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);
@@ -141,15 +139,11 @@ router.put("/getPackages", (req, res) => {
 router.put("/getCountry", (req, res) => {
   let lat = req.body.latitude;
   let lon = req.body.longitude;
-  // console.log(lat, lon)
   var country = crg.get_country(lat, lon);
 
-
   if (country == null) {
-    // console.log(err)
     res.json({ error: "Error" });
   } else {
-    // console.log(country)
     res.json({ country: country.name, code: country.code });
   }
 });
@@ -163,12 +157,12 @@ router.put("/usageThusFar", (req, res) => {
   let sql = `${sql1};${sql2};${sql3};${sql4};${sql5}`;
   let results = { success: true, failure: false };
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);
@@ -184,12 +178,12 @@ router.put("/getTheme", (req, res) => {
   let sql = `select * from colorScheme where organisation = ${req.body.organisation}`;
   let results = { success: true, failure: false };
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);
@@ -205,12 +199,12 @@ router.put("/upDateTheme", (req, res) => {
   let sql = `update colorScheme set colorChosen = '${req.body.colorChosen}' where organisation = ${req.body.organisation}`;
   let results = { success: true, failure: false };
 
-  pool.getConnection(function(err, connection) {
+  pool.getConnection(function (err, connection) {
     if (err) {
       connection.release();
       resizeBy.send("Error with connection");
     }
-    connection.query(sql, function(error, result) {
+    connection.query(sql, function (error, result) {
       if (error) {
         console.log(error);
         res.json(results.failure);

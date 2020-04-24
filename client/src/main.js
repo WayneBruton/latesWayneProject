@@ -12,6 +12,13 @@ import VueMeta from "vue-meta";
 import VueYoutube from "vue-youtube";
 import CountryFlag from "vue-country-flag";
 import MyPlugin from "./plugins/usageStats";
+import VueMask from "v-mask";
+// import "vue-country-code/dist/vue-country-code.css";
+import VueCountryCode from "vue-country-code";
+
+Vue.use(VueCountryCode);
+
+Vue.use(VueMask);
 
 Vue.use(VueYoutube, VueMeta);
 // Vue.use(VueMeta);

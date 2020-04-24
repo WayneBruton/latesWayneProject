@@ -168,6 +168,10 @@ export default {
   updatePolicy(credentials) {
     // console.log(credentials);
     return Api().put(`/updatePolicy`, credentials);
+  },
+  getExpiry(credentials) {
+    // console.log(credentials);
+    return Api().put(`/getExpiry`, credentials);
   }
   // ,
   // itnresponse(credentials) {

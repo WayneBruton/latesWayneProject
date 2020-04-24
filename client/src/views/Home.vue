@@ -7,7 +7,11 @@
     />
     <!-- @CookieNotAcceptedLogin="test" -->
     <EmployeeDashboard
-      v-if="this.$store.state.isLoggedIn && !this.$store.state.isAdministrator"
+      v-if="
+        this.$store.state.isLoggedIn &&
+          !this.$store.state.isAdministrator &&
+          this.$store.state.userIsEmployee
+      "
     />
   </div>
 </template>

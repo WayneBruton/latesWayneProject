@@ -330,7 +330,8 @@ export default {
             fname: response.data.user.fname,
             lname: response.data.user.lname,
             userType: this.userType,
-            userID: response.data.user.id
+            userID: response.data.user.id,
+            userIsEmployee: true
           };
           // console.log(response.data.country);
           this.$cookies.remove("token");
@@ -375,7 +376,8 @@ export default {
             fname: response.data.user.fname,
             lname: response.data.user.lname,
             userType: this.userType,
-            userID: response.data.user.id
+            userID: response.data.user.id,
+            userIsEmployee: response.data.user.isEmployee
           };
           this.$cookies.remove("token");
           let user = { token: response.data.token };

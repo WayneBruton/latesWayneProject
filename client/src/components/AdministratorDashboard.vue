@@ -22,9 +22,8 @@
               class="mx-2"
               fab
               dark
-              disabled
               color="#010a43"
-              ><v-icon style="color: blue;"
+              ><v-icon style="color: white;"
                 >mdi-microsoft-windows</v-icon
               ></v-btn
             >
@@ -73,7 +72,7 @@
               <v-col cols="12" xs="12" sm="12" md="12" v-if="!processing">
                 <v-btn color="#010a43" dark @click="printGlobalReport">
                   <v-icon left dark>mdi-printer</v-icon>
-                  Print Report</v-btn
+                  Staff Report</v-btn
                 >
               </v-col>
               <v-col cols="12" xs="12" sm="12" md="12">
@@ -90,7 +89,7 @@
                 <v-card class="mx-auto" max-width="800" tile>
                   <v-toolbar color="#010a43" dark height="90px">
                     <v-spacer></v-spacer>
-                    <v-toolbar-title>How it stands</v-toolbar-title>
+                    <v-toolbar-title>Internal</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-text-field
                       label="Search"

@@ -37,6 +37,32 @@
                     @blur="checkUserEmail"
                   ></v-text-field>
                 </v-col>
+                <!-- <v-col cols="12" xs="12" sm="6" md="6">
+
+                <vue-country-code
+                  @onSelect="onSelect"
+                  :preferredCountries="['vn', 'us', 'gb']"
+                >
+                </vue-country-code> -->
+                <!-- </v-col> -->
+                <v-col cols="12" xs="12" sm="6" md="6">
+                  <v-flex row>
+                    <!-- @onSelect="onSelect" -->
+                    <vue-country-code
+                      :preferredCountries="['za', 'us', 'gb']"
+                      style="border-style: none; margin-right: 5px;"
+                      v-model="dialingCode"
+                    >
+                    </vue-country-code>
+                    <v-text-field
+                      v-mask="'(###) ###-####'"
+                      label="mobile*"
+                      v-model="mobile"
+                      required
+                      @change="finaliseMobile"
+                    ></v-text-field>
+                  </v-flex>
+                </v-col>
                 <v-col cols="12" xs="12" sm="6" md="6">
                   <v-text-field
                     label="Job Title*"
@@ -125,6 +151,9 @@ export default {
       fname: "",
       lname: "",
       userEmail: "",
+      mobile: null,
+      dialingCode: 27,
+      mobileNumber: null,
       isAdministrator: false,
       jobTitle: "",
       organisationName: "",
@@ -135,6 +164,28 @@ export default {
   },
   components: {},
   methods: {
+    finaliseMobile() {
+      // console.log(this.dialingCode, this.mobile);
+      let str = parseInt(
+        this.mobile
+          .replace("(", "")
+          .replace(")", "")
+          .replace(" ", "")
+          .replace("-", "")
+      );
+      // str = str.replace(")",'')
+      // str = str.replace(" ",'')
+      // str = parseInt(str.replace("-",''))
+      this.mobileNumber = "+" + this.dialingCode + str;
+      // console.log(this.mobileNumber);
+
+      // console.log(str)
+
+      // console.log(temp)
+    },
+    // onSelect({ name, iso2, dialCode }) {
+    //   console.log(name, iso2, dialCode);
+    // },
     upgrade() {
       this.$router.push({ name: "pricing" });
       this.dialog2 = false;
@@ -169,6 +220,7 @@ export default {
           this.lname === "" ||
           this.userEmail === "" ||
           this.jobTitle === "" ||
+          this.mobileNumber == "" ||
           this.staffAffected.length === 0
         ) {
           this.snackBarMessage = "All fields must be filled in";
@@ -193,7 +245,8 @@ export default {
             password: "#",
             userType: userType,
             staffType: staffType,
-            jobTitle: this.jobTitle
+            jobTitle: this.jobTitle,
+            mobileNumber: this.mobileNumber
           };
           this.dialog = false;
           let response = await DirectoryService.createUser(credentials);

@@ -11,16 +11,24 @@
           style="margin-right: 5px; border: 1px solid transparent; border-radius: 70%;"
         />
         <span class="mr-2 headerHome home">PerfectStaff</span>
-        <v-spacer></v-spacer>
+        <v-btn
+          dark
+          text
+          v-if="
+            this.$store.state.isLoggedIn &&
+              this.$store.state.isAdministrator &&
+              $route.path !== '/'
+          "
+          ><v-icon>mdi-home</v-icon></v-btn
+        >
 
-        <!-- <country-flag :country="iso" size="normal" v-if="iso" /> -->
+        <country-flag
+          v-if="this.$store.state.isLoggedIn"
+          :country="this.$store.state.country"
+          size="normal"
+        />
       </div>
-      <!-- <v-spacer></v-spacer> -->
-      <country-flag
-        v-if="this.$store.state.isLoggedIn"
-        :country="this.$store.state.country"
-        size="normal"
-      />
+
       <v-spacer></v-spacer>
       <v-btn
         text
@@ -143,15 +151,55 @@
         >
       </div>
     </v-alert>
+    <v-row justify="center">
+      <v-dialog
+        v-if="
+          this.$store.state.isLoggedIn &&
+            expiryDays < 15 &&
+            this.$store.state.isAdministrator
+        "
+        v-model="dialog"
+        persistent
+        max-width="450"
+      >
+        <v-card>
+          <v-card-title class="headline"
+            >Your subscription expires soon</v-card-title
+          >
+          <v-card-text>
+            <span>
+              Your package expires on
+              {{ expiryDate | moment("dddd, MMMM Do YYYY") }}
+            </span>
+          </v-card-text>
+          <v-card-text>
+            <span> This is in less than {{ expiryDays }} days time. </span>
+          </v-card-text>
+          <v-card-actions xs12>
+            <v-btn color="green darken-1" text @click="dialog = false"
+              >Close</v-btn
+            >
+            <v-spacer></v-spacer>
+            <v-btn color="green darken-1" text @click="subscribe"
+              >Subscribe</v-btn
+            >
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </v-row>
   </div>
 </template>
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
+// import moment from "vue-moment";
 export default {
   name: "Header",
   data() {
     return {
+      expiryDate: Date,
+      expiryDays: Number,
+      dialog: true,
       menuItems: [
         {
           name: "Policies",
@@ -163,6 +211,11 @@ export default {
           redirect: { name: "employees" },
           icon: "mdi-face"
         },
+        // {
+        //   name: "External",
+        //   redirect: { name: "employees" },
+        //   icon: "mdi-account-group"
+        // },
         {
           name: "Settings",
           redirect: { name: "settings" },
@@ -200,19 +253,23 @@ export default {
       windowWidth: 0,
       txt: "",
       iso: "",
+      loggedIn: false,
 
       location: null,
       gettingLocation: false,
       errorStr: ""
     };
   },
-  beforeMount() {
-    if (!this.$store.state.isLoggedIn) {
-      this.showPosition();
-      // this.logFlag()
+  components: {
+    // moment
+  },
+  async beforeMount() {
+    if (this.$store.state.isLoggedIn) {
+      this.loggedIn = true;
     }
   },
   mounted() {
+    this.checkExpiry();
     // console.log("WindowWidth", window.outerWidth);
     // console.log("WindowWidth", window.innerWidth);
     this.windowWidth = window.innerWidth;
@@ -228,6 +285,9 @@ export default {
     window.removeEventListener("resize", this.onResize);
   },
   watch: {
+    // loggedIn: function() {
+    //     this.checkExpiry();
+    // },
     // iso: function() {
     //   if (!this.$store.state.isLoggedIn) {
     //     // this.showPosition();
@@ -237,6 +297,10 @@ export default {
     // }
   },
   methods: {
+    subscribe() {
+      this.$router.push({ name: "pricing" });
+      this.dialog = false;
+    },
     onResize() {
       this.windowWidth = window.innerWidth;
     },
@@ -247,6 +311,7 @@ export default {
     },
     logout() {
       let criteria = null;
+      this.loggedIn = false;
       this.$store.dispatch("logout", criteria);
       this.goHome();
     },

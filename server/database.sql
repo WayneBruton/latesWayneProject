@@ -154,6 +154,10 @@ CREATE TABLE paymentsReceived (
     payDate timestamp
 );
 
+ALTER TABLE users
+    ADD mobileNumber varchar(35) AFTER email,
+    ADD isEmployee Boolean NOT NULL default true;
+
 
 -- ###########################
 
@@ -186,7 +190,7 @@ INSERT INTO colorScheme (organisation, colorChosen ) values (
 -- #####################################
 
 
-    s.id,s.documentNameName,s.documentLinkLink,s.documentDescription,s.documentType,s.users,s.createdAt,s.organisation,s.readDocument,s.documentSize, s.dateRead
+    -- s.id,s.documentNameName,s.documentLinkLink,s.documentDescription,s.documentType,s.users,s.createdAt,s.organisation,s.readDocument,s.documentSize, s.dateRead
 
 -- INSERT INTO organisation (organisationName, email, address1, address2, address3, city, province, country, zipCode, contactNumber ) values
 --                         ('Eccentric Toad', 'wayne@eccentricToad.com', '6 Parkside', '5 the Close', 'Tokai','Cape Town', 'WC', 'South Africa', '7945', '0740628742' );
