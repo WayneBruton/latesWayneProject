@@ -1,0 +1,13 @@
+
+// NAME
+// perfectstaffsmstoken
+
+// TOKEN ID
+// E22523FDFDA64626B34184B8D6AD898E-01-A
+
+// TOKEN SECRET
+// fh3xJndNP9jTo*llH1m12kZC7qpfZ
+
+// BASIC AUTH
+// Authorization: Basic RTIyNTIzRkRGREE2NDYyNkIzNDE4NEI4RDZBRDg5OEUtMDEtQTpmaDN4Sm5kTlA5alRvKmxsSDFtMTJrWkM3cXBmWg==
+

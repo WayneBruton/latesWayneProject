@@ -1,6 +1,5 @@
 <template>
-  <div>
-    <br /><br /><br /><br /><br />
+  <v-container class="temp">
     <div style="display: flex; justify-content: center;">
       <h2>{{ this.$store.state.organisationName }}</h2>
       <br />
@@ -17,9 +16,7 @@
       class="popup-visible"
     >
       <div class="popup-visible">
-        <div
-          style="display: flex; flex-direction: column; align-items: center; margin-left: 25px;"
-        >
+        <div class="popup-visibleT">
           <h4>You have read {{ totalPoliciesRead }} policies</h4>
           <v-progress-circular
             :rotate="90"
@@ -33,9 +30,7 @@
         </div>
       </div>
       <div class="popup-visible">
-        <div
-          style="display: flex; flex-direction: column; align-items: center; margin-right: 25px;"
-        >
+        <div class="popup-visibleB">
           <h4>You have read {{ totalPersonnelDocumentsRead }} personal docs</h4>
           <v-progress-circular
             :rotate="90"
@@ -92,43 +87,49 @@
             no-action
             prepend-icon="mdi-book-open-page-variant"
           >
-            <v-list-item-content>
-              <v-list-item-title
-                prepend-icon="mdi-book-open-page-variant"
-                v-text="subItem.policyName"
-              ></v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-flex>
-                <v-btn
-                  :id="subItem.id"
-                  text
-                  color="#010a43"
-                  @click="view($event)"
-                  >View</v-btn
-                >
-                <v-btn
-                  v-if="subItem.policyRead"
-                  class="mx-2"
-                  fab
-                  dark
-                  x-small
-                  color="#010a43"
-                  @click="read"
-                  >?
-                </v-btn>
-                <v-btn
-                  v-else
-                  class="mx-2"
-                  fab
-                  dark
-                  x-small
-                  color="red"
-                  @click="unread"
-                  >?
-                </v-btn>
-              </v-flex>
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    prepend-icon="mdi-book-open-page-variant"
+                    v-text="subItem.policyName"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <v-btn
+                      :id="subItem.id"
+                      text
+                      color="#010a43"
+                      @click="view($event)"
+                      >View</v-btn
+                    >
+                    <v-btn
+                      v-if="subItem.policyRead"
+                      class="mx-2"
+                      fab
+                      dark
+                      x-small
+                      color="#010a43"
+                      @click="read"
+                      >?
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      class="mx-2"
+                      fab
+                      dark
+                      x-small
+                      color="red"
+                      @click="unread"
+                      >?
+                    </v-btn>
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-group>
       </v-list>
@@ -176,43 +177,49 @@
             no-action
             prepend-icon="mdi-book-open-page-variant"
           >
-            <v-list-item-content>
-              <v-list-item-title
-                prepend-icon="mdi-book-open-page-variant"
-                v-text="subItem.documentNameName"
-              ></v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-flex>
-                <v-btn
-                  :id="subItem.id"
-                  text
-                  color="#010a43"
-                  @click="viewPers($event)"
-                  >View</v-btn
-                >
-                <v-btn
-                  v-if="subItem.readDocument"
-                  class="mx-2"
-                  fab
-                  dark
-                  x-small
-                  color="#010a43"
-                  @click="read"
-                  >?
-                </v-btn>
-                <v-btn
-                  v-else
-                  class="mx-2"
-                  fab
-                  dark
-                  x-small
-                  color="red"
-                  @click="unread"
-                  >?
-                </v-btn>
-              </v-flex>
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    prepend-icon="mdi-book-open-page-variant"
+                    v-text="subItem.documentNameName"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <v-btn
+                      :id="subItem.id"
+                      text
+                      color="#010a43"
+                      @click="viewPers($event)"
+                      >View</v-btn
+                    >
+                    <v-btn
+                      v-if="subItem.readDocument"
+                      class="mx-2"
+                      fab
+                      dark
+                      x-small
+                      color="#010a43"
+                      @click="read"
+                      >?
+                    </v-btn>
+                    <v-btn
+                      v-else
+                      class="mx-2"
+                      fab
+                      dark
+                      x-small
+                      color="red"
+                      @click="unread"
+                      >?
+                    </v-btn>
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-group>
       </v-list>
@@ -224,7 +231,7 @@
       </v-btn>
     </v-snackbar>
     <br /><br />
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -269,6 +276,7 @@ export default {
         id: this.$store.state.userID,
         organisation: this.$store.state.organisationID
       };
+      console.log(credentials);
       let response = await DirectoryService.getEmployeeDocuments(credentials);
       // console.log(response.data)
       if (response.data.success === false) {
@@ -368,7 +376,7 @@ export default {
         documentID: parseInt(targetID),
         documentName: filtered[0].policyName,
         documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].policyLink}.pdf`,
-        URL: `${filtered[0].policyLink}`
+        URL: `${filtered[0].policyLink}.pdf`
       };
 
       let response = await DirectoryService.viewDoc(criteria);
@@ -396,7 +404,7 @@ export default {
         documentID: parseInt(targetID),
         documentName: filtered[0].documentNameName,
         documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].documentLinkLink}.pdf`,
-        URL: `${filtered[0].documentLinkLink}`
+        URL: `${filtered[0].documentLinkLink}.pdf`
       };
 
       let response = await DirectoryService.viewDoc(criteria);
@@ -439,5 +447,58 @@ export default {
 .v-progress-circular {
   margin: 1rem;
   /* background-color: red; */
+}
+.popup-visibleT {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-left: 25px;
+}
+
+.popup-visibleB {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 25px;
+}
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+  .popup-visible {
+    /* position: absolute; */
+    /* display: flex; */
+    flex-direction: column;
+    /* justify-content: center; */
+    /* z-index: 10; */
+  }
+
+  .popup-visibleT {
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    margin-left: 0px;
+  }
+  .popup-visibleB {
+    /* display: flex; */
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    margin-right: 0px;
+  }
 }
 </style>

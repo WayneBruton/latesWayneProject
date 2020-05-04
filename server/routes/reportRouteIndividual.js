@@ -172,16 +172,16 @@ async function printreport() {
     report.band(
       [
         { data: "", width: 15 },
-        { data: data.policyName, width: 100 },
+        { data: data.policyName, width: 180 },
         {
           data: `Read: ${data.policyRead}`,
-          width: 100,
+          width: 120,
           align: 3,
           textColor: data.policyRead === "No" ? "#FF0000" : "#000000",
         },
         {
           data: data.readAt !== null ? `${data.readAt}` : "",
-          width: 100,
+          width: 120,
           align: 3,
           textColor: data.totalPercent < 75 ? "#FF0000" : "#000000",
         },

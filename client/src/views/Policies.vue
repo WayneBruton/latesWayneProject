@@ -33,15 +33,25 @@
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-flex>
-                <UploadDocument @success="handleSuccess($event)" />
-              </v-flex>
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-text="item.text"
+                    style="white-space: normal;"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+
+              <v-spacer></v-spacer>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <UploadDocument @success="handleSuccess($event)" />
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -91,60 +101,68 @@
               prepend-icon="mdi-book-open-page-variant"
               two-line
             >
-              <v-list-item-content>
-                <v-list-item-title
-                  prepend-icon="mdi-book-open-page-variant"
-                  v-text="subItem.policyName"
-                ></v-list-item-title>
-                <v-list-item-subtitle
-                  prepend-icon="mdi-book-open-page-variant"
-                  v-text="subItem.description.substring(0, 250) + '...'"
-                ></v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-flex>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="subItem.id"
-                        text
-                        color="green"
-                        @click="view($event)"
-                        ><v-icon>mdi-file-find</v-icon></v-btn
-                      >
-                    </template>
-                    <span>View</span>
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="subItem.id"
-                        text
-                        color="indigo"
-                        @click="edit($event)"
-                        ><v-icon>mdi-file-edit</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Edit</span>
-                  </v-tooltip>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="item.id + '-' + subItem.id"
-                        :category="item.id"
-                        text
-                        color="red"
-                        @click="remove($event)"
-                        ><v-icon>mdi-delete</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Delete</span>
-                  </v-tooltip>
-                </v-flex>
-              </v-list-item-action>
+              <div class="mainView">
+                <div class="subView1">
+                  <v-list-item-content>
+                    <v-list-item-title
+                      prepend-icon="mdi-book-open-page-variant"
+                      v-text="subItem.policyName"
+                      style="white-space: normal;"
+                    ></v-list-item-title>
+                    <v-list-item-subtitle
+                      prepend-icon="mdi-book-open-page-variant"
+                      v-text="subItem.description.substring(0, 250) + '...'"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
+                </div>
+                <v-spacer></v-spacer>
+                <div class="subView2">
+                  <v-list-item-action>
+                    <v-flex>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :id="subItem.id"
+                            text
+                            color="green"
+                            @click="view($event)"
+                            ><v-icon>mdi-file-find</v-icon></v-btn
+                          >
+                        </template>
+                        <span>View</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :id="subItem.id"
+                            text
+                            color="indigo"
+                            @click="edit($event)"
+                            ><v-icon>mdi-file-edit</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Edit</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :id="item.id + '-' + subItem.id"
+                            :category="item.id"
+                            text
+                            color="red"
+                            @click="remove($event)"
+                            ><v-icon>mdi-delete</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Delete</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-list-item-action>
+                </div>
+              </div>
             </v-list-item>
           </v-list-group>
         </v-list>
@@ -258,7 +276,7 @@
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
-import UploadDocument from "../components/uploadPolicyDoc";
+// import UploadDocument from "../components/uploadPolicyDoc";
 export default {
   name: "policies",
   metaInfo: {
@@ -297,7 +315,11 @@ export default {
     };
   },
   components: {
-    UploadDocument
+    // UploadDocument
+    UploadDocument: () =>
+      import(
+        /* webpackChunkName: "UploadDocument" */ "../components/uploadPolicyDoc"
+      )
   },
   async beforeMount() {
     try {
@@ -446,7 +468,9 @@ export default {
         documentID: parseInt(targetID),
         documentName: filtered[0].policyName,
         documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].policyLink}.pdf`,
-        URL: `${filtered[0].policyLink}`
+        // documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].policyLink}`,
+        URL: `${filtered[0].policyLink}.pdf`
+        // URL: `${filtered[0].policyLink}`
       };
       try {
         let response = await DirectoryService.viewDoc(criteria);
@@ -554,7 +578,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .subItems:hover {
   background-color: lightcyan;
 }
@@ -564,4 +588,22 @@ export default {
   justify-content: center;
   z-index: 10;
 }
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+}
+
+/* style="display: flex; justify-content: space-evenly;" */
 </style>

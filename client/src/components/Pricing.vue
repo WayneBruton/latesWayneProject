@@ -148,7 +148,7 @@
     </v-snackbar>
 
     <v-dialog v-model="dialog" scrollable persistent max-width="650px">
-      <v-card style="height: 600px;" max-width="90%">
+      <v-card style=" margin-bottom: 25px;" max-width="90%">
         <v-card-title class="headline">Subscribe</v-card-title>
         <v-card-text>
           <v-container>
@@ -242,7 +242,7 @@
             </v-row>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions style="margin-bottom: 25px;">
           <v-row justify="center">
             <v-btn color="#010a43" text @click="close">Cancel</v-btn>
             <v-spacer></v-spacer>
@@ -445,6 +445,10 @@ export default {
 
       isDemo: true
     };
+  },
+  components: {
+    CountryFlag: () =>
+      import(/* webpackChunkName: "CountryFlag" */ "vue-country-flag")
   },
   mounted() {
     // async mounted() {

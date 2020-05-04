@@ -109,6 +109,7 @@ export default {
           id: this.userID
         };
         let response = await DirectoryService.getUser(credentials);
+        // console.log(response.data)
         this.email = response.data[0].email;
         this.firstName = response.data[0].fname;
         this.lastName = response.data[0].lname;

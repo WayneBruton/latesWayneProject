@@ -147,34 +147,19 @@ export default {
           this.snackBarMessage = "All fields must be filled in";
           return (this.snackbar = true);
         } else {
-          // console.log("Hello");
           this.staffAffectedByID = [];
           this.processing = true;
-          // console.log("Staff", this.staffAffected);
-          // this.staffAffected.forEach((el) => {
-          //   console.log(el);
-          //   console.log(this.typesOfStaff)
-          //   let filtered = this.typesOfStaff.filter((el2) => {
-          //     if (el === el2.Staff_description) {
-          //       return el2.id;
-          //     }
-          //   });
-          //   console.log("This is filtered", filtered);
-          // });
 
           this.staffAffected.forEach(el => {
-            // let description = el;
-            // console.log("Test", el);
             let filtered = this.typesOfStaff.filter(el2 => {
               if (el === el2.staff_description) {
                 return el2.id;
               }
             });
 
-            // console.log(filtered);
             this.staffAffectedByID.push(filtered[0].id);
           });
-          // console.log("staff", this.staffAffectedByID);
+
           if (this.staffAffectedByID.includes(this.typesOfStaff[0].id)) {
             this.staffAffectedByID = [this.typesOfStaff[0].id];
           }
@@ -195,7 +180,6 @@ export default {
           }
 
           this.$emit("success", this.staffAffectedByID);
-          // console.log("data I want to emit", this.staffAffected);
 
           this.file = [];
           this.fileName = "";
@@ -222,7 +206,7 @@ export default {
           id: this.organisationID
         };
         let response = await DirectoryService.staffTypes(credentials);
-        // console.log(response);
+
         this.typesOfStaff = response.data;
       } catch (error) {
         this.snackBarMessage = "Network Error(22), please try later!";

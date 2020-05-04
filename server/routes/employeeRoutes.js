@@ -1,29 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("./connection");
-// const jwt = require("jsonwebtoken");
-const Cryptr = require("cryptr");
-// const cryptr = new Cryptr(process.env.ENCRYPTION_SECRET);
-// const nodemailer = require("nodemailer");
-// const bcrypt = require("bcryptjs");
 let cookieparser = require("cookie-parser");
 const checktoken = require("./tokenCheckRoutes");
 router.use(cookieparser());
 const moment = require("moment");
-// var geocoding = new require("reverse-geocoding");
-// var geocoder = require('local-reverse-geocoder');
 var crg = require("country-reverse-geocoding").country_reverse_geocoding();
-// var exchange = require("exchange-rates");
 const fetch = require("node-fetch");
-// import {convertCurrency, getCurrencyRate, getCurrencyRateList} from 'currencies-exchange-rates';
+
+
 
 router.put("/getEmployeeDocuments", checktoken, (req, res) => {
+// router.put("/getEmployeeDocuments", (req, res) => {
+  console.log("BODY",req.body)
   let sql1 = `select id, staffType from users where id =  ${req.body.id}`;
   let sql2 = `select * from staffTypes where organisation = ${req.body.organisation}`;
   let sql3 = `select s.id, s.documentNameName, s.documentLinkLink, s.documentType as typeId, d.documentType, s.readDocument from staffDocuments s, documentTypes d where s.organisation = ${req.body.organisation} and s.users = ${req.body.id} and s.documentType = d.id`;
   let sql4 = `select * from documentTypes where organisation = ${req.body.organisation}`;
   let sql5 = `select id, policyRead  from policiesRead where organisation = ${req.body.organisation} and user = ${req.body.id}`;
   let sql = `${sql1};${sql2};${sql3};${sql4};${sql5}`;
+  // console.log("SQL1", sql1)
   let results = { success: true, failure: false };
   pool.getConnection(function (err, connection) {
     if (err) {
@@ -215,5 +211,31 @@ router.put("/upDateTheme", (req, res) => {
     connection.release();
   });
 });
+
+router.put("/viewmydocs", (req, res) => {
+  let sql1 = `select id, userType, fname, lname from users where id = ${req.body.id}`;
+  let sql2 = `select id, organisationName, country from organisation where id = ${req.body.organisation} `;
+  let sql = `${sql1};${sql2}`;
+  // let results = { success: true, failure: false };
+  console.log(req.body)
+  // res.json({awaesome: 'So Far So Good!!'})
+
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      resizeBy.send("Error with connection");
+    }
+    connection.query(sql, function (error, result) {
+      if (error) {
+        console.log(error);
+        res.json(results.failure);
+      } else {
+        res.json(result);
+      }
+    });
+    connection.release();
+  });
+});
+
 
 module.exports = router;

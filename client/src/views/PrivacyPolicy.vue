@@ -1,9 +1,9 @@
 <template>
-  <div class="about">
+  <div class="privacy">
     <br /><br /><br /><br />
     <v-container>
       <v-layout wrap>
-        <v-flex mb-5 xs12>
+        <v-flex mb-5 xs12 md8 offset-md2>
           <v-btn @click="back" color="#010a43" dark>Back</v-btn>
           <br /><br />
           <h3>Introduction</h3>
@@ -197,3 +197,17 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+h3 {
+  color: #010a43;
+  text-decoration-line: underline;
+}
+a {
+  text-decoration: none;
+  color: black;
+}
+h1 {
+  color: #010a43;
+}
+</style>

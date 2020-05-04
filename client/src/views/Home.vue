@@ -17,12 +17,6 @@
 </template>
 
 <script>
-// window.localStorage.getItem('cookie:accepted')
-// window.localStorage.removeItem('cookie:accepted')
-
-import NotLoggedIn from "../components/NotLoggedIn";
-import AdministratorDashboard from "../components/AdministratorDashboard";
-import EmployeeDashboard from "../components/EmployeeDashboard";
 export default {
   name: "home",
   metaInfo: {
@@ -40,22 +34,17 @@ export default {
     };
   },
   components: {
-    NotLoggedIn,
-    AdministratorDashboard,
-    EmployeeDashboard
-
-    // CookieLaw
-    // Cookie
+    NotLoggedIn: () =>
+      import(/* webpackChunkName: "NotLoggedIn" */ "../components/NotLoggedIn"),
+    AdministratorDashboard: () =>
+      import(
+        /* webpackChunkName: "AdministratorDashboard" */ "../components/AdministratorDashboard"
+      ),
+    EmployeeDashboard: () =>
+      import(
+        /* webpackChunkName: "EmployeeDashboard" */ "../components/EmployeeDashboard"
+      )
   },
-  // mounted() {
-  //   // console.log(process.env.VUE_APP_TEST);
-  //   this.$nextTick(() => {
-  //         if (window.localStorage.getItem('cookie:accepted') === "true") {
-  //       this.cookiesAccepted = true
-  //   }
-  //     });
-
-  // },
   methods: {}
 };
 </script>

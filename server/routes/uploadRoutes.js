@@ -95,7 +95,7 @@ router.post("/uploadfile", upload.single("file"), (req, res) => {
   const fileContent = fs.readFileSync(req.file.path);
   const params = {
     Bucket: process.env.AWS_BUCKET,
-    Key: `${now}-${req.file.filename}`,
+    Key: `${now}-${req.file.filename}.pdf`,
     Body: fileContent,
   };
   s3.upload(params, function (err, data) {
@@ -209,7 +209,7 @@ router.post("/uploadEmployeefile", upload.single("file"), (req, res) => {
   const fileContent = fs.readFileSync(req.file.path);
   const params = {
     Bucket: process.env.AWS_BUCKET,
-    Key: `${now}-${req.file.filename}`,
+    Key: `${now}-${req.file.filename}.pdf`,
     Body: fileContent,
   };
   s3.upload(params, function (err, data) {

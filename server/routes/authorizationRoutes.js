@@ -1,14 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const pool = require("./connection");
-// const fs = require("fs");
 const bcrypt = require("bcryptjs");
 const jwtSignUser = require("./tokenCreateRoutes");
 const moment = require("moment");
-// const crypto = require("crypto");
-// var md5Hash = require("md5-hash");
 var md5 = require("blueimp-md5");
-// const saltedMd5 = require("salted-md5");
 
 router.put("/checkOrgName", (req, res) => {
   let sql = `select id from organisation where organisationName = '${req.body.name}'`;
@@ -192,12 +188,17 @@ router.post("/register", (req, res) => {
     (userTypeG = req.body.userType),
     (passwordG = req.body.password),
     (registrationNumberG = req.body.registrationNumber),
-    (VATNumberG = req.body.VATNumber);
+    (VATNumberG = req.body.VATNumber),
+    (mobileNumberG = req.body.mobileNumber);
 
   let orgSql = `INSERT INTO organisation (organisationName, registrationNumber, VATNumber,  email, address1, address2, address3, city, province, country, zipCode, contactNumber ) values
     ('${organisationNameG}','${registrationNumberG}','${VATNumberG}', '${emailG}', '${address1G}', '${address2G}', '${address3G}','${cityG}', '${provinceG}', '${countryG}', '${zipCodeG}', '${contactNumberG}' )`;
 
   let sql2 = `SELECT id, organisationName, country from organisation where organisationName = '${organisationNameG}'`;
+
+  // let getUserStaffTypeSQL = `select id from staffTypes where organisation = ${orgIDG} order by id limit 1,1`;
+
+  // let updateUserStaffTypeSQL = `update users set staffType = ${staffTypeG} where organisation = ${orgIDG}`;
 
   // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
 
@@ -233,7 +234,7 @@ router.post("/register", (req, res) => {
                   firstLogin: result[0].firstLogin,
                   userID: result[0].id,
                   country: countryG,
-                  userIsEmployee: true
+                  userIsEmployee: true,
                 });
               }
             });
@@ -249,7 +250,9 @@ router.post("/register", (req, res) => {
     await loadCompany(param1)
       .then(await getOrdDetails(param2))
       .then(await setUpFiles())
-      .then(await getLoginDetails());
+      .then(await getLoginDetails())
+      // .then(await getUserType(param3))
+      // .then(await editUserType(param4));
   };
 
   // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -275,6 +278,8 @@ let userTypeG;
 let passwordG;
 let registrationNumberG;
 let VATNumberG;
+let mobileNumberG
+let staffTypeG
 
 const loadCompany = (param1) => {
   return new Promise((resolve) => {
@@ -309,7 +314,9 @@ const getOrdDetails = (param2) => {
             if (error) {
               console.log(error);
             } else {
+              console.log(result)
               orgIDG = result[0].id;
+              console.log(orgIDG)
             }
           });
           connection.release();
@@ -319,6 +326,57 @@ const getOrdDetails = (param2) => {
     }, 600);
   });
 };
+
+// const getUserType = (param3) => {
+//   console.log("test",param3)
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(
+//         pool.getConnection(function (err, connection) {
+//           if (err) {
+//             connection.release();
+//             resizeBy.send("Error with connection");
+//           }
+//           connection.query(param3, function (error, result) {
+//             if (error) {
+//               console.log(error);
+//             } else {
+//               console.log(result)
+//               staffTypeG = result[0].id;
+//             }
+//           });
+//           connection.release();
+//         })
+//       );
+//       // });
+//     }, 1000);
+//   });
+// };
+
+// const editUserType = (param4) => {
+//   return new Promise((resolve) => {
+//     setTimeout(() => {
+//       resolve(
+//         pool.getConnection(function (err, connection) {
+//           if (err) {
+//             connection.release();
+//             resizeBy.send("Error with connection");
+//           }
+//           connection.query(param4, function (error, result) {
+//             if (error) {
+//               console.log(error);
+//             } else {
+//               // console.log(result)
+//               // usertTypeG = result[0].id;
+//             }
+//           });
+//           connection.release();
+//         })
+//       );
+//       // });
+//     }, 1500);
+//   });
+// };
 
 const setUpFiles = () => {
   return new Promise((resolve) => {
@@ -342,8 +400,8 @@ const setUpFiles = () => {
                                   (${orgIDG},"Maintenance"),
                                   (${orgIDG},"Reception")`;
 
-          let sqlUser = `INSERT into users (organisation, fname, lname, email, password, userType, staffType, firstLogin ) values
-                            (${orgIDG},'${fnameG}', '${lnameG}', '${emailUserG}','${hash}',${userTypeG}, 2, false)`;
+          let sqlUser = `INSERT into users (organisation, fname, lname, email, password, userType, staffType, firstLogin, mobileNumber ) values
+                            (${orgIDG},'${fnameG}', '${lnameG}', '${emailUserG}','${hash}',${userTypeG}, 2, false, '${mobileNumberG}')`;
 
           let sqldocumentTypes = `INSERT INTO documentTypes (organisation, documentType) values
                                   (${orgIDG},"Employment"),
@@ -360,7 +418,11 @@ const setUpFiles = () => {
           let sqlColors = `INSERT INTO colorScheme (organisation, colorChosen ) values (
                   ${orgIDG}, "#142850"
               );`;
-          let finalSQL = `${sqlStaffTypes};${sqlUser};${sqldocumentTypes};${sqlclientele};${sqlColors}`;
+
+          let sqlUnits = `INSERT INTO textUnits (organisation, unitNumber ) values (
+                  ${orgIDG}, 0
+              );`;
+          let finalSQL = `${sqlStaffTypes};${sqlUser};${sqldocumentTypes};${sqlclientele};${sqlColors};${sqlUnits}`;
           connection.query(finalSQL, function (error, result) {
             if (error) {
               console.log(error);
@@ -373,5 +435,39 @@ const setUpFiles = () => {
     }, 350);
   });
 };
+
+
+router.put("/updateNewRegistrationUser", (req, res) => {
+  console.log(req.body)
+  let sql = `select id from staffTypes where organisation = ${req.body.organisation} order by id limit 1,1`;
+  // let sql = `select id from organisation where email = '${req.body.email}'`;
+  pool.getConnection(function (err, connection) {
+    if (err) {
+      connection.release();
+      resizeBy.send("Error with connection");
+    }
+    connection.query(sql, function (error, result) {
+      if (error) {
+        res.json({ error: "error connecting to database" });
+      } else {
+        console.log(result)
+        let sql2 = `update users set staffType = ${result[0].id} where id = ${req.body.userID}`;
+        console.log(sql2)
+        // res.json(result);
+        connection.query(sql2, function (error, result) {
+          if (error) {
+            res.json({ error: "error connecting to database" });
+          } else {
+            console.log(result)
+            // let sql2 = `update users set staffType = ${result[0].id} where id = ${req.body.userID}`;
+            // console.log(sql2)
+            res.json(result);
+          }
+        });
+      }
+    });
+    connection.release();
+  });
+});
 
 module.exports = router;

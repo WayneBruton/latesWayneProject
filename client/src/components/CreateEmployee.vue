@@ -165,27 +165,20 @@ export default {
   components: {},
   methods: {
     finaliseMobile() {
-      // console.log(this.dialingCode, this.mobile);
-      let str = parseInt(
-        this.mobile
-          .replace("(", "")
-          .replace(")", "")
-          .replace(" ", "")
-          .replace("-", "")
-      );
-      // str = str.replace(")",'')
-      // str = str.replace(" ",'')
-      // str = parseInt(str.replace("-",''))
-      this.mobileNumber = "+" + this.dialingCode + str;
-      // console.log(this.mobileNumber);
-
-      // console.log(str)
-
-      // console.log(temp)
+      let str = this.mobile
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace("-", "");
+      // console.log(str.length);
+      if (str.length != 10) {
+        this.mobile = "";
+      } else {
+        this.mobileNumber = "+" + this.dialingCode + parseInt(str);
+        console.log(this.mobileNumber);
+      }
+      str = parseInt(str);
     },
-    // onSelect({ name, iso2, dialCode }) {
-    //   console.log(name, iso2, dialCode);
-    // },
     upgrade() {
       this.$router.push({ name: "pricing" });
       this.dialog2 = false;

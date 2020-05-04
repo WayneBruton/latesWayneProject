@@ -1,6 +1,6 @@
 <template>
   <div>
-    <v-app-bar app color="#010a43" dark fixed>
+    <v-app-bar app color="#010a43" dark fixed style="z-index: 10;">
       <div class="d-flex align-center home" @click="goHome">
         <v-img
           src="../assets/PerfectStaff.png"
@@ -53,12 +53,25 @@
               <v-icon>{{ item.icon }}</v-icon>
             </v-btn>
           </div>
+          <!-- nnfgnfggfh -->
+          <v-btn
+            text
+            :to="{ name: 'textunits' }"
+            v-if="
+              this.$store.state.isLoggedIn && this.$store.state.country == 'ZA'
+            "
+          >
+            <span class="mr-2">SMS</span>
+            <v-icon>mdi-cellphone-basic</v-icon>
+          </v-btn>
+          <!-- bdbdddh -->
         </v-flex>
         <v-spacer></v-spacer>
         <v-btn text @click="logout" v-if="this.$store.state.isLoggedIn">
           <span class="mr-2">Logout</span>
           <v-icon>mdi-logout</v-icon>
         </v-btn>
+
         <v-spacer></v-spacer>
 
         <!-- DROP DOWN MENU HERE -->
@@ -85,7 +98,7 @@
       <v-flex v-else>
         <!-- Here is mobile menu -->
         <v-spacer></v-spacer>
-        <v-menu offset-y>
+        <v-menu offset-y class="mobileMenu">
           <template v-slot:activator="{ on }">
             <v-btn text dark v-on="on">
               <v-icon right class="ml-2">mdi-menu</v-icon>
@@ -109,6 +122,17 @@
                   </v-list-item-title>
                 </v-list-item>
               </div>
+              <!-- ghghgdhhdgh -->
+              <div v-if="this.$store.state.country == 'ZA'">
+                <v-list-item :to="{ name: 'textunits' }" color="primary">
+                  <v-list-item-title
+                    >SMS
+                    <v-icon small>mdi-cellphone-basic</v-icon>
+                    <v-divider></v-divider>
+                  </v-list-item-title>
+                </v-list-item>
+              </div>
+              <!-- hfgljfjlfjfhj -->
             </div>
             <div v-for="(item, index) in menuItemsAlways" :key="index">
               <v-list-item :to="item.redirect" color="primary">
@@ -119,6 +143,7 @@
                 </v-list-item-title>
               </v-list-item>
             </div>
+
             <div v-if="this.$store.state.isLoggedIn">
               <v-list-item @click="logout" color="primary">
                 <v-list-item-title
@@ -193,6 +218,7 @@
 <script>
 import DirectoryService from "../services/DirectoryServices";
 // import moment from "vue-moment";
+// import CountryFlag from "vue-country-flag";
 export default {
   name: "Header",
   data() {
@@ -248,6 +274,11 @@ export default {
           redirect: { name: "terms" },
           icon: "mdi-file-document-edit"
         }
+        // {
+        //   name: "SMS",
+        //   redirect: { name: "textunits" },
+        //   icon: "mdi-cellphone-basic",
+        // },
       ],
       offset: true,
       windowWidth: 0,
@@ -262,6 +293,9 @@ export default {
   },
   components: {
     // moment
+    // CountryFlag
+    CountryFlag: () =>
+      import(/* webpackChunkName: "CountryFlag" */ "vue-country-flag")
   },
   async beforeMount() {
     if (this.$store.state.isLoggedIn) {
@@ -269,7 +303,9 @@ export default {
     }
   },
   mounted() {
-    this.checkExpiry();
+    if (this.$store.state.isLoggedIn) {
+      this.checkExpiry();
+    }
     // console.log("WindowWidth", window.outerWidth);
     // console.log("WindowWidth", window.innerWidth);
     this.windowWidth = window.innerWidth;
@@ -367,6 +403,11 @@ export default {
   /* text-decoration: underline; */
 }
 .headerBar {
-  z-index: 2;
+  z-index: 5;
+}
+@media only screen and (max-width: 600px) {
+  .mobileMenu {
+    z-index: 2;
+  }
 }
 </style>

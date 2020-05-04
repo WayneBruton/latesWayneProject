@@ -45,8 +45,18 @@
             v-if="this.windowWidth > 768"
             >&#x27F2;</v-btn
           >
-          <v-btn text style="height: 30px;" @click="$refs.pdf.print()"
-            >print</v-btn
+          <!-- target="_blank" -->
+          <!-- @click="test" -->
+          <!-- @click="$refs.pdf.print()" -->
+          <v-btn text style="height: 30px;"
+            ><a
+              style="text-decoration: none; color: black; "
+              :href="url"
+              target="_blank"
+              @click="test"
+              accept="application/pdf"
+              >save</a
+            ></v-btn
           >
         </div>
 
@@ -101,7 +111,6 @@
 
 <script>
 import pdf from "vue-pdf";
-import VueNumericInput from "vue-numeric-input";
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "viewDoc",
@@ -115,8 +124,9 @@ export default {
     ]
   },
   components: {
-    pdf,
-    VueNumericInput
+    pdf: () => import(/* webpackChunkName: "pdf" */ "vue-pdf"),
+    VueNumericInput: () =>
+      import(/* webpackChunkName: "VueNumericInput" */ "vue-numeric-input")
   },
   data() {
     return {
@@ -128,6 +138,7 @@ export default {
       page: 1,
       numPages: 0,
       url: "",
+      pdfURL: "",
       rotate: 0,
       loadedRatio: 0,
       docName: "This is a policy",
@@ -152,8 +163,6 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener("resize", this.onResize);
-    // await DirectoryService.removeDoc({ url: this.url });
-    // console.log(response);
   },
 
   mounted() {
@@ -167,8 +176,12 @@ export default {
       this.numPages = pdf.numPages;
       this.loading = false;
     });
+    this.pdfURL = `${this.url}.pdf`;
   },
   methods: {
+    test() {
+      // console.log(this.url);
+    },
     onResize() {
       this.windowWidth = window.innerWidth;
     },
@@ -191,26 +204,17 @@ export default {
           };
           let response = await DirectoryService.postpolicyRead(credentials);
           if (response.data === true) {
-            // console.log("DONE!!!!");
             this.readyToUpdate = false;
           }
-          // this.$router.back();
         } else {
-          // console.log("TEst Failed");
           this.back();
         }
       } catch (error) {
         this.snackBarMessage = "Network Error(58), please try later!";
         this.snackbar = true;
-        // this.dialog = false;
       }
     }
   }
-  // error: function(err) {
-  //   // console.log(err);
-  //   this.back()
-
-  // }
 };
 </script>
 

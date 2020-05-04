@@ -140,6 +140,7 @@
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
+
 export default {
   name: "editcompanydetails",
   metaInfo: {
@@ -296,3 +297,12 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.countriesDiv {
+  border: 1px solid grey;
+  padding: 2px 2px;
+  border-radius: 10px;
+  width: 250px;
+}
+</style>

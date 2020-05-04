@@ -22,24 +22,33 @@
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-flex>
-                <!-- <UploadDocument
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-text="item.text"
+                    style="white-space: normal;"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <!-- <UploadDocument
                   v-if="item.text === 'Upload Documents'"
                   @EEDocsuccess="handleSuccess($event)"
                 /> -->
-                <!-- <div v-if="this.$store.state.usersAvailable"> -->
-                <CreateEmployee
-                  v-if="item.text === 'Add Employee'"
-                  @employeeSuccess="handleSuccessEE"
-                />
-                <!-- </div> -->
-              </v-flex>
-            </v-list-item-action>
+                    <!-- <div v-if="this.$store.state.usersAvailable"> -->
+                    <CreateEmployee
+                      v-if="item.text === 'Add Employee'"
+                      @employeeSuccess="handleSuccessEE"
+                    />
+                    <!-- </div> -->
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -49,20 +58,28 @@
       <v-card class="mx-auto" max-width="800" tile v-if="items.length">
         <v-toolbar color="#010a43" dark height="90px">
           <v-spacer></v-spacer>
-          <v-toolbar-title>Employees ({{ items.length }})</v-toolbar-title>
-          <v-spacer></v-spacer>
-          <v-text-field
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            v-model="search"
-          ></v-text-field>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
-            </template>
-            <span>Clear Search</span>
-          </v-tooltip>
-          <v-spacer></v-spacer>
+          <div class="mainViewTB">
+            <div>
+              <v-toolbar-title style="white-space: normal;"
+                >Employees ({{ items.length }})</v-toolbar-title
+              >
+            </div>
+            <v-spacer></v-spacer>
+            <div class="subView2TB">
+              <v-text-field
+                label="Search"
+                prepend-inner-icon="mdi-magnify"
+                v-model="search"
+              ></v-text-field>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
+                </template>
+                <span>Clear Search</span>
+              </v-tooltip>
+              <v-spacer></v-spacer>
+            </div>
+          </div>
         </v-toolbar>
         <v-list rounded>
           <v-subheader>EDIT</v-subheader>
@@ -76,45 +93,52 @@
                 ></v-icon>
                 <v-icon v-text="item.icon" v-else></v-icon>
               </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title
-                  v-text="item.lname + ' ' + item.fname"
-                ></v-list-item-title>
-              </v-list-item-content>
-              <v-spacer></v-spacer>
-              <v-list-item-action>
-                <v-flex>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+              <div class="mainView">
+                <div>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="item.lname + ' ' + item.fname"
+                      style="white-space: normal;"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </div>
+                <v-spacer></v-spacer>
+                <div class="subView2">
+                  <v-list-item-action>
+                    <v-flex>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            text
+                            color="#010a43"
+                            :id="item.id"
+                            @click="edit($event)"
+                            ><v-icon>mdi-account-edit</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Edit</span>
+                      </v-tooltip>
                       <v-btn
-                        v-on="on"
                         text
-                        color="#010a43"
                         :id="item.id"
-                        @click="edit($event)"
-                        ><v-icon>mdi-account-edit</v-icon></v-btn
+                        v-if="item.canDelete === true"
+                        @click="deleteItem($event)"
+                        style="color: red; font-weight: bold;"
+                        ><v-icon>mdi-delete</v-icon></v-btn
                       >
-                    </template>
-                    <span>Edit</span>
-                  </v-tooltip>
-                  <v-btn
-                    text
-                    :id="item.id"
-                    v-if="item.canDelete === true"
-                    @click="deleteItem($event)"
-                    style="color: red; font-weight: bold;"
-                    ><v-icon>mdi-delete</v-icon></v-btn
-                  >
-                  <v-btn
-                    text
-                    :id="item.id"
-                    v-if="item.canDelete === false"
-                    @click="dialog1 = true"
-                    style="color: green; font-weight: bold;"
-                    ><v-icon>mdi-help-box</v-icon></v-btn
-                  >
-                </v-flex>
-              </v-list-item-action>
+                      <v-btn
+                        text
+                        :id="item.id"
+                        v-if="item.canDelete === false"
+                        @click="dialog1 = true"
+                        style="color: green; font-weight: bold;"
+                        ><v-icon>mdi-help-box</v-icon></v-btn
+                      >
+                    </v-flex>
+                  </v-list-item-action>
+                </div>
+              </div>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -123,7 +147,7 @@
     <br /><br /><br />
 
     <v-dialog v-model="dialog" scrollable persistent max-width="800px">
-      <v-card max-width="90%" max-height="525px">
+      <v-card max-width="100%" max-height="525px">
         <v-card-title>
           <span class="headline">Employee Details</span>
         </v-card-title>
@@ -254,7 +278,7 @@
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
-import CreateEmployee from "../components//CreateEmployee";
+// import CreateEmployee from "../components//CreateEmployee";
 export default {
   name: "editEmployees",
   metaInfo: {
@@ -304,7 +328,10 @@ export default {
     };
   },
   components: {
-    CreateEmployee
+    CreateEmployee: () =>
+      import(
+        /* webpackChunkName: "CreateEmployee" */ "../components//CreateEmployee"
+      )
   },
   computed: {
     itemsFiltered() {
@@ -328,14 +355,20 @@ export default {
   },
   methods: {
     finaliseMobile() {
-      let str = parseInt(
-        this.mobile
-          .replace("(", "")
-          .replace(")", "")
-          .replace(" ", "")
-          .replace("-", "")
-      );
-      this.mobileNumber = "+" + this.dialingCode + str;
+      let str = this.mobile
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace("-", "");
+      // console.log(str.length);
+
+      if (str.length != 10) {
+        this.mobile = "";
+      } else {
+        this.mobileNumber = "+" + this.dialingCode + parseInt(str);
+        // console.log(this.mobileNumber);
+      }
+      str = parseInt(str);
     },
     async refreshData() {
       try {
@@ -410,7 +443,7 @@ export default {
           id: parseInt(targetID)
         };
         let response = await DirectoryService.getEmployeeToEdit(credentials);
-        // console.log("EE to edit", response.data);
+        // console.log("EE to edit", response.data[0]);
         this.email = response.data[0].email;
         this.lname = response.data[0].lname;
         this.fname = response.data[0].fname;
@@ -419,17 +452,21 @@ export default {
         this.userID = parseInt(response.data[0].id);
         this.jobTitle = response.data[0].jobTitle;
         if (response.data[0].mobileNumber != null) {
+          // console.log("All Good so far")
           let numberStr = response.data[0].mobileNumber.replace("+", "");
           this.dialingCode = parseInt(numberStr.substring(0, 2));
           let len = numberStr.length;
           this.mobile = "0" + numberStr.substring(2, len);
+          // console.log(this.mobile)
         } else {
           this.dialingCode = 27;
           this.mobile = null;
         }
+        // console.log(this.staffTypes)
         let staffTypeChosen = this.staffTypes.filter(el => {
           return el.id == parseInt(response.data[0].staffType);
         });
+        // console.log(staffTypeChosen)
         if (this.userType === 1) {
           this.checkbox = true;
         } else {
@@ -485,6 +522,7 @@ export default {
           jobTitle: this.jobTitle,
           mobileNumber: this.mobileNumber
         };
+        // console.log(this.mobileNumber);
         let response = await DirectoryService.editEmployee(credentials);
         if (response.data === false) {
           this.snackBarMessage = "Connection Error, Please try again";
@@ -535,3 +573,41 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+}
+.mainViewTB {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2TB {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+  .mainViewTB {
+    flex-direction: column;
+    /* align-content: center; */
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .subView2TB {
+    align-items: center;
+
+    justify-content: space-evenly;
+  }
+}
+</style>

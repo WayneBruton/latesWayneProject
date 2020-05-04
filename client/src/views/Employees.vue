@@ -33,24 +33,33 @@
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-flex>
-                <UploadDocument
-                  v-if="item.text === 'Upload Documents'"
-                  @EEDocsuccess="handleSuccess($event)"
-                />
-                <!-- <div v-if="this.$store.state.usersAvailable"> -->
-                <CreateEmployee
-                  v-if="item.text === 'Add Employee'"
-                  @employeeSuccess="handleSuccessEE"
-                />
-                <!-- </div> -->
-              </v-flex>
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-text="item.text"
+                    style="white-space: normal;"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <UploadDocument
+                      v-if="item.text === 'Upload Documents'"
+                      @EEDocsuccess="handleSuccess($event)"
+                    />
+                    <!-- <div v-if="this.$store.state.usersAvailable"> -->
+                    <CreateEmployee
+                      v-if="item.text === 'Add Employee'"
+                      @employeeSuccess="handleSuccessEE"
+                    />
+                    <!-- </div> -->
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -64,23 +73,28 @@
       >
         <v-toolbar color="#010a43" dark height="90px">
           <!-- <v-spacer></v-spacer> -->
-          <v-toolbar-title
-            >Employee Documents ({{ allDocuments.length }})</v-toolbar-title
-          >
-          <v-spacer></v-spacer>
-
-          <v-text-field
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            v-model="search"
-          ></v-text-field>
-          <v-tooltip top>
-            <template v-slot:activator="{ on }">
-              <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
-            </template>
-            <span>Clear Search</span>
-          </v-tooltip>
-          <v-spacer></v-spacer>
+          <div class="mainViewTB">
+            <div>
+              <v-toolbar-title
+                >Employee Documents ({{ allDocuments.length }})</v-toolbar-title
+              >
+            </div>
+            <v-spacer></v-spacer>
+            <div class="subView2TB">
+              <v-text-field
+                label="Search"
+                prepend-inner-icon="mdi-magnify"
+                v-model="search"
+              ></v-text-field>
+              <v-tooltip top>
+                <template v-slot:activator="{ on }">
+                  <v-icon v-on="on" @click="clearSearch">mdi-autorenew</v-icon>
+                </template>
+                <span>Clear Search</span>
+              </v-tooltip>
+              <v-spacer></v-spacer>
+            </div>
+          </div>
         </v-toolbar>
 
         <v-list rounded>
@@ -96,6 +110,7 @@
                     item.lname + ' - ' + item.fname + ' (' + item.count + ')'
                   "
                   :id="item.id"
+                  style="white-space: normal;"
                 ></v-list-item-title>
               </v-list-item-content>
             </template>
@@ -109,58 +124,51 @@
               prepend-icon="mdi-book-open-page-variant"
               two-line
             >
-              <v-list-item-content>
-                <v-list-item-title
-                  v-text="subItem.documentNameName"
-                ></v-list-item-title>
-                <v-list-item-subtitle
-                  v-text="'Type: ' + subItem.documentTypeDesc"
-                ></v-list-item-subtitle>
-              </v-list-item-content>
-              <v-list-item-action>
-                <v-flex>
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="subItem.id"
-                        text
-                        color="green"
-                        @click="view($event)"
-                        ><v-icon>mdi-file-find</v-icon></v-btn
-                      >
-                    </template>
-                    <span>View</span>
-                  </v-tooltip>
-                  <!-- <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="subItem.id"
-                        text
-                        color="indigo"
-                        @click="view($event)"
-                        ><v-icon>mdi-file-edit</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Edit</span>
-                  </v-tooltip> -->
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
-                      <v-btn
-                        v-on="on"
-                        :id="item.id + '-' + subItem.id"
-                        :category="item.id"
-                        text
-                        color="red"
-                        @click="remove($event)"
-                        ><v-icon>mdi-delete</v-icon></v-btn
-                      >
-                    </template>
-                    <span>Delete</span>
-                  </v-tooltip>
-                </v-flex>
-              </v-list-item-action>
+              <div class="mainView">
+                <div>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="subItem.documentNameName"
+                    ></v-list-item-title>
+                    <v-list-item-subtitle
+                      v-text="'Type: ' + subItem.documentTypeDesc"
+                    ></v-list-item-subtitle>
+                  </v-list-item-content>
+                </div>
+                <div class="subView2">
+                  <v-list-item-action>
+                    <v-flex>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :id="subItem.id"
+                            text
+                            color="green"
+                            @click="view($event)"
+                            ><v-icon>mdi-file-find</v-icon></v-btn
+                          >
+                        </template>
+                        <span>View</span>
+                      </v-tooltip>
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            :id="item.id + '-' + subItem.id"
+                            :category="item.id"
+                            text
+                            color="red"
+                            @click="remove($event)"
+                            ><v-icon>mdi-delete</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Delete</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-list-item-action>
+                </div>
+              </div>
             </v-list-item>
           </v-list-group>
         </v-list>
@@ -195,8 +203,6 @@
 
 <script>
 import DirectoryService from "../services/DirectoryServices";
-import UploadDocument from "../components/uploadEmployeeDoc";
-import CreateEmployee from "../components//CreateEmployee";
 export default {
   name: "employees",
   metaInfo: {
@@ -237,8 +243,14 @@ export default {
     };
   },
   components: {
-    UploadDocument,
-    CreateEmployee
+    UploadDocument: () =>
+      import(
+        /* webpackChunkName: "UploadDocument" */ "../components/uploadEmployeeDoc"
+      ),
+    CreateEmployee: () =>
+      import(
+        /* webpackChunkName: "CreateEmployee" */ "../components//CreateEmployee"
+      )
   },
   computed: {
     documentItemsFiltered() {
@@ -350,7 +362,7 @@ export default {
           documentID: parseInt(targetID),
           documentName: filtered[0].documentNameName,
           documentURL: `${process.env.VUE_APP_BASEURL}${filtered[0].documentLinkLink}.pdf`,
-          URL: `${filtered[0].documentLinkLink}`
+          URL: `${filtered[0].documentLinkLink}.pdf`
         };
         let response = await DirectoryService.viewDoc(criteria);
         if (response.data.download === "Successfull") {
@@ -420,5 +432,40 @@ export default {
 <style>
 .subItems:hover {
   background-color: lightcyan;
+}
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+}
+.mainViewTB {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2TB {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+  .mainViewTB {
+    flex-direction: column;
+    /* align-content: center; */
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .subView2TB {
+    align-items: center;
+
+    justify-content: space-evenly;
+  }
 }
 </style>

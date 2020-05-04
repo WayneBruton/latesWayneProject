@@ -89,21 +89,27 @@
                 <v-card class="mx-auto" max-width="800" tile>
                   <v-toolbar color="#010a43" dark height="90px">
                     <v-spacer></v-spacer>
-                    <v-toolbar-title>Internal</v-toolbar-title>
-                    <v-spacer></v-spacer>
-                    <v-text-field
-                      label="Search"
-                      prepend-inner-icon="mdi-magnify"
-                      v-model="search"
-                    ></v-text-field>
-                    <v-tooltip top>
-                      <template v-slot:activator="{ on }">
-                        <v-icon v-on="on" @click="clearSearch"
-                          >mdi-autorenew</v-icon
-                        >
-                      </template>
-                      <span>Clear Search</span>
-                    </v-tooltip>
+                    <div class="mainViewTB">
+                      <div>
+                        <v-toolbar-title>Internal</v-toolbar-title>
+                      </div>
+                      <v-spacer></v-spacer>
+                      <div class="subView2TB">
+                        <v-text-field
+                          label="Search"
+                          prepend-inner-icon="mdi-magnify"
+                          v-model="search"
+                        ></v-text-field>
+                        <v-tooltip top>
+                          <template v-slot:activator="{ on }">
+                            <v-icon v-on="on" @click="clearSearch"
+                              >mdi-autorenew</v-icon
+                            >
+                          </template>
+                          <span>Clear Search</span>
+                        </v-tooltip>
+                      </div>
+                    </div>
                     <v-spacer></v-spacer>
                     <v-btn text color="white" dark @click="sortPolicies">
                       <v-icon v-if="sorted">mdi-arrow-down</v-icon>
@@ -120,86 +126,127 @@
                         <v-list-item-icon>
                           <v-icon>mdi-settings</v-icon>
                         </v-list-item-icon>
-                        <v-list-item-content>
-                          <v-list-item-title
-                            v-text="item.lname + ' ' + item.fname"
-                          ></v-list-item-title>
-                          <v-list-item-subtitle
-                            v-text="
-                              'policies Read: ' +
-                                item.policiesRead +
-                                ' / ' +
-                                item.totalPolicies +
-                                ' - ' +
-                                item.policiesReadPercent +
-                                '%'
-                            "
-                          ></v-list-item-subtitle>
-                          <v-list-item-subtitle
-                            v-text="
-                              'Staff Docs Read: ' +
-                                item.staffDocsRead +
-                                ' / ' +
-                                item.staffDocsTotal +
-                                ' - ' +
-                                item.staffDocsReadPercentage +
-                                '%'
-                            "
-                          ></v-list-item-subtitle>
-                        </v-list-item-content>
-                        <v-spacer></v-spacer>
-                        <v-list-item-action>
-                          <v-flex>
-                            <v-btn
-                              icon
-                              dark
-                              large
-                              color="grey"
-                              :id="item.id"
-                              @click="individualEmail($event)"
-                              ><v-icon>mdi-email</v-icon></v-btn
-                            >
-                            <v-btn
-                              v-show="item.totalAllDocsPercent >= 80"
-                              class="printBtn"
-                              dark
-                              icon
-                              large
-                              color="green"
-                              :id="item.id"
-                              @click="individualReport($event)"
-                              ><v-icon>mdi-printer</v-icon
-                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                            >
-                            <v-btn
-                              v-show="
-                                item.totalAllDocsPercent > 60 &&
-                                  item.totalAllDocsPercent < 80
-                              "
-                              class="printBtn"
-                              dark
-                              icon
-                              large
-                              color="orange"
-                              :id="item.id"
-                              @click="individualReport($event)"
-                              ><v-icon>mdi-printer</v-icon
-                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                            >
-                            <v-btn
-                              v-show="item.totalAllDocsPercent <= 60"
-                              class="printBtn"
-                              dark
-                              icon
-                              large
-                              color="red"
-                              :id="item.id"
-                              @click="individualReport($event)"
-                              ><v-icon>mdi-printer</v-icon
-                              >{{ item.totalAllDocsPercent + " %" }}</v-btn
-                            >
-                          </v-flex>
-                        </v-list-item-action>
+                        <div class="mainView">
+                          <div>
+                            <v-list-item-content>
+                              <v-list-item-title
+                                v-text="item.lname + ' ' + item.fname"
+                              ></v-list-item-title>
+                              <v-list-item-subtitle
+                                v-text="
+                                  'policies Read: ' +
+                                    item.policiesRead +
+                                    ' / ' +
+                                    item.totalPolicies +
+                                    ' - ' +
+                                    item.policiesReadPercent +
+                                    '%'
+                                "
+                              ></v-list-item-subtitle>
+                              <v-list-item-subtitle
+                                v-text="
+                                  'Staff Docs Read: ' +
+                                    item.staffDocsRead +
+                                    ' / ' +
+                                    item.staffDocsTotal +
+                                    ' - ' +
+                                    item.staffDocsReadPercentage +
+                                    '%'
+                                "
+                              ></v-list-item-subtitle>
+                            </v-list-item-content>
+                          </div>
+                          <v-spacer></v-spacer>
+                          <div class="subView2">
+                            <v-list-item-action>
+                              <v-flex>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                      class="mobileView"
+                                      v-on="on"
+                                      icon
+                                      dark
+                                      large
+                                      :color="smsColor"
+                                      :id="item.id"
+                                      :disabled="disabled"
+                                      @click="createSMS($event)"
+                                      ><v-icon
+                                        >mdi-cellphone-basic</v-icon
+                                      ></v-btn
+                                    >
+                                  </template>
+                                  <span>{{ smsHint }}</span>
+                                </v-tooltip>
+
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                      class="mobileView"
+                                      v-on="on"
+                                      icon
+                                      dark
+                                      large
+                                      color="grey"
+                                      :id="item.id"
+                                      @click="individualEmail($event)"
+                                      ><v-icon>mdi-email</v-icon></v-btn
+                                    >
+                                  </template>
+                                  <span>email</span>
+                                </v-tooltip>
+                                <v-tooltip top>
+                                  <template v-slot:activator="{ on }">
+                                    <v-btn
+                                      v-on="on"
+                                      v-show="item.totalAllDocsPercent >= 80"
+                                      class="printBtn mobileView"
+                                      dark
+                                      icon
+                                      large
+                                      color="green"
+                                      :id="item.id"
+                                      @click="individualReport($event)"
+                                      ><v-icon>mdi-printer</v-icon
+                                      >{{
+                                        item.totalAllDocsPercent + " %"
+                                      }}</v-btn
+                                    >
+                                  </template>
+                                  <span>report</span>
+                                </v-tooltip>
+                                <v-btn
+                                  v-show="
+                                    item.totalAllDocsPercent > 60 &&
+                                      item.totalAllDocsPercent < 80
+                                  "
+                                  class="printBtn"
+                                  dark
+                                  icon
+                                  large
+                                  color="orange"
+                                  :id="item.id"
+                                  @click="individualReport($event)"
+                                  ><v-icon>mdi-printer</v-icon
+                                  >{{ item.totalAllDocsPercent + " %" }}</v-btn
+                                >
+                                <v-btn
+                                  v-show="item.totalAllDocsPercent <= 60"
+                                  class="printBtn"
+                                  dark
+                                  icon
+                                  large
+                                  color="red"
+                                  :id="item.id"
+                                  @click="individualReport($event)"
+                                  ><v-icon>mdi-printer</v-icon
+                                  >{{ item.totalAllDocsPercent + " %" }}</v-btn
+                                >
+                              </v-flex>
+                            </v-list-item-action>
+                          </div>
+                        </div>
                       </v-list-item>
                     </v-list-item-group>
                   </v-list>
@@ -223,7 +270,7 @@
       max-width="90%"
       style="margin-right: 10%; margin-bottom: 25px;"
     >
-      <v-card style="max-height: 550px; margin-right: 25px;">
+      <v-card style="max-height: 675px; margin-right: 25px;">
         <v-card-title>
           <span class="headline">Edit and change accordingly </span>
         </v-card-title>
@@ -291,6 +338,53 @@
       </v-card>
       <br /><br />
     </v-dialog>
+
+    <div class="text-center">
+      <v-dialog v-model="dialogSMS" width="500">
+        <!-- <template v-slot:activator="{ on }">
+          <v-btn color="red lighten-2" dark v-on="on">
+            Click Me
+          </v-btn>
+        </template> -->
+
+        <v-card>
+          <v-card-title class="headline grey lighten-2" primary-title>
+            Send SMS - {{ mobileNumber }} - {{ unitsUsed }} units.
+          </v-card-title>
+          <v-textarea
+            style="margin: 15px 15px;;"
+            counter="160"
+            placeholder="input text message"
+            v-model="SMSText"
+            flat
+            @input="unitsUsing"
+          >
+          </v-textarea>
+          <v-card-text>Units: {{ unitsUsed }}</v-card-text>
+
+          <!-- <v-divider></v-divider> -->
+
+          <v-card-actions>
+            <v-btn color="primary" text @click="dialogSMS = false">
+              Cancel
+            </v-btn>
+            <v-spacer></v-spacer>
+            <v-tooltip top>
+              <template v-slot:activator="{ on }">
+                <v-btn color="primary" text @click="addLink" v-on="on"
+                  ><v-icon>mdi-link-variant-plus</v-icon>
+                </v-btn>
+              </template>
+              <span>Add Link</span>
+            </v-tooltip>
+            <v-spacer></v-spacer>
+            <v-btn v-if="SMSText" color="primary" text @click="sendSMS">
+              Send
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+    </div>
     <br /><br /><br /><br /><br /><br /><b></b>
   </v-container>
 </template>
@@ -302,6 +396,7 @@ export default {
   name: "AdministratorDashboard",
   data: () => ({
     dialog: false,
+    dialogSMS: false,
     timOut: 2000,
     osName: "",
     content: "<h1>Some initial content</h1>",
@@ -340,20 +435,57 @@ export default {
     snackbar: false,
     snackBarMessage: "",
     search: "",
-    processing: false
+    processing: false,
+    unitsAvailable: 0,
+    smsHint: "Coming Soon",
+    smsColor: "indigo",
+    country: "za",
+    disabled: false,
+
+    mobileNumber: "",
+    SMSText: "",
+    unitsUsed: 0,
+    smsUser: 0
   }),
   components: {
     VueEditor
+    // VueEditor: () =>
+    //   import(
+    //     /* webpackChunkName: "VueEditor" */ "vue2-editor"
+    //   )
   },
-  mounted() {
+  async mounted() {
     if (navigator.appVersion.indexOf("Win") != -1) this.osName = "Windows OS";
     if (navigator.appVersion.indexOf("Mac") != -1) this.osName = "MacOS";
     if (navigator.appVersion.indexOf("Linux") != -1) this.osName = "Linux OS";
+    // console.log(this.$store.state.country);
+    if (this.$store.state.country == "ZA") {
+      this.disabled = false;
+    } else {
+      this.disabled = true;
+    }
+    this.country = this.$store.state.country;
+    let credentials = {
+      organisation: this.$store.state.organisationID
+    };
+    let response = await DirectoryService.checkUnitsAvailable(credentials);
+    // this.unitsAvailable = 10
+    this.unitsAvailable = response.data[0].unitNumber;
+    if (this.unitsAvailable === 0) {
+      this.smsHint = "Purchase Units";
+      this.smsColor = "orange";
+    } else {
+      this.unitsAvailable = response.data[0].unitNumber;
+      this.smsColor = "indigo";
+      this.smsHint = "Text";
+    }
   },
   async beforeMount() {
     let credentials = {
       id: this.$store.state.organisationID
     };
+    // console.log(this.$store.state.userName)
+    // console.log(this.$store.state.organisationID)
     try {
       if (this.$store.state.isProducedReport) {
         let rep = this.$store.state.documentURL.split("/");
@@ -472,6 +604,58 @@ export default {
     }
   },
   methods: {
+    unitsUsing() {
+      let unitsUsed = Math.ceil(this.SMSText.length / 160);
+      this.unitsUsed = unitsUsed;
+    },
+    addLink() {
+      let org = this.$store.state.organisationID;
+      let user = this.smsUser;
+      this.SMSText = `${this.SMSText} https://www.perfect-staff.com/viewmydocs/${org}/${user}`;
+    },
+    async sendSMS() {
+      let credentials = {
+        mobile: this.mobileNumber,
+        message: this.SMSText
+      };
+      let response = await DirectoryService.individualsms(credentials);
+      // console.log(response);
+      if (response.status === 200) {
+        let newCredentials = {
+          organisation: this.$store.state.organisationID
+        };
+        await DirectoryService.useUnits(newCredentials);
+        // let response2 = await DirectoryService.useUnits(newCredentials)
+        // console.log("Response2", response2)
+        this.snackBarMessage = "Text Sent";
+        this.snackbar = true;
+        this.dialogSMS = false;
+      } else {
+        this.snackBarMessage = "There was an error";
+        this.snackbar = true;
+      }
+    },
+    async createSMS(event) {
+      let targetID = parseInt(event.currentTarget.id);
+      this.smsUser = targetID;
+      // console.log("current Target", targetID)
+      let credentials = {
+        id: targetID
+      };
+      let response = await DirectoryService.getUserMobile(credentials);
+      // console.log(response.data[0].mobileNumber);
+      if (response.data[0].mobileNumber !== null) {
+        this.mobileNumber = response.data[0].mobileNumber;
+        this.SMSText = "";
+        this.dialogSMS = true;
+        // I AM HERE
+      } else {
+        this.snackBarMessage = "No mobile number for this user found";
+        this.snackbar = true;
+      }
+
+      // I AM HERE
+    },
     clearSearch() {
       this.search = "";
     },
@@ -555,8 +739,8 @@ export default {
         credentials.organisation = this.$store.state.organisationID;
         // console.log(credentials);
         // console.log(credentials.totalPolicies);
-        let negativeContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p><strong>Failure to comply/correct the situation can result in disciplinary action.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
-        let positiveContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p><strong>You have done exceptionaly well, keep up the great work.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let negativeContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p style="color: red;"><strong>Failure to comply/correct the situation can result in disciplinary action.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com/viewmydocs/${this.$store.state.organisationID}/${targetID}">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
+        let positiveContent = `<h3>Your policy statistics</h3><br /><p><br />Dear ${credentials.fname},</p><p>These are your stats:</p><br /><p><strong>Policies</strong></p><li>Total Policies: ${credentials.totalPolicies}.</li><li>Policies read by you: ${credentials.policiesRead}.</li><li>Percentage of Policies read by you: <strong>${credentials.policiesReadPercent} %.</strong></li><p><strong>Staff Documents</strong></p><li>Total Staff Documents: ${credentials.staffDocsTotal}.</li><li>Staff Documents read by you: ${credentials.staffDocsRead}.</li><li>Percentage of Staff Documents read by you: <strong>${credentials.staffDocsReadPercentage} %.</strong></li><h4>Total percentage of all documents and policies read is: <strong>${credentials.totalAllDocsPercent} %</strong>.</h4><p>Please be aware that reading and <strong>acknowledging</strong> of all documents is policy.</p><p style="color: green;"><strong>You have done exceptionaly well, keep up the great work.</strong></p><p>Logon to   <a href="https://www.perfect-staff.com/viewmydocs/${this.$store.state.organisationID}/${targetID}">Perfect Staff</a> to view your docs and take corrective action.</p><br /><span>Perfect Staff Admin</span>`;
         let blankContent = `Dear ${credentials.fname},`;
         this.positiveContent = positiveContent;
         this.blankContent = blankContent;
@@ -614,5 +798,45 @@ export default {
 <style scoped>
 .printBtn {
   margin-left: 10px;
+}
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.mainViewTB {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2TB {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+  .mainViewTB {
+    flex-direction: column;
+    /* align-content: center; */
+    align-items: center;
+    justify-content: space-evenly;
+  }
+  .subView2TB {
+    /* align-items: center; */
+
+    /* justify-content: space-evenly; */
+  }
+  .mobileView {
+    /* margin: 0 0; */
+    /* width: 25%; */
+  }
 }
 </style>

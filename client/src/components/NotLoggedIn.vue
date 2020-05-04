@@ -89,10 +89,10 @@
 </template>
 
 <script>
-import Cookie from "../components/Cookie";
-import Register from "../components/Register";
-import Login from "../components/Login";
-import PromoVideo from "../components/PromoVideo";
+// import Cookie from "../components/Cookie";
+// import Register from "../components/Register";
+// import Login from "../components/Login";
+// import PromoVideo from "../components/PromoVideo";
 export default {
   name: "NotLoggedIn",
   data: () => ({
@@ -105,10 +105,17 @@ export default {
   //   dialog: false
   // },
   components: {
-    Register,
-    Login,
-    Cookie,
-    PromoVideo
+    // Register,
+    // Login,
+    // Cookie,
+    // PromoVideo
+    Register: () =>
+      import(/* webpackChunkName: "RegisterC" */ "../components/Register"),
+    Login: () => import(/* webpackChunkName: "Login" */ "../components/Login"),
+    Cookie: () =>
+      import(/* webpackChunkName: "Cookie" */ "../components/Cookie"),
+    PromoVideo: () =>
+      import(/* webpackChunkName: "PromoVideo" */ "../components/PromoVideo")
   },
   mounted() {
     // this.checkOnline();

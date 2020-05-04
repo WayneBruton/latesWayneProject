@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Pricing from "../components/Pricing";
+// import Pricing from "../components/Pricing";
 export default {
   name: "pricing",
   metaInfo: {
@@ -21,7 +21,9 @@ export default {
     return {};
   },
   components: {
-    Pricing
+    // Pricing
+    Pricing: () =>
+      import(/* webpackChunkName: "PricingC" */ "../components/Pricing")
   }
 };
 </script>

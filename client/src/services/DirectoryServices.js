@@ -126,6 +126,7 @@ export default {
     return Api().put(`/updateOrganisationDetails`, credentials);
   },
   getUser(credentials) {
+    // console.log(credentials);
     return Api().put(`/getUser`, credentials);
   },
   contactform(credentials) {
@@ -172,6 +173,38 @@ export default {
   getExpiry(credentials) {
     // console.log(credentials);
     return Api().put(`/getExpiry`, credentials);
+  },
+  updateNewRegistrationUser(credentials) {
+    // console.log(credentials);
+    return Api().put(`/updateNewRegistrationUser`, credentials);
+  },
+  checkUnits(credentials) {
+    // console.log(credentials);
+    return Api().put(`/checkUnits`, credentials);
+  },
+  checkUnitsAvailable(credentials) {
+    // console.log(credentials);
+    return Api().put(`/checkUnitsAvailable`, credentials);
+  },
+  bulksms(credentials) {
+    // console.log(credentials);
+    return Api().post(`/bulksms`, credentials);
+  },
+  useUnits(credentials) {
+    // console.log(credentials);
+    return Api().put(`/useUnits`, credentials);
+  },
+  getUserMobile(credentials) {
+    // console.log(credentials);
+    return Api().put(`/getUserMobile`, credentials);
+  },
+  individualsms(credentials) {
+    // console.log(credentials);
+    return Api().post(`/individualsms`, credentials);
+  },
+  viewmydocs(credentials) {
+    // console.log(credentials);
+    return Api().put(`/viewmydocs`, credentials);
   }
   // ,
   // itnresponse(credentials) {

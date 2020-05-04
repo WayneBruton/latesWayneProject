@@ -3,7 +3,7 @@
     <v-dialog
       v-model="dialog"
       scrollable
-      max-width="800px"
+      max-width="700px"
       max-height="90%"
       style="margin-bottom: 25px;"
     >
@@ -18,7 +18,7 @@
           >Login</v-btn
         >
       </template>
-      <v-card max-width="90%" max-height="90%">
+      <v-card max-width="90%" max-height="90%" style="margin-bottom: 25px;">
         <v-card-title>
           <span class="headline">Login</span>
         </v-card-title>
@@ -99,12 +99,23 @@
           </v-container>
           <!-- <small>*indicates required field</small> -->
         </v-card-text>
-        <v-card-actions>
-          <v-btn color="#010a43" text @click="resetPassword" v-if="showResetBtn"
+        <v-card-actions style="margin-bottom: 25px;">
+          <v-btn
+            color="#010a43"
+            text
+            @click="resetPassword"
+            v-if="showResetBtn"
+            style="margin-bottom: 25px;"
             >Reset Password</v-btn
           >
           <v-spacer></v-spacer>
-          <v-btn color="#010a43" text @click="login">Login</v-btn>
+          <v-btn
+            color="#010a43"
+            text
+            @click="login"
+            style="margin-bottom: 25px;"
+            >Login</v-btn
+          >
         </v-card-actions>
       </v-card>
     </v-dialog>
@@ -119,7 +130,7 @@
 
 <script>
 // import Cookie from "../components/Cookie"
-import Password from "vue-password-strength-meter";
+// import Password from "vue-password-strength-meter";
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "Register",
@@ -155,7 +166,8 @@ export default {
     };
   },
   components: {
-    Password
+    Password: () =>
+      import(/* webpackChunkName: "Password" */ "vue-password-strength-meter")
   },
   mounted() {
     this.color = "#010a43";
@@ -178,13 +190,46 @@ export default {
       } else {
         try {
           this.firstLogin = true;
-          let responseOTP = await DirectoryService.createOTP({
-            id: this.organisationID,
+
+          let credentials = {
+            organisation: this.organisationID,
             email: this.userEmail
-          });
-          // console.log("Response", responseOTP.data);
-          this.systemOTP = responseOTP.data.OTP;
-          // console.log(this.systemOTP);
+          };
+          // console.log("Credentials", credentials)
+          let unitResponse = await DirectoryService.checkUnits(credentials);
+          // console.log(unitResponse.data[0][0].unitNumber)
+          if (unitResponse.data[0][0].unitNumber > 0) {
+            this.availableUnits = unitResponse.data[0][0].unitNumber;
+            let creds = {
+              mobile: unitResponse.data[1][0].mobileNumber
+            };
+            let smsResponse = await DirectoryService.bulksms(creds);
+            // console.log(smsResponse)
+            if (
+              smsResponse.data.result == 401 ||
+              smsResponse.data.result == 403
+            ) {
+              let responseOTP = await DirectoryService.createOTP({
+                id: this.organisationID,
+                email: this.userEmail
+              });
+              this.systemOTP = responseOTP.data.OTP;
+            } else {
+              this.systemOTP = smsResponse.data.OTP;
+              let detail = {
+                organisation: this.organisationID
+              };
+              await DirectoryService.useUnits(detail);
+            }
+          } else {
+            let responseOTP = await DirectoryService.createOTP({
+              id: this.organisationID,
+              email: this.userEmail
+            });
+            this.systemOTP = responseOTP.data.OTP;
+          }
+          this.snackBarMessage = "A One Time Pin (OTP) has been sent to you.";
+          this.snackbar = true;
         } catch (e) {
           this.snackBarMessage = "Connection error (1), Please try later";
           this.snackbar = true;
@@ -211,14 +256,14 @@ export default {
           this.snackbar = true;
         } else {
           try {
-            let responseOTP = await DirectoryService.createOTP({
-              id: this.organisationID,
-              email: this.userEmail
-            });
-            this.systemOTP = responseOTP.data.OTP;
-            // console.log(this.systemOTP);
-            this.snackBarMessage = "A One Time Pin (OTP) has been sent to you";
-            this.snackbar = true;
+            this.resetPassword();
+            // let responseOTP = await DirectoryService.createOTP({
+            //   id: this.organisationID,
+            //   email: this.userEmail,
+            // });
+            // this.systemOTP = responseOTP.data.OTP;
+            // this.snackBarMessage = "A One Time Pin (OTP) has been sent to you";
+            // this.snackbar = true;
           } catch (e) {
             this.snackBarMessage = "Network Error(2), Please try again later!";
             this.snackbar = true;
@@ -265,15 +310,15 @@ export default {
               this.snackBarMessage = "Please enter email before pressing reset";
               this.snackbar = true;
             } else {
-              let responseOTP = await DirectoryService.createOTP({
-                id: this.organisationID,
-                email: this.userEmail
-              });
-              this.systemOTP = responseOTP.data.OTP;
-              // console.log(this.systemOTP);
-              this.snackBarMessage =
-                "A One Time Pin (OTP) has been sent to you";
-              this.snackbar = true;
+              this.resetPassword();
+              // let responseOTP = await DirectoryService.createOTP({
+              //   id: this.organisationID,
+              //   email: this.userEmail,
+              // });
+              // this.systemOTP = responseOTP.data.OTP;
+              // this.snackBarMessage =
+              //   "A One Time Pin (OTP) has been sent to you";
+              // this.snackbar = true;
             }
           }
         }
@@ -368,21 +413,22 @@ export default {
             this.snackBarMessage = response.data.error;
             this.dialog = false;
             return (this.snackbar = true);
+          } else {
+            let details = {
+              organisationName: response.data.organisationName,
+              organisationID: response.data.organisationID,
+              country: response.data.country,
+              fname: response.data.user.fname,
+              lname: response.data.user.lname,
+              userType: this.userType,
+              userID: response.data.user.id,
+              userIsEmployee: response.data.user.isEmployee
+            };
+            this.$cookies.remove("token");
+            let user = { token: response.data.token };
+            this.$cookies.set("token", user, 60 * 60 * 24);
+            this.$store.dispatch("login", details);
           }
-          let details = {
-            organisationName: response.data.organisationName,
-            organisationID: response.data.organisationID,
-            country: response.data.country,
-            fname: response.data.user.fname,
-            lname: response.data.user.lname,
-            userType: this.userType,
-            userID: response.data.user.id,
-            userIsEmployee: response.data.user.isEmployee
-          };
-          this.$cookies.remove("token");
-          let user = { token: response.data.token };
-          this.$cookies.set("token", user, 60 * 60 * 24);
-          this.$store.dispatch("login", details);
         } catch (e) {
           this.snackBarMessage = "Network problem(5). Please try again later";
           this.snackbar = true;
@@ -400,7 +446,7 @@ export default {
     checkOTP() {
       if (this.userOTP != this.systemOTP) {
         this.userOTP = null;
-        this.snackBarMessage = "OTP is incorrect";
+        this.snackBarMessage = "OTP is incorrect, please press reset again!";
         this.snackbar = true;
       }
     },
@@ -418,9 +464,6 @@ export default {
       this.checkCookie();
       this.scrollToTop();
     }
-    // scrollToTop() {
-    //   window.scrollTo(0, 0);
-    // },
   }
 };
 </script>

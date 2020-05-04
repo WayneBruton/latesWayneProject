@@ -1,12 +1,18 @@
 <template>
-  <v-row justify="center">
-    <v-dialog v-model="dialog" persistent max-width="800px">
+  <v-row justify="center" style="margin-bottom:25px;">
+    <v-dialog
+      v-model="dialog"
+      persistent
+      max-width="740px"
+      scrollable
+      style="margin-bottom: 25px; padding-bottom: 25px;"
+    >
       <template v-slot:activator="{ on }">
         <v-btn outlined :color="color" dark v-on="on" @click="checkOnline"
           >Register for Free</v-btn
         >
       </template>
-      <v-card max-width="90%" mb20>
+      <v-card max-width="90%" mb20 style="margin-bottom: 75px;">
         <v-card-title>
           <span class="headline">Organisation Details</span>
         </v-card-title>
@@ -146,7 +152,7 @@
                   required
                 ></v-text-field>
               </v-col>
-              <v-col cols="12" xs="12" sm="9" md="9">
+              <v-col cols="12" xs="12" sm="6" md="6">
                 <v-text-field
                   type="email"
                   label="Email*"
@@ -154,6 +160,24 @@
                   required
                   @blur="checkUserEmail"
                 ></v-text-field>
+              </v-col>
+              <v-col cols="12" xs="12" sm="6" md="6">
+                <v-flex row>
+                  <!-- @onSelect="onSelect" -->
+                  <vue-country-code
+                    :preferredCountries="['za', 'us', 'gb']"
+                    style="border-style: none; margin-right: 5px;"
+                    v-model="dialingCode"
+                  >
+                  </vue-country-code>
+                  <v-text-field
+                    v-mask="'(###) ###-####'"
+                    label="mobile*"
+                    v-model="mobile"
+                    required
+                    @change="finaliseMobile"
+                  ></v-text-field>
+                </v-flex>
               </v-col>
               <v-col cols="12" xs="12" sm="12" md="12">
                 <div class="countriesDiv">
@@ -181,9 +205,9 @@
               </v-col>
             </v-row>
           </v-container>
-          <small>*indicates required field</small>
+          <!-- <small>*indicates required field</small> -->
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions style="margin-bottom: 25px;">
           <!-- <v-spacer></v-spacer> -->
           <!-- <v-btn color="blue darken-1" text @click="dialog = false" -->
           <v-btn color="#010a43" text @click="dialog = false">Cancel</v-btn>
@@ -202,7 +226,7 @@
 </template>
 
 <script>
-import Password from "vue-password-strength-meter";
+// import Password from "vue-password-strength-meter";
 import DirectoryService from "../services/DirectoryServices";
 export default {
   name: "Register",
@@ -243,16 +267,35 @@ export default {
       warning: "",
       readyToPost: false,
       score: "",
-      suggestion: ""
+      suggestion: "",
+      mobile: null,
+      dialingCode: 27,
+      mobileNumber: null
     };
   },
   components: {
-    Password
+    // Password
+    Password: () =>
+      import(/* webpackChunkName: "Password" */ "vue-password-strength-meter")
   },
   mounted() {
     this.color = "#010a43";
   },
   methods: {
+    finaliseMobile() {
+      let str = this.mobile
+        .replace("(", "")
+        .replace(")", "")
+        .replace(" ", "")
+        .replace("-", "");
+      // console.log(str.length);
+      if (str.length != 10) {
+        this.mobile = "";
+      } else {
+        this.mobileNumber = "+" + this.dialingCode + parseInt(str);
+      }
+      str = parseInt(str);
+    },
     terms() {
       this.$router.push({ name: "terms" });
     },
@@ -277,7 +320,8 @@ export default {
         this.fname === "" ||
         this.lname === "" ||
         this.userEmail === "" ||
-        this.password === ""
+        this.password === "" ||
+        this.mobile === ""
       ) {
         this.snackBarMessage = "All fields must be filled in";
         this.readyToPost = false;
@@ -387,7 +431,8 @@ export default {
           lname: this.lname,
           emailUser: this.userEmail,
           password: this.password,
-          userType: 1
+          userType: 1,
+          mobileNumber: this.mobileNumber
         };
         try {
           this.$cookies.remove("token");
@@ -405,6 +450,12 @@ export default {
             false,
             "None"
           );
+          let creds = {
+            organisation: response.data.organisationID,
+            userID: response.data.userID
+          };
+          await DirectoryService.updateNewRegistrationUser(creds);
+          // console.log(response2)
           this.$store.dispatch("login", details);
         } catch (error) {
           this.snackBarMessage = "Network Error(9), please try later!";

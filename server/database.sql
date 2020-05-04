@@ -178,6 +178,14 @@ INSERT INTO userType (userType) values
     ("Administrator"),
     ("Employee");
 
+
+create table textUnits (
+    id INT primary Key AUTO_INCREMENT,
+    organisation INT NOT NULL,
+    unitNumber INT NOT NULL default 0,
+    FOREIGN KEY (organisation) REFERENCES organisation(id)
+);
+
 -- PUT THIS LATER ON organisation CREATE
 -- INSERT INTO Clientele (organisation, package, expiry) values
 -- (1, 1, now());

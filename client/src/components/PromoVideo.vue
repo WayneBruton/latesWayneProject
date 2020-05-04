@@ -33,7 +33,7 @@
 
 <script>
 // import VueYouTubeEmbed from "vue-youtube-embed";
-
+// import youtube from "vue-youtube";
 export default {
   name: "Register",
   data() {

@@ -22,21 +22,30 @@
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title v-text="item.text"></v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-btn
-                :id="item.id"
-                rounded
-                pr-10
-                :color="color"
-                dark
-                :to="item.action"
-                >Edit</v-btn
-              >
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title
+                    v-text="item.text"
+                    style="white-space: normal;"
+                  ></v-list-item-title>
+                </v-list-item-content>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-btn
+                    :id="item.id"
+                    rounded
+                    pr-10
+                    :color="color"
+                    dark
+                    :to="item.action"
+                    >Edit</v-btn
+                  >
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -100,3 +109,22 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+}
+</style>

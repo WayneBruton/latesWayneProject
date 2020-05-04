@@ -22,15 +22,25 @@
             <v-list-item-icon>
               <v-icon>mdi-settings</v-icon>
             </v-list-item-icon>
-            <v-list-item-content>
-              <v-list-item-title>Add Document Type</v-list-item-title>
-            </v-list-item-content>
-            <v-spacer></v-spacer>
-            <v-list-item-action>
-              <v-flex>
-                <v-btn text color="#010a43" @click="dialog3 = true">Add</v-btn>
-              </v-flex>
-            </v-list-item-action>
+            <div class="mainView">
+              <div>
+                <v-list-item-content>
+                  <v-list-item-title style="white-space: normal;"
+                    >Add Document Type</v-list-item-title
+                  >
+                </v-list-item-content>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="subView2">
+                <v-list-item-action>
+                  <v-flex>
+                    <v-btn text color="#010a43" @click="dialog3 = true"
+                      >Add</v-btn
+                    >
+                  </v-flex>
+                </v-list-item-action>
+              </div>
+            </div>
           </v-list-item>
         </v-list-item-group>
       </v-list>
@@ -61,45 +71,52 @@
                 ></v-icon>
                 <v-icon v-text="item.icon" v-else></v-icon>
               </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title
-                  v-text="item.documentType"
-                ></v-list-item-title>
-              </v-list-item-content>
-              <v-spacer></v-spacer>
-              <v-list-item-action>
-                <v-flex>
-                  <v-btn
-                    text
-                    :id="item.id"
-                    v-if="item.canDelete === true"
-                    @click="deleteItem($event)"
-                    style="color: red; font-weight: bold;"
-                    ><v-icon>mdi-delete</v-icon></v-btn
-                  >
-                  <v-btn
-                    text
-                    :id="item.id"
-                    v-if="item.canDelete === false"
-                    @click="dialog1 = true"
-                    style="color: green; font-weight: bold;"
-                    ><v-icon>mdi-help-box</v-icon></v-btn
-                  >
-                  <v-tooltip top>
-                    <template v-slot:activator="{ on }">
+              <div class="mainView">
+                <div>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="item.documentType"
+                      style="white-space: normal;"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                </div>
+                <v-spacer></v-spacer>
+                <div class="subView2">
+                  <v-list-item-action>
+                    <v-flex>
                       <v-btn
-                        v-on="on"
                         text
-                        color="#010a43"
                         :id="item.id"
-                        @click="edit($event)"
-                        ><v-icon>mdi-folder-edit</v-icon></v-btn
+                        v-if="item.canDelete === true"
+                        @click="deleteItem($event)"
+                        style="color: red; font-weight: bold; margin: 0px 0px;"
+                        ><v-icon>mdi-delete</v-icon></v-btn
                       >
-                    </template>
-                    <span>Edit</span>
-                  </v-tooltip>
-                </v-flex>
-              </v-list-item-action>
+                      <v-btn
+                        text
+                        :id="item.id"
+                        v-if="item.canDelete === false"
+                        @click="dialog1 = true"
+                        style="color: green; font-weight: bold;"
+                        ><v-icon>mdi-help-box</v-icon></v-btn
+                      >
+                      <v-tooltip top>
+                        <template v-slot:activator="{ on }">
+                          <v-btn
+                            v-on="on"
+                            text
+                            color="#010a43"
+                            :id="item.id"
+                            @click="edit($event)"
+                            ><v-icon>mdi-folder-edit</v-icon></v-btn
+                          >
+                        </template>
+                        <span>Edit</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-list-item-action>
+                </div>
+              </div>
             </v-list-item>
           </v-list-item-group>
         </v-list>
@@ -362,3 +379,22 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.mainView {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.subView2 {
+  display: flex;
+}
+@media only screen and (max-width: 600px) {
+  .mainView {
+    flex-direction: column;
+  }
+  .subView2 {
+    justify-content: space-evenly;
+  }
+}
+</style>

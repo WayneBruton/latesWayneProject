@@ -83,16 +83,16 @@ async function printreport() {
     report.band(
       [
         { data: "", width: 15 },
-        { data: data.total, width: 100 },
+        { data: data.total, width: 160 },
         {
           data: data.read,
-          width: 100,
+          width: 125,
           align: 3,
           textColor: data.totalRead <= 0 ? "#FF0000" : "#000000",
         },
         {
           data: data.percent,
-          width: 100,
+          width: 125,
           align: 3,
           textColor: data.totalPercent < 75 ? "#FF0000" : "#000000",
         },
@@ -100,7 +100,7 @@ async function printreport() {
       {
         border: 0,
         width: 0,
-        wrap: 1,
+        wrap: 0,
         fill: counter % 2 === 0 ? "#f0f0f0" : "#e0e0e0",
         textColor: "#0000ff",
       }
