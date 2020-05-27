@@ -24,7 +24,16 @@ export default new Vuex.Store({
     usageAvailable: 0,
     hasExpired: false,
     isProducedReport: false,
-    userIsEmployee: null
+    userIsEmployee: null,
+
+    policies_documentItems: [],
+    policies_allDocuments: [],
+    policies_allStaff: 0,
+
+    employees_documentItems: [],
+    employees_allDocuments: [],
+    // employees_allStaff: 0,
+    dashboardArray: []
   },
   mutations: {
     logout(state) {
@@ -82,7 +91,28 @@ export default new Vuex.Store({
     },
     country(state, criteria) {
       state.country = criteria.country;
+    },
+    dashboardArray(state, criteria) {
+      state.dashboardArray = criteria;
+    },
+    policiesAllDocuments(state, criteria) {
+      state.policies_allDocuments = criteria;
+    },
+    policiesDocumentItems(state, criteria) {
+      state.policies_documentItems = criteria;
+    },
+    policiesAllStaff(state, criteria) {
+      state.policies_allStaff = criteria;
+    },
+    employeesAllDocuments(state, criteria) {
+      state.employees_allDocuments = criteria;
+    },
+    employeesDocumentItems(state, criteria) {
+      state.employees_documentItems = criteria;
     }
+    // employeesAllStaff(state, criteria) {
+    //   state.employees_allStaff = criteria;
+    // }
   },
   actions: {
     logout({ commit }) {
@@ -108,7 +138,28 @@ export default new Vuex.Store({
     },
     country({ commit }, criteria) {
       commit("country", criteria);
+    },
+    dashboardArray({ commit }, criteria) {
+      commit("dashboardArray", criteria);
+    },
+    policiesDocumentItems({ commit }, criteria) {
+      commit("policiesDocumentItems", criteria);
+    },
+    policiesAllDocuments({ commit }, criteria) {
+      commit("policiesAllDocuments", criteria);
+    },
+    policiesAllStaff({ commit }, criteria) {
+      commit("policiesAllStaff", criteria);
+    },
+    employeesDocumentItems({ commit }, criteria) {
+      commit("employeesDocumentItems", criteria);
+    },
+    employeesAllDocuments({ commit }, criteria) {
+      commit("employeesAllDocuments", criteria);
     }
+    // employeesAllStaff({ commit }, criteria) {
+    //   commit("employeesAllStaff", criteria);
+    // }
   },
   modules: {}
 });

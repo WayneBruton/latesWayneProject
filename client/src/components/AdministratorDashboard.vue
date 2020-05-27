@@ -406,19 +406,19 @@ export default {
     customToolbar: [
       [
         {
-          header: [false, 1, 2, 3, 4, 5, 6]
-        }
+          header: [false, 1, 2, 3, 4, 5, 6],
+        },
       ],
       ["bold", "italic", "underline"],
       [{ list: "ordered" }, { list: "bullet" }],
       [
         {
-          color: []
+          color: [],
         },
         {
-          background: []
-        }
-      ]
+          background: [],
+        },
+      ],
     ],
     individualEmailID: 999,
 
@@ -445,10 +445,10 @@ export default {
     mobileNumber: "",
     SMSText: "",
     unitsUsed: 0,
-    smsUser: 0
+    smsUser: 0,
   }),
   components: {
-    VueEditor
+    VueEditor,
     // VueEditor: () =>
     //   import(
     //     /* webpackChunkName: "VueEditor" */ "vue2-editor"
@@ -466,11 +466,12 @@ export default {
     }
     this.country = this.$store.state.country;
     let credentials = {
-      organisation: this.$store.state.organisationID
+      organisation: this.$store.state.organisationID,
     };
     let response = await DirectoryService.checkUnitsAvailable(credentials);
     // this.unitsAvailable = 10
     this.unitsAvailable = response.data[0].unitNumber;
+    // console.log(this.unitsAvailable)
     if (this.unitsAvailable === 0) {
       this.smsHint = "Purchase Units";
       this.smsColor = "orange";
@@ -479,10 +480,10 @@ export default {
       this.smsColor = "indigo";
       this.smsHint = "Text";
     }
-  },
-  async beforeMount() {
-    let credentials = {
-      id: this.$store.state.organisationID
+    // },
+    // async beforeMount() {
+    let credentialsA = {
+      id: this.$store.state.organisationID,
     };
     // console.log(this.$store.state.userName)
     // console.log(this.$store.state.organisationID)
@@ -491,20 +492,23 @@ export default {
         let rep = this.$store.state.documentURL.split("/");
         rep = `${rep[rep.length - 2]}/${rep[rep.length - 1]}`;
         let reportCredentials = {
-          rep: rep
+          rep: rep,
         };
         let criteria = {
           documentURL: "",
           URL: ``,
           documentName: "",
-          isProducedReport: false
+          isProducedReport: false,
         };
         this.$store.dispatch("viewReport", criteria);
         await DirectoryService.removeReport(reportCredentials);
       }
       let response = await DirectoryService.getOrganisationStatistics(
-        credentials
+        credentialsA
       );
+      if (this.$store.state.dashboardArray.length > 0) {
+        this.policies = this.$store.state.dashboardArray;
+      }
       // console.log(response.data);
 
       if (response.data.success === false) {
@@ -531,17 +535,17 @@ export default {
         this.totalPolicies = response.data[1][0].policies;
         this.totalStaffDocs = response.data[2].length;
         this.staffDocs = response.data[2];
-        response.data[5].forEach(el => {
+        response.data[5].forEach((el) => {
           el.appliesTo = JSON.parse(el.appliesTo);
         });
         let allStaff = response.data[3][0].id;
-        let filtered = response.data[5].filter(el => {
+        let filtered = response.data[5].filter((el) => {
           return el.appliesTo.includes(allStaff);
         });
         let allStaffCount = filtered.length;
-        response.data[4].forEach(el => {
+        response.data[4].forEach((el) => {
           let includes = el.staffType;
-          let filtered = response.data[5].filter(el => {
+          let filtered = response.data[5].filter((el) => {
             return el.appliesTo.includes(includes);
           });
           el.totalPolicies = filtered.length + allStaffCount;
@@ -553,14 +557,16 @@ export default {
             );
           }
         });
-        this.policies = response.data[4];
-        this.policies.forEach(el => {
+        // this.policies = response.data[4];
+        let initialArray = response.data[4];
+        // this.policies.forEach((el) => {
+        initialArray.forEach((el) => {
           let id = el.id;
-          let filtered = this.staffDocs.filter(el2 => {
+          let filtered = this.staffDocs.filter((el2) => {
             return el2.users === id;
           });
           el.staffDocsTotal = filtered.length;
-          let filtered2 = filtered.filter(el3 => {
+          let filtered2 = filtered.filter((el3) => {
             return el3.readDocument === 1;
           });
           el.staffDocsRead = filtered2.length;
@@ -576,9 +582,23 @@ export default {
               100
           );
         });
-        this.policies.sort((a, b) =>
+
+        initialArray.sort((a, b) =>
           a.totalAllDocsPercent < b.totalAllDocsPercent ? 1 : -1
         );
+        let testArray = [];
+        this.policies.forEach((el) => {
+          testArray.push(el);
+        });
+        let a = JSON.stringify(testArray);
+
+        let b = JSON.stringify(initialArray);
+
+        if (a !== b) {
+          this.policies = initialArray;
+          return this.$store.dispatch("dashboardArray", this.policies);
+        }
+
         this.getCurrentUsage();
       }
     } catch (error) {
@@ -592,7 +612,7 @@ export default {
       if (this.search === "") {
         return this.policies;
       } else {
-        return this.policies.filter(policy => {
+        return this.policies.filter((policy) => {
           return (
             !this.search ||
             policy.lname.toLowerCase().indexOf(this.search.toLowerCase()) >
@@ -601,9 +621,28 @@ export default {
           );
         });
       }
-    }
+    },
   },
   methods: {
+    compareArr(arr1, arr2) {
+      if (!arr1 || !arr2) return;
+
+      let result;
+
+      arr1.forEach((e1) =>
+        arr2.forEach((e2) => {
+          if (e1.length > 1 && e2.length) {
+            result = this.compareArr(e1, e2);
+          } else if (e1 !== e2) {
+            result = false;
+          } else {
+            result = true;
+          }
+        })
+      );
+
+      return result;
+    },
     unitsUsing() {
       let unitsUsed = Math.ceil(this.SMSText.length / 160);
       this.unitsUsed = unitsUsed;
@@ -616,13 +655,13 @@ export default {
     async sendSMS() {
       let credentials = {
         mobile: this.mobileNumber,
-        message: this.SMSText
+        message: this.SMSText,
       };
       let response = await DirectoryService.individualsms(credentials);
       // console.log(response);
       if (response.status === 200) {
         let newCredentials = {
-          organisation: this.$store.state.organisationID
+          organisation: this.$store.state.organisationID,
         };
         await DirectoryService.useUnits(newCredentials);
         // let response2 = await DirectoryService.useUnits(newCredentials)
@@ -640,7 +679,7 @@ export default {
       this.smsUser = targetID;
       // console.log("current Target", targetID)
       let credentials = {
-        id: targetID
+        id: targetID,
       };
       let response = await DirectoryService.getUserMobile(credentials);
       // console.log(response.data[0].mobileNumber);
@@ -681,7 +720,7 @@ export default {
           documentURL: response.data.url,
           URL: `response.data.url`,
           documentName: "Global Adherance Report",
-          isProducedReport: true
+          isProducedReport: true,
         };
 
         this.$store.dispatch("viewReport", criteria);
@@ -696,7 +735,7 @@ export default {
       try {
         this.processing = true;
         let targetID = parseInt(event.currentTarget.id);
-        let filtered = this.policies.filter(el => {
+        let filtered = this.policies.filter((el) => {
           return el.id === targetID;
         });
         // console.log("TESTING", filtered[0]);
@@ -705,7 +744,7 @@ export default {
           id: targetID,
           organisation: this.$store.state.organisationID,
           name: `${filtered[0].fname} ${filtered[0].lname}`,
-          staffType: filtered[0].staffType
+          staffType: filtered[0].staffType,
         };
         let response = await DirectoryService.printIndividualReport(
           credentials
@@ -715,7 +754,7 @@ export default {
           documentURL: response.data.url,
           URL: `response.data.url`,
           documentName: "Individual Report",
-          isProducedReport: true
+          isProducedReport: true,
         };
 
         this.$store.dispatch("viewReport", criteria);
@@ -732,7 +771,7 @@ export default {
         this.scrollToTop();
         let targetID = parseInt(event.currentTarget.id);
         this.individualEmailID = targetID;
-        let filtered = this.policies.filter(el => {
+        let filtered = this.policies.filter((el) => {
           return el.id === targetID;
         });
         let credentials = filtered[0];
@@ -761,7 +800,7 @@ export default {
         let credentials = {
           id: targetID,
           organisation: this.$store.state.organisationID,
-          content: this.content
+          content: this.content,
         };
         let response = await DirectoryService.emailIndividual(credentials);
         // console.log(response.data);
@@ -790,8 +829,8 @@ export default {
       } else if (targetID === 3) {
         this.content = this.blankContent;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

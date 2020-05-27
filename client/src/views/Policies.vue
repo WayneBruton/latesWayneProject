@@ -326,6 +326,9 @@ export default {
       if (!this.$store.state.isAdministrator) {
         return this.$router.push({ name: "home" });
       }
+      this.documentItems = this.$store.state.policies_documentItems;
+      this.allDocuments = this.$store.state.policies_allDocuments;
+      this.allStaff = this.$store.state.policies_allStaff;
       this.refreshData();
     } catch (error) {
       this.snackBarMessage = "Network Error(14), please try later!";
@@ -382,15 +385,42 @@ export default {
             return this.$router.push({ name: "home" });
           }, 900);
         } else {
-          this.documentItems = response.data[1];
-          this.documentItems.forEach(el => {
+          // this.documentItems = response.data[1];
+          let documentItemsArray = response.data[1];
+
+          // this.documentItems.forEach((el) => {
+          documentItemsArray.forEach(el => {
             el.count = el.items.length;
           });
-          this.allDocuments = response.data[0];
-          this.allDocuments.forEach(el => {
+          let documentItemsArrayStringified = JSON.stringify(
+            documentItemsArray
+          );
+          let originalDocItemsStringified = JSON.stringify(this.documentItems);
+          if (documentItemsArrayStringified !== originalDocItemsStringified) {
+            // console.log("NOT SAME!!");
+            this.documentItems = documentItemsArray;
+            this.$store.dispatch("policiesDocumentItems", this.documentItems);
+          }
+          // this.allDocuments = response.data[0];
+          let allDocumentsArray = response.data[0];
+          // this.allDocuments.forEach((el) => {
+          allDocumentsArray.forEach(el => {
             el.appliesTo = JSON.parse(el.appliesTo);
           });
-          this.allStaff = response.data[1][0].id;
+          let originalAllDocuments = JSON.stringify(this.allDocuments);
+          let latestAllDocuments = JSON.stringify(allDocumentsArray);
+          if (originalAllDocuments !== latestAllDocuments) {
+            // console.log("Different");
+            this.allDocuments = allDocumentsArray;
+            this.$store.dispatch("policiesAllDocuments", this.allDocuments);
+          }
+          // this.allStaff = response.data[1][0].id;
+          let allStaff = response.data[1][0].id;
+          if (allStaff !== this.allStaff) {
+            this.allStaff = allStaff;
+            // console.log("Different AllStaff");
+            this.$store.dispatch("policiesAllStaff", allStaff);
+          }
         }
         // console.log(this.documentItems);
         this.getCurrentUsage();

@@ -71,6 +71,14 @@
                     @blur="checkUserEmail"
                   ></v-text-field>
                 </v-col>
+                <v-col cols="12" xs="12" sm="6" md="6">
+                  <v-autocomplete
+                    :items="typesOfStaff"
+                    label="Staff Type"
+                    v-model="staffAffected"
+                    item-text="staff_description"
+                  ></v-autocomplete>
+                </v-col>
                 <v-col cols="12" xs="12" sm="9" md="9">
                   <v-checkbox
                     v-model="isAdministrator"
@@ -78,14 +86,6 @@
                       `Create as Administrator: ${isAdministrator.toString()}`
                     "
                   ></v-checkbox>
-                </v-col>
-                <v-col cols="12" xs="12" sm="9" md="9">
-                  <v-autocomplete
-                    :items="typesOfStaff"
-                    label="Staff Type"
-                    v-model="staffAffected"
-                    item-text="staff_description"
-                  ></v-autocomplete>
                 </v-col>
               </v-row>
             </v-container>
@@ -175,7 +175,7 @@ export default {
         this.mobile = "";
       } else {
         this.mobileNumber = "+" + this.dialingCode + parseInt(str);
-        console.log(this.mobileNumber);
+        // console.log(this.mobileNumber);
       }
       str = parseInt(str);
     },

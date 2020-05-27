@@ -273,6 +273,8 @@ export default {
       if (!this.$store.state.isAdministrator) {
         return this.$router.push({ name: "home" });
       }
+      this.allDocuments = this.$store.state.employees_allDocuments;
+      this.documentItems = this.$store.state.employees_documentItems;
       this.refreshData();
     } catch (error) {
       this.snackBarMessage = "Network Error(23), please try later!";
@@ -323,8 +325,16 @@ export default {
             return this.$router.push({ name: "home" });
           }, 900);
         } else {
-          this.allDocuments = response.data[1];
-          this.documentItems = [];
+          let allDocuments = response.data[1];
+          let allDocumentsString = JSON.stringify(allDocuments);
+          if (allDocumentsString !== JSON.stringify(this.allDocuments)) {
+            // console.log("Different");
+            this.allDocuments = allDocuments;
+            this.$store.dispatch("employeesAllDocuments", allDocuments);
+          }
+          // this.allDocuments = response.data[1];
+          // this.documentItems = [];
+          let documentItems = [];
           response.data[0].forEach(el => {
             let id = el.id;
             let input = {
@@ -339,11 +349,20 @@ export default {
             filtered.forEach(el => {
               input.items.push(el);
             });
-            this.documentItems.push(input);
+            // this.documentItems.push(input);
+            documentItems.push(input);
           });
-          this.documentItems.forEach(el => {
+          // this.documentItems.forEach((el) => {
+          documentItems.forEach(el => {
             el.count = el.items.length;
           });
+          if (
+            JSON.stringify(documentItems) !== JSON.stringify(this.documentItems)
+          ) {
+            console.log("Different");
+            this.documentItems = documentItems;
+            this.$store.dispatch("employeesDocumentItems", documentItems);
+          }
         }
         this.getCurrentUsage();
       } catch (error) {
