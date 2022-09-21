@@ -26,7 +26,7 @@
     "vue-tel-input": "^4.2.0",
     "vue-youtube": "^1.4.0",
     "vue2-editor": "^2.10.2",
-    "vuetify": "^2.1.0",
+    "vuetify": "^2.6.10",
     "vuex": "^3.1.2",
     "vuex-persistedstate": "^2.7.0",
     "zxcvbn": "^4.4.2"
